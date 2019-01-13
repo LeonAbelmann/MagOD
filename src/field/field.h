@@ -7,7 +7,7 @@
 #ifndef field_h
 #define field_h
 
-#include "../globals/globals.h"
+#include "../../MagOD.h"
 
 // These should be capitalized, TODO LEON
 #define Coil_x 44 // output of the coils in the x direction

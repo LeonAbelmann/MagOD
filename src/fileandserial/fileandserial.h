@@ -9,7 +9,7 @@
 
 #include <SD.h>
 
-#include "../globals/globals.h" //Globals
+#include "../../MagOD.h" //Globals
 #include "../screen/screen.h" //To be able to update filename on screen
 
 class fileandserial

@@ -10,22 +10,8 @@
 #include <TimerFive.h> //This timer is not used, set to zero not to disturb the other timers.
 //#include <MemoryFree.h> //For debugging only
 
-// Loaded in MagOD2 libraries:
-//#include <PWM.h> //Library for storage of data on SD card
-//#include <SD.h> //Library for storage of data on SD card
-//#include <Adafruit_GFX.h>      // Core graphics library
-//#include <Adafruit_ST7735.h>   // Hardware-specific TFT library
-//#include <Adafruit_ADS1015.h>  // ADC library
-
-// Loaded in public libaries
-//#include <SPI.h> //Communication with SPI devices
-//#include <Wire.h> //Communation with I2C devices
-
-// Loaded somewhere else?
-//#include <math.h> //Math functions
-
 /* Class definitions */
-#include "MagOD2.h"
+#include "MagOD.h"
 
 /* ############## Global variables ########### */
 
@@ -38,11 +24,6 @@ float freq_screen = 2; //Screen update frequency in Hz
 uint16_t program_cnt = 1; //Current program menu, default 1 
 const uint16_t program_nmb = 1;//Total number of menus. Right now, there is only one measurement program. When you want more, make sure there is a good menu selection procedure. The joystick on the 1.8" screen suckcs...
 
-/* Time parameters */
-unsigned long time_of_data_point = 0; //Store time when datapoint was taken
-unsigned long time_of_start = 0; //Time at which the measurement was started
-unsigned long time_last_field_change = 0; //Time since the last field step
-
 /* State variables (global) used in this program */
 bool doMeasurementFlag = false; //Read the ADC inputs
 bool screenUpdateFlag = false; //Update the screen
@@ -54,46 +35,13 @@ bool isRecording = false; //We are measuring
 bool SDpresent = false; //There is a readable SD card in the slot
 uint8_t prevButton = 0; /* Status of the button */
 
-/* LED parameters */
-int LED_type = 2; //The color of the LED, 1 = RED, 2 = GREEN, 3 = BlUE
-int LED_switch_cycles = 0; //The number of cycles after which the LED changes the frequency, when a 0 is entered, the LED keeps the beginning frequency during the complete measurement 
-int Counter_cycles_led = 1; //counter used to store the amount of complete cycles the LED has had the same colour, to check when the colour has to change (after LED_switch_cycles)
-bool ref_all_wavelength = 0; //Set this to 1 for specific programs where you work with multiple wavelengths in a single measurement (such that it stores the reference value of all 3 wavelengths)
-
-/* Variables to define the field sequence */
-#define B_NR_MAX 12 //Max number of elements
-int B_nr_set = 1; //the number of elements in the array
-long Nr_cycles = 0; //The number of cycles throught the array, a value of 0 means an infinite amound of cycles
-unsigned int Looppar_1 = 0; //Looppar_1,2 track at which point of the field-array the program is
-unsigned int Looppar_2 = 0; 
-
-double B_arrayfield_x[B_NR_MAX] = {0.0}; //an array containing B_Nr_set elements for the field in the x-direction, each element has to be an integer between -256 and 256 and negative numbers can be used for opposite directions
-double B_arrayfield_y[B_NR_MAX] = {0.0}; //an array containing B_Nr_set elements for the field in the y-direction, each element has to be an integer between -256 and 256 and negative numbers can be used for opposite directions
-double B_arrayfield_z[B_NR_MAX] = {0.0}; //an array containing B_Nr_set elements for the field in the z-direction, each element has to be an integer between -256 and 256 and negative numbers can be used for opposite directions
-bool Gradient_x[B_NR_MAX] = {1};  //determines whether both coils must be on or just one of them for the x-direction, 0 is both on, 1 is only one on
-bool Gradient_y[B_NR_MAX] = {1};  //determines whether both coils must be on or just one of them for the y-direction, 0 is both on, 1 is only one on
-bool Gradient_z[B_NR_MAX] = {1};  //determines whether both coils must be on or just one of them for the z-direction, 0 is both on, 1 is only one on
-long Switching_time[B_NR_MAX] ={1000}; //the time the program waits before switching to the next value of the magnetic field, in matrix to allow an alterating switching time, keep all values the same to have a constant switching time
-
-  
-/* The measured parameters */
-double Vup   = 0; // Signal of top part of split photodiode
-double Vdwn  = 0; // Signal of bottom part of split photodiode
-double Vled  = 0; // Signal of reference photodiode monitoring the LED
-double Vscat = 0; // Signal of side scatter photodiode
-double Temperature_degrees = 0; //Temperature estimated from temperature sensor
-references Vrefs = {0,0,0,0}; 
-
-/* Calculated parameters */
-double Vav; //(Vup+Vdwn)/2
-double OD;  //Optical Density. Calculated in CaldOD()
 
 /* Control parameters */
 bool save_extra_parameter = 0; //set this to 1 when you want to store an extra parameter in the header of the .CVS file (this can be any parameter which makes it easier for dataprocessing, for instance which fields are used)
 
 double extra_par = 0.0; //value of this extra parameter (specifiy this in the initialization function)
 
-/* MagOD2 libraries, should be subdirectory MagOD2.ino folder */
+/* MagOD libraries, should be subdirectory MagOD.ino folder */
 #include "src/led/led.h" // Control of three colour LED
 #include "src/pins/pins.h" // Definition of Arduino pins 
 #include "src/screen/screen.h" // TFT screen layout
@@ -112,6 +60,44 @@ field myfield;
 adc myadc;
 fileandserial myfile;
 recipes myrecipes;
+
+/* Define variables */
+/* The measured parameters */
+extern double Vup   = 0; // Signal of top part of split photodiode
+extern double Vdwn  = 0; // Signal of bottom part of split photodiode
+extern double Vled  = 0; // Signal of reference photodiode monitoring the LED
+extern double Vscat = 0; // Signal of side scatter photodiode
+extern double Temperature_degrees = 0; //Temperature estimated from temperature sensor
+extern references Vrefs = {0,0,0,0}; 
+
+/* Calculated parameters */
+extern double Vav = 0; //(Vup+Vdwn)/2
+extern double OD = 0;  //Optical Density. Calculated in CaldOD()
+
+/* Time parameters */
+extern unsigned long time_of_data_point = 0; //Store time when datapoint was taken
+extern unsigned long time_of_start = 0; //Time at which the measurement was started
+extern unsigned long time_last_field_change = 0; //Time since the last field step
+
+/* LED parameters */
+extern int LED_type = 2; //The color of the LED, 1 = RED, 2 = GREEN, 3 = BlUE
+extern int LED_switch_cycles = 0; //The number of cycles after which the LED changes the frequency, when a 0 is entered, the LED keeps the beginning frequency during the complete measurement 
+extern int Counter_cycles_led = 1; //counter used to store the amount of complete cycles the LED has had the same colour, to check when the colour has to change (after LED_switch_cycles)
+extern bool ref_all_wavelength = 0; //Set this to 1 for specific programs where you work with multiple wavelengths in a single measurement (such that it stores the reference value of all 3 wavelengths)
+
+/* Declare variables to define the field sequence */
+extern int B_nr_set = 1; //the number of elements in the array
+extern long Nr_cycles = 0; //The number of cycles throught the array, a value of 0 means an infinite amound of cycles
+extern unsigned int Looppar_1 = 0; //Looppar_1,2 track at which point of the field-array the program is
+extern unsigned int Looppar_2 = 0; 
+
+extern double B_arrayfield_x[B_NR_MAX] = {0.0}; //an array containing B_Nr_set elements for the field in the x-direction, each element has to be an integer between -256 and 256 and negative numbers can be used for opposite directions
+extern double B_arrayfield_y[B_NR_MAX] = {0.0}; //an array containing B_Nr_set elements for the field in the y-direction, each element has to be an integer between -256 and 256 and negative numbers can be used for opposite directions
+extern double B_arrayfield_z[B_NR_MAX] = {0.0}; //an array containing B_Nr_set elements for the field in the z-direction, each element has to be an integer between -256 and 256 and negative numbers can be used for opposite directions
+extern bool Gradient_x[B_NR_MAX] = {1};  //determines whether both coils must be on or just one of them for the x-direction, 0 is both on, 1 is only one on
+extern bool Gradient_y[B_NR_MAX] = {1};  //determines whether both coils must be on or just one of them for the y-direction, 0 is both on, 1 is only one on
+extern bool Gradient_z[B_NR_MAX] = {1};  //determines whether both coils must be on or just one of them for the z-direction, 0 is both on, 1 is only one on
+extern long Switching_time[B_NR_MAX] ={1000};
 
 /*** Top level functions ***/
 

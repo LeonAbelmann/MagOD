@@ -1,6 +1,6 @@
 /* adc.h
- MagOD2 libary 
- Oct 2018
+ MagOD libary 
+ Jan 2019
  Photodiode readout
  Tijmen Hageman, Jordi Hendrix, Hans Keizer, Leon Abelmann 
 */
@@ -9,7 +9,7 @@
 
 #include <Adafruit_ADS1015.h>  // ADC library
 
-#include "../globals/globals.h"
+#include "../../MagOD.h"
 #include "../led/led.h" // Needed for set_vrefs. adc and led are interdepenent. Perhaps solve in MagOD itself. TODO. LEON
 
 /* trying to change the sample rate. The default used by Adafruit_ADS1015 is ADS1015_REG_CONFIG_DR_1600SPS. Standard it has the value (0x0080). The ADS1115 has the following datarates (https://cdn-shop.adafruit.com/datasheets/ads1115.pdf, page 19):

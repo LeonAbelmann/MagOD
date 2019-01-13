@@ -1,6 +1,6 @@
 /* led.cpp
- MagOD2 libary 
- Oct 2018
+ MagOD libary 
+ Jan 2019
  Controls led color
  Tijmen Hageman, Jordi Hendrix, Hans Keizer, Leon Abelmann 
 */

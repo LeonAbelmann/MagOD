@@ -142,7 +142,7 @@ void fileandserial::file_init(struct references Vref, bool ref_all_wavelength, b
 //           writeDataLine(dataFile)
 void fileandserial::writeDataLine(Stream &file)
 {
-  file.print(time); file.print(",");
+  file.print(time_of_data_point); file.print(",");
   file.print(Vup,5); file.print(",");
   file.print(Vdwn,5); file.print(",");
   file.print(Vav,5); file.print(",");
