@@ -23,7 +23,7 @@ void adc::set_vrefs(references &Vrefs, bool ref_all_wavelength, led theled)
       _adc2 = 0;
       _adc3 = 0;
       for (int i=0; i<10; i++){
-	_adc2 += double(ads.readADC_SingleEnded(2));//It would make sense to define the port so ADC2 instead of 2. LEon
+	_adc2 += double(ads.readADC_SingleEnded(2));//It would make sense to define the port so ADC2 instead of 2. Leon
 	_adc3 += double(ads.readADC_SingleEnded(3));
       }
       _Vref = _adc2/20 + _adc3/20;

@@ -38,6 +38,11 @@ extern int LED_switch_cycles; //The number of cycles after which the LED changes
 extern int Counter_cycles_led; //counter used to store the amount of complete cycles the LED has had the same colour, to check when the colour has to change (after LED_switch_cycles)
 extern bool ref_all_wavelength; //Set this to 1 for specific programs where you work with multiple wavelengths in a single measurement (such that it stores the reference value of all 3 wavelengths)
 
+/* Parameters to control the menu */
+extern const uint16_t program_nmb;//Total number of menus.
+extern uint16_t program_cnt; //Current program menu
+
+
 /* Declare variables to define the field sequence */
 #define B_NR_MAX 12 //Max number of elements
 extern int B_nr_set; //the number of elements in the array

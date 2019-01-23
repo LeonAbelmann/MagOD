@@ -27,7 +27,7 @@ uint8_t buttons::readButton() {
   if (a < 1.0) return BUTTON_RIGHT;
   if (a < 1.5) return BUTTON_SELECT;
   if (a < 2.0) return BUTTON_UP;
-  if (a < 3.2) return BUTTON_LEFT;
+  if (a < 3.0) return BUTTON_LEFT;
   else return BUTTON_NONE;
 }
 

@@ -63,6 +63,7 @@ recipes myrecipes;
 
 /* Define variables */
 /* The measured parameters */
+/* Should these really be defined as extern? TODO Leon */
 extern double Vup   = 0; // Signal of top part of split photodiode
 extern double Vdwn  = 0; // Signal of bottom part of split photodiode
 extern double Vled  = 0; // Signal of reference photodiode monitoring the LED
@@ -83,20 +84,21 @@ extern unsigned long time_last_field_change = 0; //Time since the last field ste
 extern int LED_type = 2; //The color of the LED, 1 = RED, 2 = GREEN, 3 = BlUE
 extern int LED_switch_cycles = 0; //The number of cycles after which the LED changes the frequency, when a 0 is entered, the LED keeps the beginning frequency during the complete measurement 
 extern int Counter_cycles_led = 1; //counter used to store the amount of complete cycles the LED has had the same colour, to check when the colour has to change (after LED_switch_cycles)
-extern bool ref_all_wavelength = 0; //Set this to 1 for specific programs where you work with multiple wavelengths in a single measurement (such that it stores the reference value of all 3 wavelengths)
+extern bool ref_all_wavelength = 0; //Set this to 1 for specific programs where you work with multiple wavelengths in a single measurement (such that it stores the reference value of all 3 wavelengths
 
 /* Declare variables to define the field sequence */
 extern int B_nr_set = 1; //the number of elements in the array
 extern long Nr_cycles = 0; //The number of cycles throught the array, a value of 0 means an infinite amound of cycles
 extern unsigned int Looppar_1 = 0; //Looppar_1,2 track at which point of the field-array the program is
-extern unsigned int Looppar_2 = 0; 
+extern unsigned int Looppar_2 = 0;
 
+/* Note, the definitions don't seem to work. Only the first element in the array is set to that value. Instead, I initialize the arrays in recipes.cpp */
 extern double B_arrayfield_x[B_NR_MAX] = {0.0}; //an array containing B_Nr_set elements for the field in the x-direction, each element has to be an integer between -256 and 256 and negative numbers can be used for opposite directions
-extern double B_arrayfield_y[B_NR_MAX] = {0.0}; //an array containing B_Nr_set elements for the field in the y-direction, each element has to be an integer between -256 and 256 and negative numbers can be used for opposite directions
-extern double B_arrayfield_z[B_NR_MAX] = {0.0}; //an array containing B_Nr_set elements for the field in the z-direction, each element has to be an integer between -256 and 256 and negative numbers can be used for opposite directions
-extern bool Gradient_x[B_NR_MAX] = {1};  //determines whether both coils must be on or just one of them for the x-direction, 0 is both on, 1 is only one on
-extern bool Gradient_y[B_NR_MAX] = {1};  //determines whether both coils must be on or just one of them for the y-direction, 0 is both on, 1 is only one on
-extern bool Gradient_z[B_NR_MAX] = {1};  //determines whether both coils must be on or just one of them for the z-direction, 0 is both on, 1 is only one on
+extern double B_arrayfield_y[B_NR_MAX] = {0.0}; //Same for y
+extern double B_arrayfield_z[B_NR_MAX] = {0.0}; //Same for z
+extern bool Gradient_x[B_NR_MAX]={1};  //determines whether both coils must be on or just one of them for the x-direction, 0 is both on, 1 is only one. When the set of coils is connected, set to 1.
+extern bool Gradient_y[B_NR_MAX] = {1};  //same for y
+extern bool Gradient_z[B_NR_MAX] = {1};  //same for z
 extern long Switching_time[B_NR_MAX] ={1000};
 
 /*** Top level functions ***/
@@ -189,7 +191,7 @@ void startRec()
   if (SDpresent == true)
   {
     //Initialize program
-    Serial.print("Initializing ...");
+    Serial.println("Initializing ...");
     delay(1000);
     Exit_program_1 = LOW;
     myrecipes.program_init();
@@ -221,7 +223,7 @@ void startRec()
   
     //Note starting time
     time_of_start = millis();
-    Serial.print("Start measurement");
+    Serial.print("Start measurement ");
     Serial.println(time_of_start);
     
     //Activate recording mode
@@ -314,28 +316,51 @@ void processButtonPress()
 //calculate the optical density value, whenever using three wavelengths, the right reference has to be chosen
 double calcOD(struct references Vrefs)
 {
-  if(Vav<=0){return 0;}    //V1 has to be positive
-  if(Vrefs.Vref<=0){return 0;}  //Vref has to be positive
-  if(Vrefs.Vred<=0){return 0;}  
-  if(Vrefs.Vgreen<=0){return 0;}
-  if(Vrefs.Vblue<=0){return 0;} 
-  /* We are ok, all voltages > 0 */
-  /* I don't understand why we simply do not calculate DO for LED_type. Why the if statement? */
+  if(Vav<=0){return 0;}    //Vav has to be positive
+
+  /* I don't understand why we simply do not calculate DO for LED_type. Why the if statement? TODO Leon */
   if (ref_all_wavelength == 0)
   {
-    return log10(Vrefs.Vref/Vav);  //otherwise, return correct OD value
+    if(Vrefs.Vref<=0)
+      {
+	return 0; //Vref has to be positive
+      }
+    else {
+      return log10(Vrefs.Vref/Vav);  //otherwise, return correct OD value
+    }
   }
   else
   {
     switch (LED_type){
     case 1:
-      return log10(Vrefs.Vred/Vav);
+      if (Vrefs.Vred <= 0)
+	{
+	  return 0; //Vref has to be positive
+	}
+      else
+	{
+	  return log10(Vrefs.Vred/Vav);
+	}
       break;
     case 2:
-      return log10(Vrefs.Vgreen/Vav);
+      if (Vrefs.Vgreen <= 0)
+	{
+	  return 0; //Vref has to be positive
+	}
+      else
+	{
+	  return log10(Vrefs.Vgreen/Vav);
+	}
       break;
-    default:
-      return log10(Vrefs.Vblue/Vav);
+    case 3:
+      if (Vrefs.Vblue <= 0)
+	{
+	  return 0; //Vref has to be positive
+	}
+      else
+	{
+	  return log10(Vrefs.Vblue/Vav);
+	}
       break;
     } 
   }
@@ -540,7 +565,7 @@ void loop()
     {
       screenUpdateFlag=false; // reset flag for next time
       myscreen.updateV(Vav, Vled, Vrefs.Vref, OD); //Update values
-      myscreen.updateGraph(Vav,LED_type); //Update graph
+      myscreen.updateGraph(OD,LED_type); //Update graph
       myscreen.updateInfo(Looppar_1, Looppar_2, program_cnt); //Update program status
     }
   

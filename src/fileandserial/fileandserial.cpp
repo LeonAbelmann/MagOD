@@ -1,5 +1,5 @@
 /* file.cpp
- MagOD2 libary 
+ MagOD libary 
  Oct 2018
  File IO
  Tijmen Hageman, Jordi Hendrix, Hans Keizer, Leon Abelmann 
