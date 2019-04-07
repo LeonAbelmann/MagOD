@@ -1,0 +1,4 @@
+# Ignore directories that are not suitable for public sharing yet
+arduino-esp23/
+SD_Test/
+SDplusTFTtest/
