@@ -8,18 +8,22 @@
 #define field_h
 
 #include "../../MagOD.h"
+#include "../timer/timer.h"
 
 // These should be capitalized, TODO LEON
 #define Coil_x 44 // output of the coils in the x direction
 #define Coil_y 45               // output of the coils in the y direction
 #define Coil_z 46               // output of the coils in the z direction
+
 #define Dir_x 25                // direction of the coils in the x direction     low: output A of motor driver is then high and B is low (positive direction),     high: output A of motor driver is then low and B is high (negative direction)
 #define Dir_y 26                // direction of the coils in the y direction
 #define Dir_z 27                // direction of the coils in the z direction
   //pins for selecting a single coil by means of the mosfet switching
+
 #define Relay_x 34 //1 is no gradient, 0 is gradient (with 1 the NC is connected on the relay and with 0 the NO is connected)
 #define Relay_y 35
 #define Relay_z 36
+
 //pins for the analog signals from the current sensing system and the temperature sensing
 #define Current_read_x 15
 #define Current_read_y 14
@@ -100,6 +104,8 @@ class field
   uint8_t timer3_seconds_counted = 0;
   
   double Current_feedback_calculation(double T_wanted, int Read_pin, double V_current_init, bool gradient, double A_neg, double B_neg, double A_pos, double B_pos, double Comp_fact_prev);
+  void coilPwmWrite(int Coil, int PWM_value);
+
 };
   
   

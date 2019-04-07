@@ -1,37 +1,42 @@
 /* screen.h
  MagOD2 libary 
- Oct 2018
- Definition of screen layout and screen update functions 
+ 
+ Definition of screen layout and screen update functions
  Tijmen Hageman, Jordi Hendrix, Hans Keizer, Leon Abelmann 
 */
+
+//Avoid that Arduino IDE compiles this file when not MagOD1
+#include "../../MagOD.h" //MagOD version is defined in MagOD.h
+#if defined(_MAGOD1)
 
 #ifndef Screen_h
 #define Screen_h
 
 #include <Adafruit_GFX.h>
 #include <Adafruit_ST7735.h>
-
-//Pins for the screen
-#define TFT_CS     10 
+//pins
 #define TFT_RST    9 
 #define TFT_DC     8 
+#define TFT_CS     10 
+//resolution
+#define SCRN_VERT 160
+#define SCRN_HOR 128
 
 // Color definitions
-#define	ST7735_BLACK   0x0000
-#define	ST7735_BLUE    0x001F
-#define	ST7735_RED     0xF800
-#define	ST7735_GRAY    0xEEEE
-#define	ST7735_GREEN   0x07E0
+//https://wiibrew.org/wiki/U16_colors
+#define	TFTCOLOR_BLACK   0x0000
+#define	TFTCOLOR_BLUE    0x001F
+#define	TFTCOLOR_RED     0xF800
+#define	TFTCOLOR_GRAY    0xEEEE
+#define	TFTCOLOR_GREEN   0x07E0
+#define	TFTCOLOR_YELLOW  0xFFE0
+#define	TFTCOLOR_WHITE   0xFFFF
 
 
 class screen{
  public:
   //screen(int16_t w, int16_t h, Adafruit_GFX *tft_p); //Constructor
   screen(); //Constructor
-  // Screen resolution
-  static const int scrn_vert = 160;
-  static const int scrn_hor = 128;
-  
   void setupScreen();
   void updateInfo(unsigned int Looppar_1, unsigned int Looppar_2, int16_t program_cnt);
   void updateGraph(double value, int led);
@@ -41,9 +46,7 @@ class screen{
   void setRecButton(bool active);
 
  private:
-  //initialization of communication with screen
-  /*  Adafruit_GFX *tft; */
-  
+
   Adafruit_ST7735 tft = Adafruit_ST7735(TFT_CS,  TFT_DC, TFT_RST);
   
   int16_t locText_x,locText_y,locText_vSpace,locText_hSpace;
@@ -58,3 +61,4 @@ class screen{
 };
 
 #endif // Screen_h
+#endif // _MAGOD1

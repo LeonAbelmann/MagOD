@@ -7,8 +7,6 @@ Tijmen Hageman, Jordi Hendrix, Hans Keizer, Leon Abelmann */
 #ifndef pins_h
 #define pins_h
 
-//For screen, perhaps this should go to Screen.h. Leon
-#define SD_CS      4 //Pin for SD card
 
 //TODO. LEON. Perhaps we should define the pins with the libaries. So temperatue pin in temparature library. coil pins in field library, led pins in led library etc.
 

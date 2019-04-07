@@ -20,24 +20,13 @@ class buttons
 {
  public:
   buttons();
-  //buttonreadprocesses, converts voltage of button into a direction
-  uint8_t readButton();
-
-  /* Removed by Leon
-  /* //settings for changing the screen update frequency */
-  /* //total number of frequencies to toggle: */
-  /* static const int freq_screen_N=7;  */
-  /* //vector of possible frequencies: */
-  /* const float freq_screen_a[freq_screen_N] = {0.1, 0.2, 0.5, 1, 2, 5, 10}; */
-  
-  /* //settings for changing the measurement update frequency */
-  /* //total number of measurement frequencies to toggle: */
-  /* static const int freq_meas_N=9; */
-  /* //vector of possible frequencies: */
-  /* const float freq_meas_a[freq_meas_N] = {0.1, 0.2, 0.5, 1, 2, 5, 10, 20, 50}; */
-
+  void initButton();//Setup buttons 
+  uint8_t readButton();//Read button status, any of defined stati above
+  void showButtonArea(int i, const char* str, int bgcolor, int fgcolor);//Draw button i
+  int buttonOffset_x, buttonOffset_y; // Upper left corner of button area
+  int buttonSize_x,buttonSize_y; // Size of a button
  private:
-  //none
+  int whichButton(int x, int y); //Check which button is pressed on touchscreen
 };
 
 #endif

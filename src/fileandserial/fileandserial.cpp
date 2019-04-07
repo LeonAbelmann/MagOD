@@ -59,7 +59,7 @@ void fileandserial::saveSettingsFile(){
   dataFile.print(B_nr_set); dataFile.print(",");
   dataFile.print(LED_switch_cycles); dataFile.print(",");
   dataFile.print(Nr_cycles); dataFile.print(",");
-  for (int i=1; i<B_nr_set; i++){
+  for (unsigned int i=1; i<B_nr_set; i++){
     dataFile.print(B_arrayfield_x[i]); dataFile.print(",");
     dataFile.print(B_arrayfield_y[i]); dataFile.print(",");
     dataFile.print(B_arrayfield_z[i]); dataFile.print(",");
@@ -95,6 +95,12 @@ void fileandserial::sendFileToSerial(char fName_char[]) {
     Serial.print("error opening ");
     Serial.println(fName_char);
   }
+}
+
+void fileandserial::file_reset()
+{
+  SD_file_number_count = 1;
+  SD_file_length_count = 0;
 }
 
 void fileandserial::file_init(struct references Vref, bool ref_all_wavelength, bool save_extra_parameter, double extra_par, uint16_t program_cnt, screen thescreen)

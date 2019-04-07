@@ -1,22 +1,34 @@
-/* MagOD version 2.0 */
-/* Jan 2019 */
+/* MagOD version 2.1 */
+/* March 2019 */
 /* Tijmen Hageman, Jordi Hendrix, Hans Keizer, Leon Abelmann */
 /* Based on original code, modified by Leon for readablity and ease of recipe change */
-
-/* General libraries, should be in your global Arduino directory */
-#include <TimerOne.h> //Timer1 used for measurement frequency
-#include <TimerThree.h> //Timer3 is used to set the current sensing
-#include <TimerFour.h> //Timer4 used for the screen update frequency
-#include <TimerFive.h> //This timer is not used, set to zero not to disturb the other timers.
-//#include <MemoryFree.h> //For debugging only
 
 /* Class definitions */
 #include "MagOD.h"
 
+/* Version of electronics is defined in MagOD.h */
+#if defined(_MAGOD1)
+#warning "MAGOD1"
+#elif defined(_MAGOD2)
+#warning "MAGOD2"
+#else
+#error "No version defined"
+#endif
+
+#if (defined(_MAGOD1) && defined(ARDUINO_AVR_MEGA2560)) || \
+    (defined(_MAGOD2) && defined(ARDUINO_ESP32_DEV))
+
+/* General libraries, should be in your global Arduino directory */
+
+//#include <PWM.h>  //Library for changing the PWM frequency of the pwm-pins
+//#include <MemoryFree.h> //For debugging only
+
+
 /* ############## Global variables ########### */
 
 /* Update frequencies */
-float freq_meas = 7; //Measurement frequency in Hz, tested up to 7 Hz. Can be 20 Hz without saving data. Can be 30 Hz if we optimize doMeasurement. Can be 100 Hz if we only read one adc. Can be 700 Hz theoretically...
+float freq_meas = 7; //Measurement frequency in Hz
+// For Arduion: tested up to 7 Hz. Can be 20 Hz without saving data. Can be 30 Hz if we optimize doMeasurement. Can be 100 Hz if we only read one adc. Can be 700 Hz theoretically...
 
 float freq_screen = 2; //Screen update frequency in Hz
 
@@ -42,17 +54,14 @@ bool save_extra_parameter = 0; //set this to 1 when you want to store an extra p
 double extra_par = 0.0; //value of this extra parameter (specifiy this in the initialization function)
 
 /* MagOD libraries, should be subdirectory MagOD.ino folder */
-#include "src/led/led.h" // Control of three colour LED
-#include "src/pins/pins.h" // Definition of Arduino pins 
-#include "src/screen/screen.h" // TFT screen layout
-#include "src/buttons/buttons.h" //Control of buttons (joystick)
-#include "src/field/field.h"  //Field control
+// screen and timer are in MagOD.h. Don't understand why not all can be there.
 #include "src/adc/adc.h" //ADC input control
 #include "src/fileandserial/fileandserial.h" //File and serial port IO
 #include "src/recipes/recipes.h" //User measurement recipe
 
 /* Init classes */
 screen myscreen;
+timer mytimer;
 led myled;
 pins mypins;
 buttons mybuttons;
@@ -63,43 +72,42 @@ recipes myrecipes;
 
 /* Define variables */
 /* The measured parameters */
-/* Should these really be defined as extern? TODO Leon */
-extern double Vup   = 0; // Signal of top part of split photodiode
-extern double Vdwn  = 0; // Signal of bottom part of split photodiode
-extern double Vled  = 0; // Signal of reference photodiode monitoring the LED
-extern double Vscat = 0; // Signal of side scatter photodiode
-extern double Temperature_degrees = 0; //Temperature estimated from temperature sensor
-extern references Vrefs = {0,0,0,0}; 
+double Vup   = 0; // Signal of top part of split photodiode
+double Vdwn  = 0; // Signal of bottom part of split photodiode
+double Vled  = 0; // Signal of reference photodiode monitoring the LED
+double Vscat = 0; // Signal of side scatter photodiode
+double Temperature_degrees = 0; //Temperature estimated from temperature sensor
+references Vrefs = {0,0,0,0}; 
 
 /* Calculated parameters */
-extern double Vav = 0; //(Vup+Vdwn)/2
-extern double OD = 0;  //Optical Density. Calculated in CaldOD()
+double Vav = 0; //(Vup+Vdwn)/2
+double OD = 0;  //Optical Density. Calculated in CaldOD()
 
 /* Time parameters */
-extern unsigned long time_of_data_point = 0; //Store time when datapoint was taken
-extern unsigned long time_of_start = 0; //Time at which the measurement was started
-extern unsigned long time_last_field_change = 0; //Time since the last field step
+unsigned long time_of_data_point = 0; //Store time when datapoint was taken
+unsigned long time_of_start = 0; //Time at which the measurement was started
+unsigned long time_last_field_change = 0; //Time since the last field step
 
 /* LED parameters */
-extern int LED_type = 2; //The color of the LED, 1 = RED, 2 = GREEN, 3 = BlUE
-extern int LED_switch_cycles = 0; //The number of cycles after which the LED changes the frequency, when a 0 is entered, the LED keeps the beginning frequency during the complete measurement 
-extern int Counter_cycles_led = 1; //counter used to store the amount of complete cycles the LED has had the same colour, to check when the colour has to change (after LED_switch_cycles)
-extern bool ref_all_wavelength = 0; //Set this to 1 for specific programs where you work with multiple wavelengths in a single measurement (such that it stores the reference value of all 3 wavelengths
+int LED_type = GREEN; //The color of the LED
+int LED_switch_cycles = 0; //The number of cycles after which the LED changes the frequency, when a 0 is entered, the LED keeps the beginning frequency during the complete measurement 
+int Counter_cycles_led = 1; //counter used to store the amount of complete cycles the LED has had the same colour, to check when the colour has to change (after LED_switch_cycles)
+bool ref_all_wavelength = 0; //Set this to 1 for specific programs where you work with multiple wavelengths in a single measurement (such that it stores the reference value of all 3 wavelengths
 
 /* Declare variables to define the field sequence */
-extern int B_nr_set = 1; //the number of elements in the array
-extern long Nr_cycles = 0; //The number of cycles throught the array, a value of 0 means an infinite amound of cycles
-extern unsigned int Looppar_1 = 0; //Looppar_1,2 track at which point of the field-array the program is
-extern unsigned int Looppar_2 = 0;
+unsigned int B_nr_set = 1; //the number of elements in the array
+long Nr_cycles = 0; //The number of cycles throught the array, a value of 0 means an infinite amound of cycles
+unsigned int Looppar_1 = 0; //Looppar_1,2 track at which point of the field-array the program is
+unsigned int Looppar_2 = 0;
 
 /* Note, the definitions don't seem to work. Only the first element in the array is set to that value. Instead, I initialize the arrays in recipes.cpp */
-extern double B_arrayfield_x[B_NR_MAX] = {0.0}; //an array containing B_Nr_set elements for the field in the x-direction, each element has to be an integer between -256 and 256 and negative numbers can be used for opposite directions
-extern double B_arrayfield_y[B_NR_MAX] = {0.0}; //Same for y
-extern double B_arrayfield_z[B_NR_MAX] = {0.0}; //Same for z
-extern bool Gradient_x[B_NR_MAX]={1};  //determines whether both coils must be on or just one of them for the x-direction, 0 is both on, 1 is only one. When the set of coils is connected, set to 1.
-extern bool Gradient_y[B_NR_MAX] = {1};  //same for y
-extern bool Gradient_z[B_NR_MAX] = {1};  //same for z
-extern long Switching_time[B_NR_MAX] ={1000};
+double B_arrayfield_x[B_NR_MAX] = {0.0}; //an array containing B_Nr_set elements for the field in the x-direction, each element has to be an integer between -256 and 256 and negative numbers can be used for opposite directions
+double B_arrayfield_y[B_NR_MAX] = {0.0}; //Same for y
+double B_arrayfield_z[B_NR_MAX] = {0.0}; //Same for z
+bool Gradient_x[B_NR_MAX]={1};  //determines whether both coils must be on or just one of them for the x-direction, 0 is both on, 1 is only one. When the set of coils is connected, set to 1.
+bool Gradient_y[B_NR_MAX] = {1};  //same for y
+bool Gradient_z[B_NR_MAX] = {1};  //same for z
+unsigned long Switching_time[B_NR_MAX] ={1000};
 
 /*** Top level functions ***/
 
@@ -139,7 +147,7 @@ void SetBfield_array()
           LED_type++;
           if (LED_type >= 4)
             {
-              LED_type = 1;
+              LED_type = GREEN;
             }
           myled.Set_LED_color(LED_type);
         }
@@ -189,22 +197,21 @@ void startRec()
 
   //only starts the program when an SD card is present
   if (SDpresent == true)
+  //if(false) //For debugging when there is no card
   {
     //Initialize program
-    Serial.println("Initializing ...");
+    Serial.println("Initializing ");
     delay(1000);
     Exit_program_1 = LOW;
+    Serial.print("program, ");
     myrecipes.program_init();
+    Serial.print("datafile and ");
     myfile.file_init(Vrefs, ref_all_wavelength,
 		     save_extra_parameter, extra_par, program_cnt,
 		     myscreen);
+    Serial.print("current feedback. ");
+    myfield.Init_current_feedback();
     Serial.println("Done");
-
-    //initialize current feedback. Do this in an init routine in field LEON.
-    Serial.print("Initialising current feedback to ");
-    Serial.println(1000000);
-    Timer3.initialize(1000000);
-    time_last_field_change = millis();
 
     //start coil actuation
     Serial.println("Setting magnetic field");
@@ -223,7 +230,7 @@ void startRec()
   
     //Note starting time
     time_of_start = millis();
-    Serial.print("Start measurement ");
+    Serial.print("Started measurement at:  ");
     Serial.println(time_of_start);
     
     //Activate recording mode
@@ -241,13 +248,12 @@ void stopRec()
   // reset globals
   Looppar_2 = 0;
   Looppar_1 = 0;
-  // Perhaps make a function that resets the file, so that SD_ etc can be private. TODO LEON.
-  myfile.SD_file_number_count = 1;
-  myfile.SD_file_length_count = 0;
+  // Reset file counters
+  myfile.file_reset();
   // Switch off field
   myfield.Reset_Bfield();
   Serial.println("Stop rec");  
-  //De-ctivate recording mode
+  //De-activate recording mode
   isRecording = false;
 }
 
@@ -267,7 +273,7 @@ void processButtonPress()
 	else{       
 	  stopRec();
 	}
-	delay(1000);//Give use time to release the button
+	delay(1000);//Give user time to release the button
       }
       
     //Set reference voltage
@@ -318,7 +324,7 @@ double calcOD(struct references Vrefs)
 {
   if(Vav<=0){return 0;}    //Vav has to be positive
 
-  /* I don't understand why we simply do not calculate DO for LED_type. Why the if statement? TODO Leon */
+  /* I don't understand why we simply do not calculate OD for LED_type. Why the if statement? TODO Leon */
   if (ref_all_wavelength == 0)
   {
     if(Vrefs.Vref<=0)
@@ -332,7 +338,7 @@ double calcOD(struct references Vrefs)
   else
   {
     switch (LED_type){
-    case 1:
+    case RED:
       if (Vrefs.Vred <= 0)
 	{
 	  return 0; //Vref has to be positive
@@ -342,7 +348,7 @@ double calcOD(struct references Vrefs)
 	  return log10(Vrefs.Vred/Vav);
 	}
       break;
-    case 2:
+    case GREEN:
       if (Vrefs.Vgreen <= 0)
 	{
 	  return 0; //Vref has to be positive
@@ -352,7 +358,7 @@ double calcOD(struct references Vrefs)
 	  return log10(Vrefs.Vgreen/Vav);
 	}
       break;
-    case 3:
+    case BLUE:
       if (Vrefs.Vblue <= 0)
 	{
 	  return 0; //Vref has to be positive
@@ -362,6 +368,8 @@ double calcOD(struct references Vrefs)
 	  return log10(Vrefs.Vblue/Vav);
 	}
       break;
+    default:
+      return 0;
     } 
   }
 }
@@ -377,8 +385,8 @@ void doMeasurement()
   double Temperature_voltage;
   adc0 = myadc.ads.readADC_SingleEnded(0);
   adc1 = myadc.ads.readADC_SingleEnded(1);
-  adc2 = myadc.ads.readADC_SingleEnded(2);  
-  adc3 = myadc.ads.readADC_SingleEnded(3);     
+  adc2 = myadc.ads.readADC_SingleEnded(2);
+  adc3 = myadc.ads.readADC_SingleEnded(3);
   
   //Convert to voltage and OD
   Vled = double(adc0)/32768*myadc.adsMaxV;
@@ -393,7 +401,7 @@ void doMeasurement()
   Temperature_voltage = analogRead(mypins.Temp_read)*5.0/1024.0; 
   Temperature_degrees = 3.4328 * pow(Temperature_voltage,3)-25.099*pow(Temperature_voltage,2)+76.047*Temperature_voltage-61.785;
  
-  //Save results, if desired
+  //Save results, if we are recording
   if (isRecording)
   {
     //Record time
@@ -402,8 +410,10 @@ void doMeasurement()
     //Save data, if SD card present
     if (SDpresent)
     {
-      // Write data to file
-      // Should be a function in fileandserial.cpp. TODO LEON
+      // Write data to file and serial port
+      //myfile.saveToFileAndSerial() //Give parameters as well? Leon.
+      
+      //Should be a function in fileandserial.cpp. Than also SD_etc can be private. TODO LEON
       myfile.dataFile = SD.open(myfile.fName_char, FILE_WRITE);
       myfile.writeDataLine(myfile.dataFile);
       myfile.dataFile.close(); 
@@ -454,43 +464,47 @@ void doMeasurement()
 }
 
 
+
 //Initialization of all the timers used in the program
 void Init_timers()
 {
   //setup timer 1 for measurement
-  Timer1.initialize(long(1000000/freq_meas));
-  Timer1.attachInterrupt(measEvent);
+  mytimer.initTimer(1,long(1000000/freq_meas));
+  mytimer.attachInterrupt(1, measEvent);
   
   //Setup timer 3 for current sensing
-  Timer3.initialize(1000000);
-  Timer3.attachInterrupt(Updatecurrent);
+  mytimer.initTimer(3,1000000);
+  mytimer.attachInterrupt(3, Updatecurrent);
   
   //Setup timer 4 for screen updates
-  Timer4.initialize(long(1000000/freq_screen));
-  Timer4.attachInterrupt(screenUpdateEvent);
+  mytimer.initTimer(4,long(1000000/freq_screen));
+  mytimer.attachInterrupt(4, screenUpdateEvent);
 }
 
 void setup()
-{
+{ delay(1000);//Give serial monitor time
 /* ######################### Initialize boards ########################### */
   // A lot of this should be done in the libraries. LEON. TODO.
   //starts the serial connection for debugging and file transfer
   Serial.begin(115200);
+  Serial.println("Initializing all");
   //initialize timers 5, to not affect other timers
-  Timer5.initialize(); 
+  #if defined(_MAGOD1)
+  mytimer.initTimer(5, 100000);
+  #endif  
 
-  // Should be in a function init_pins in pins.cpp. LEON. TODO
+  // Initialize field control
+  Serial.println("Init field");
   myfield.Init_field();/*Sets the pins in the correct status*/
-  
-  //sets the LEDs as outputs
+  myfield.Reset_Bfield();
+ 
+  // Init led, should go to some initled function in led.cpp
   pinMode(LED_red, OUTPUT);
   pinMode(LED_green, OUTPUT);
   pinMode(LED_blue, OUTPUT);
-
-  //initialization functions
-  myfield.Reset_Bfield();
-  myrecipes.LED_init();
   myled.Set_LED_color(LED_type);
+
+  myrecipes.LED_init();
 
   //This should be a function init_adc in adc.cpp. LEON. TODO.
   //set gain of the adc
@@ -505,12 +519,23 @@ void setup()
   myadc.ads.begin();
 
 
-  //setup the screen, first to a black screen
+  //setup the screen
+  Serial.println("Initializing screen...");
   myscreen.setupScreen();
+  delay(1000);
 
+  //Setup the buttons or touchscreen
+  mybuttons.initButton();
+  
+  // Setup the SD Card
   // see if the card is present and can be initialized
   if (!SD.begin(SD_CS)) {
-    // More testing
+    Serial.println("SD Card not found");
+    myscreen.updateFILE(" NO SD CARD");
+    delay(1000);
+#if defined(_MagOD1)
+    // More testing, works only for MagOD1 because card is defined.
+    Serial.prinln("Retrying");
     if (!myfile.card.init(SPI_HALF_SPEED, SD_CS)) {
 	Serial.println("card initialization failed");
 	//If card not present, continue without using 
@@ -530,15 +555,45 @@ void setup()
 	SDpresent = true;
       }
     }
+#endif //defined(MagOD1)
+#if defined(_MagOD2) // Card is not defined for EPS32
+    Serial.println("card initialization failed");
+    myscreen.updateFILE(" NO SD CARD");
+#endif
   }
   else
   {
+    Serial.println("SD Card Ready");
     myscreen.updateFILE("SD CARD READY");
     SDpresent = true;
+
+    uint8_t cardType = SD.cardType();
+
+    if(cardType == CARD_NONE){
+        Serial.println("Card Type not recognized");
+        return;
+    }
+
+    Serial.print("SD Card Type: ");
+    if(cardType == CARD_MMC){
+        Serial.println("MMC");
+    } else if(cardType == CARD_SD){
+        Serial.println("SDSC");
+    } else if(cardType == CARD_SDHC){
+        Serial.println("SDHC");
+    } else {
+        Serial.println("UNKNOWN");
+    }
+
+    uint64_t cardSize = SD.cardSize() / (1024 * 1024);
+    Serial.printf("SD Card Size: %lluMB\n", cardSize);
+
   }
 
+  Serial.println("Updating screen.");
   myscreen.updateInfo(Looppar_1, Looppar_2, program_cnt);
   
+  Serial.println("Intializing current feedback");
   myfield.Init_current_feedback();
   Init_timers();
   Looppar_1 = 0;
@@ -559,6 +614,9 @@ void loop()
       doMeasurementFlag=false; // reset flag for next time
       doMeasurement();
     }
+
+  /* For testing, Leon */
+  //doMeasurementFlag=true;
   
   /* Update screen if timer4 has triggered flag */
   if(screenUpdateFlag)
@@ -583,7 +641,9 @@ void loop()
     }
   
   /* Check if it is time to go to the next step in the measurement loop */
-  if (((millis() - time_last_field_change) > (Switching_time[Looppar_1]-1)) && (Exit_program_1 == LOW))
+  if (((millis() - time_last_field_change) >
+       (Switching_time[Looppar_1]-1))
+      && (Exit_program_1 == LOW))
     {
       time_last_field_change = millis();
       SetBfield_array();
@@ -602,3 +662,7 @@ void loop()
     }
 }
 //end of program
+
+#else
+ #error "Wrong board set in IDE! "
+#endif

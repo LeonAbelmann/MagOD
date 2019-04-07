@@ -10,7 +10,6 @@
 #include <SD.h>
 
 #include "../../MagOD.h" //Globals
-#include "../screen/screen.h" //To be able to update filename on screen
 
 class fileandserial
 {
@@ -26,8 +25,14 @@ class fileandserial
   int SD_file_number_count = 1;
   int SD_file_length_count_max = 1000;     //Approximate of datalines in a datafile. The program will finish a sequence, so the actual number of lines could be B_nr_set longer. The files should not become too long as this will take longer to save so after the file has reached this length, a new file is made with the origional name added with: "_i" where i is 1,2,3,4,5....
 
+  /* SD2Card only defined for Arduino's */
+#if defined(_MAGOD1)
   //Define SD card
+  #define SD_CS      4 //Pin for SD card
   Sd2Card card;
+#elif defined(_MAGOD2)
+  #define SD_CS      15 //Pin for SD card.
+#endif
   
   /* finds a file name that has not been used on the microSD card */
   void setFileName();
@@ -37,6 +42,8 @@ class fileandserial
   void sendFileToSerial(char fName_char[]);
   
   void file_init(struct references Vref, bool ref_all_wavelength, bool save_extra_parameter, double extra_par, uint16_t program_cnt, screen thescreen);
+
+  void file_reset(); //Reset counters
   
   // How to write the datafile lines. Used for SD card as well as serial
   // Call with writeDataLine(Serial) or

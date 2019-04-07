@@ -1,16 +1,27 @@
+/* screen.h
+ MagOD2 libary 
+ Mar 2019
+ Definition of screen layout and screen update functions 
+ Tijmen Hageman, Jordi Hendrix, Hans Keizer, Leon Abelmann 
+*/
+
+
 #include "Arduino.h"
 #include "screen.h"
+#include "../../MagOD.h" //Needed so that MagOD version is known
 
-//screen::screen(int16_t w, int16_t h, Adafruit_GFX *tft_p)
+//Avoid that Arduino IDE compiles this file when not MagOD1
+#if defined(_MAGOD1)
+#warning "Screen for MAGOD1"
+
 screen::screen()
 {
   //Screen theScreen = Screen(scrn_hor, scrn_vert, &tft);
   //Screen.h defines Adafruit_GFX *tft;
   //tft = tft_p;
-  
   locText_x=0,	locText_y=0,	locText_vSpace=10, locText_hSpace = 40;
-  screenSiz_x=scrn_hor,	screenSiz_h=scrn_vert;
-  g_x=0, 	g_y=70, 	g_w=scrn_hor, 	g_h=scrn_vert-g_y;
+  screenSiz_x=SCRN_HOR,	screenSiz_h=SCRN_VERT;
+  g_x=0, 	g_y=70, 	g_w=SCRN_HOR, 	g_h=SCRN_VERT-g_y;
   //g_x=50, 	g_y=60, 	g_w=70, 	g_h=70;
   g_xCursor=g_x+1;
   g_minVal=0;
@@ -29,17 +40,17 @@ void screen::updateGraph(double value, int led)
   if(val_conv>1){val_conv=1;}
   val_conv = val_conv*(g_h-3);
   val_conv = round(g_y+g_h-val_conv-2);
-  int pixelcolor = ST7735_GRAY;
+  int pixelcolor = TFTCOLOR_GRAY;
   // Pixel color is determined by led color (1=red, 2=green, 3=blue)
   switch (led) {
   case 1:
-    pixelcolor = ST7735_RED;
+    pixelcolor = TFTCOLOR_RED;
     break;
   case 2:
-    pixelcolor = ST7735_GREEN;
+    pixelcolor = TFTCOLOR_GREEN;
     break;
   case 3:
-    pixelcolor = ST7735_BLUE;
+    pixelcolor = TFTCOLOR_BLUE;
     break;
   }
   
@@ -74,7 +85,7 @@ void screen::updateGraph(double value, int led)
   
   
   //Insert empty space
-  tft.drawFastVLine(g_xCursor, g_y+1, g_h-2, ST7735_BLACK);
+  tft.drawFastVLine(g_xCursor, g_y+1, g_h-2, TFTCOLOR_BLACK);
 }
 
 //sets button to indicate whether the program is running
@@ -83,11 +94,11 @@ void screen::setRecButton(bool active)
   uint8_t buttonSize = 5;
   if(active)
     {
-      tft.fillCircle(screenSiz_x-buttonSize-1, buttonSize, buttonSize, ST7735_RED);
+      tft.fillCircle(screenSiz_x-buttonSize-1, buttonSize, buttonSize, TFTCOLOR_RED);
     }
   else
     {
-      tft.fillCircle(screenSiz_x-buttonSize-1, buttonSize, buttonSize, ST7735_GRAY);
+      tft.fillCircle(screenSiz_x-buttonSize-1, buttonSize, buttonSize, TFTCOLOR_GRAY);
     }
 }
 
@@ -96,8 +107,8 @@ void screen::setRecButton(bool active)
 void screen::setupScreen()
 {
   tft.initR(INITR_BLACKTAB);
-  tft.fillScreen(ST7735_BLACK);
-  tft.setTextColor(ST7735_YELLOW);
+  tft.fillScreen(TFTCOLOR_BLACK);
+  tft.setTextColor(TFTCOLOR_YELLOW);
   tft.setTextSize(0);
   
   //Voltage average slit
@@ -137,8 +148,8 @@ void screen::setupScreen()
   char welcomeword[] = "WELCOME!"; 
   this->updateFILE(welcomeword);
   this->updateInfo(10,1,1);
-  tft.drawRect(g_x, g_y, g_w, g_h, ST7735_WHITE);
-  //tft.drawRect(g_x+1, g_y+1, g_w-2, g_h-2, ST7735_RED);
+  tft.drawRect(g_x, g_y, g_w, g_h, TFTCOLOR_WHITE);
+  //tft.drawRect(g_x+1, g_y+1, g_w-2, g_h-2, TFTCOLOR_RED);
   
   //Draw recording button
   this->setRecButton(false);
@@ -149,9 +160,9 @@ void screen::setupScreen()
 void screen::updateV(double Vav, double Vled, double Vref, double OD)
 {
   //Clear existing data
-  tft.fillRect(locText_x+locText_hSpace, locText_y, 50, 4*locText_vSpace, ST7735_BLACK);
+  tft.fillRect(locText_x+locText_hSpace, locText_y, 50, 4*locText_vSpace, TFTCOLOR_BLACK);
   
-  tft.setTextColor(ST7735_RED);
+  tft.setTextColor(TFTCOLOR_RED);
   
   //Voltage slit average
   tft.setCursor(locText_x+locText_hSpace, 	locText_y);
@@ -174,11 +185,11 @@ void screen::updateV(double Vav, double Vled, double Vref, double OD)
 void screen::updateInfo(unsigned int Looppar_1, unsigned int Looppar_2, int16_t program_cnt)
 {
   //Clear existing data
-  tft.fillRect(locText_x+locText_hSpace, locText_y+5*locText_vSpace, 50, locText_vSpace, ST7735_BLACK);
-  tft.fillRect(locText_x+locText_hSpace, locText_y+6*locText_vSpace, 28, 10, ST7735_BLACK);
-  tft.fillRect(locText_x+locText_hSpace+screenSiz_x/2, locText_y+6*locText_vSpace, 30, 10, ST7735_BLACK);
+  tft.fillRect(locText_x+locText_hSpace, locText_y+5*locText_vSpace, 50, locText_vSpace, TFTCOLOR_BLACK);
+  tft.fillRect(locText_x+locText_hSpace, locText_y+6*locText_vSpace, 28, 10, TFTCOLOR_BLACK);
+  tft.fillRect(locText_x+locText_hSpace+screenSiz_x/2, locText_y+6*locText_vSpace, 30, 10, TFTCOLOR_BLACK);
   
-  tft.setTextColor(ST7735_RED);
+  tft.setTextColor(TFTCOLOR_RED);
   
   //program number
   tft.setCursor(locText_x+locText_hSpace, locText_y+5*locText_vSpace);
@@ -197,9 +208,12 @@ void screen::updateInfo(unsigned int Looppar_1, unsigned int Looppar_2, int16_t 
 void screen::updateFILE(const char *str)
 {	
   //Clear existing data
-  tft.fillRect(locText_x+locText_hSpace, locText_y+4*locText_vSpace, 100, locText_vSpace, ST7735_BLACK);
+  tft.fillRect(locText_x+locText_hSpace, locText_y+4*locText_vSpace, 100, locText_vSpace, TFTCOLOR_BLACK);
   
-  tft.setTextColor(ST7735_RED);
+  tft.setTextColor(TFTCOLOR_RED);
   tft.setCursor(locText_x+locText_hSpace, 	locText_y+4*locText_vSpace);
   tft.println(str);	
 }
+
+
+#endif // defined _MAGOD1

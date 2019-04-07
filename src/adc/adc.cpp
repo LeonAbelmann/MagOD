@@ -71,5 +71,4 @@ void adc::set_vrefs(references &Vrefs, bool ref_all_wavelength, led theled)
       _Vref = _Vref/32768*adsMaxV;
       Vrefs.Vblue = _Vref;
     }
-  return Vrefs;
 }
