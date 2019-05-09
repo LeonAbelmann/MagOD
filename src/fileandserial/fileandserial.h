@@ -18,7 +18,7 @@ class fileandserial
   // File name parameters. TODO, do all of these really need to be public? LEON
   static const int fN_len = 17; //Max filename length
   char fName_char[fN_len]; //Array to keep filename
-  String fName_str; //Filename
+  //String fName_str; //Filename
   File dataFile;
   int file_number;
   int SD_file_length_count = 0;
@@ -34,24 +34,52 @@ class fileandserial
   #define SD_CS      15 //Pin for SD card.
 #endif
   
-  /* finds a file name that has not been used on the microSD card */
-  void setFileName();
+  /* finds a base file name that has not been used on the microSD card */
+  void setFileName(char fName_char[]);
+
+  /* increase the file number f42_1, f42_2 etc.*/
+  void updateFileName(char fName_char[]);
+  
   //Saves a settings file with the settings of the current program
-  void saveSettingsFile();
+  void saveSettingsFile(char fName_char[]);
+
+  //Write header to datafile
+  void writeHeader(char fName_char[]);
+  
   //Send file over serial port
   void sendFileToSerial(char fName_char[]);
-  
-  void file_init(struct references Vref, bool ref_all_wavelength, bool save_extra_parameter, double extra_par, uint16_t program_cnt, screen thescreen);
+
+  //Init the data file (write header)
+  void file_init(struct references Vref,
+		 bool ref_all_wavelength,
+		 bool save_extra_parameter,
+		 double extra_par, uint16_t program_cnt,
+		 screen thescreen);
 
   void file_reset(); //Reset counters
-  
-  // How to write the datafile lines. Used for SD card as well as serial
-  // Call with writeDataLine(Serial) or
-  //           writeDataLine(dataFile)
-  void writeDataLine(Stream &file);
-  
- private:
 
+  /* Save line of data to file */
+  void saveToFile(char fName_char[],
+		  unsigned long time_of_data_point,
+		  diodes Vdiodes,
+		  double Temperature,
+		  double OD,
+		  int LED_type,
+		  int Looppar_1,
+		  feedbacks Vfb);
+   
+ private:
+  
+  /* Write a single line of data */
+  
+  void writeDataLine(Stream &file,
+		     unsigned long time_of_data_point,
+		     diodes Vdiodes,
+		     double Temperature,
+		     double OD,
+		     int LED_type,
+		     int Looppar_1,
+		     feedbacks Vfb);
 };
 
 #endif

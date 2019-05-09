@@ -22,6 +22,11 @@
 //Constructor
 timer::timer()
 {
+#if defined(_MAGOD2)
+  hw_timer_t * timer1 = NULL;
+  hw_timer_t * timer3 = NULL;
+  hw_timer_t * timer4 = NULL;
+#endif
 }
 
 void timer::initTimer(int Timer, long time) /* Initializes timer*/
@@ -38,6 +43,7 @@ void timer::initTimer(int Timer, long time) /* Initializes timer*/
   }
 #elif defined(_MAGOD2)
   //http://www.iotsharing.com/2017/06/how-to-use-interrupt-timer-in-arduino-esp32.html
+
   switch(Timer){
   case 1:
     Serial.print("Set timer 1 at ");Serial.println(time);

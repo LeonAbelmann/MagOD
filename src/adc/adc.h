@@ -1,6 +1,6 @@
 /* adc.h
  MagOD libary 
- Jan 2019
+ April 2019
  Photodiode readout
  Tijmen Hageman, Jordi Hendrix, Hans Keizer, Leon Abelmann 
 */
@@ -28,18 +28,29 @@ There is also a conversion delay. It is default at 8 ms (8), speed up by reducin
 #define ADS1115_CONVERSIONDELAY         (2)
 #define ADS1015_REG_CONFIG_DR_1600SPS (0x0020)
 
-https://hackaday.io/project/11154-alli-gait-or-analysis/log/44744-need-for-speed-ads1116-library-mod
+https://hackaday.io/project/11154-alli-gait-or-analysis/log/44744-need-for-speed-ads1116-library-mod */
 
- */
 
+/* addresses of ADS1115 ADC's */
+#define ADS1115_ADDRESS_0 (0x48) // 1001 000 (ADDR -> GND)
+#define ADS1115_ADDRESS_1 (0x49) // 1001 001 (ADDR -> VDD)
 
 class adc
 {
  public:
   adc();
-  Adafruit_ADS1115 ads;
+#if defined(_MAGOD1)
+  Adafruit_ADS1115 ads; //adc0-3
   double adsMaxV;  //max voltage that can be measured by the ADC
+#elif defined(_MAGOD2)
+  Adafruit_ADS1115 ads0; //adc0-3;
+  Adafruit_ADS1115 ads1; //adc4-7;
+  double adsMaxV0,adsMaxV1;  //max voltages, for two ADCs
+#endif
+  void initADC(); //Start the ADCs with correct amplification
   void set_vrefs(references &Vref, bool ref_all_wavelength, led myled); //measure reference voltage
+  diodes readDiodes(); // Read the signals from the photodiodes
+  double readTemp(); //Read the temperature sensor
  private:
   //none
 };

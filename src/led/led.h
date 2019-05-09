@@ -1,6 +1,6 @@
 /* led.h
  MagOD2 libary 
- Oct 2018
+ May 2019
  Controls led color
  Tijmen Hageman, Jordi Hendrix, Hans Keizer, Leon Abelmann 
 */
@@ -21,6 +21,7 @@ class led
  public:
   //Colors
   led();
+  int LEDs[];
   void Set_LED_color(int color); //Initializes the RGB led color and changes the color during the running of the program.
   private:
 };

@@ -144,7 +144,7 @@ void screen::setupScreen()
   tft.println("STP:");
   
   //Draw rectangle for graph
-  this->updateV(0,0,0,0);
+  this->updateV(Vdiodes,Vrefs,OD);
   char welcomeword[] = "WELCOME!"; 
   this->updateFILE(welcomeword);
   this->updateInfo(10,1,1);
@@ -157,27 +157,27 @@ void screen::setupScreen()
 
 
 //filling in the values on the screen
-void screen::updateV(double Vav, double Vled, double Vref, double OD)
+void screen::updateV(diodes Vdiodes, references Vref, double OD)
 {
   //Clear existing data
-  tft.fillRect(locText_x+locText_hSpace, locText_y, 50, 4*locText_vSpace, TFTCOLOR_BLACK);
-  
+  tft.fillRect(locText_x+locText_hSpace, locText_y,
+	       50, 4*locText_vSpace, TFTCOLOR_BLACK);
   tft.setTextColor(TFTCOLOR_RED);
   
-  //Voltage slit average
-  tft.setCursor(locText_x+locText_hSpace, 	locText_y);
-  tft.println(Vav,5);
+  //Signal photodiode
+  tft.setCursor(locText_x+locText_hSpace,locText_y);
+  tft.println(Vdiodes.Vdiode,5);
   
-  //Voltage led reference
-  tft.setCursor(locText_x+locText_hSpace, 	locText_y+locText_vSpace);
-  tft.println(Vled,5);
+  //Signal led reference
+  tft.setCursor(locText_x+locText_hSpace,locText_y+locText_vSpace);
+  tft.println(Vdiodes.Vled,5);
   
-  //Voltage reference
-  tft.setCursor(locText_x+locText_hSpace, 	locText_y+2*locText_vSpace);
-  tft.println(Vref,5);
+  //Reference signal
+  tft.setCursor(locText_x+locText_hSpace,locText_y+2*locText_vSpace);
+  tft.println(Vref.Vref,5);
   
   //OD
-  tft.setCursor(locText_x+locText_hSpace, 	locText_y+3*locText_vSpace);
+  tft.setCursor(locText_x+locText_hSpace,locText_y+3*locText_vSpace);
   tft.println(OD,5);
 }
 

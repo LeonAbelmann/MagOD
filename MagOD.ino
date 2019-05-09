@@ -55,7 +55,6 @@ double extra_par = 0.0; //value of this extra parameter (specifiy this in the in
 
 /* MagOD libraries, should be subdirectory MagOD.ino folder */
 // screen and timer are in MagOD.h. Don't understand why not all can be there.
-#include "src/adc/adc.h" //ADC input control
 #include "src/fileandserial/fileandserial.h" //File and serial port IO
 #include "src/recipes/recipes.h" //User measurement recipe
 
@@ -72,15 +71,15 @@ recipes myrecipes;
 
 /* Define variables */
 /* The measured parameters */
-double Vup   = 0; // Signal of top part of split photodiode
-double Vdwn  = 0; // Signal of bottom part of split photodiode
-double Vled  = 0; // Signal of reference photodiode monitoring the LED
-double Vscat = 0; // Signal of side scatter photodiode
+diodes Vdiodes = {0,0,0}; /* Photodetector signals [V] */
 double Temperature_degrees = 0; //Temperature estimated from temperature sensor
-references Vrefs = {0,0,0,0}; 
+references Vrefs = {1,1,1,1};  /* Reference values of photodector
+				  signals. Current value and three
+				  different colors. Initialize to 1 to
+				  get meaningful OD */
+feedbacks Vfb = {0,0,0}; /* Current feedback loop voltages */
 
 /* Calculated parameters */
-double Vav = 0; //(Vup+Vdwn)/2
 double OD = 0;  //Optical Density. Calculated in CaldOD()
 
 /* Time parameters */
@@ -286,7 +285,7 @@ void processButtonPress()
         }
         //Update screen
         //TODO, make a screen where all refs are shown in case of 3 colour
-        myscreen.updateV(Vav, Vled, Vrefs.Vref, OD);
+        myscreen.updateV(Vdiodes, Vrefs, OD);
       }
     }
   
@@ -320,9 +319,9 @@ void processButtonPress()
 
 
 //calculate the optical density value, whenever using three wavelengths, the right reference has to be chosen
-double calcOD(struct references Vrefs)
+double calcOD(struct references Vrefs, double Vdiode)
 {
-  if(Vav<=0){return 0;}    //Vav has to be positive
+  if(Vdiode<=0){return 0;}    //Vdiode has to be positive
 
   /* I don't understand why we simply do not calculate OD for LED_type. Why the if statement? TODO Leon */
   if (ref_all_wavelength == 0)
@@ -332,7 +331,7 @@ double calcOD(struct references Vrefs)
 	return 0; //Vref has to be positive
       }
     else {
-      return log10(Vrefs.Vref/Vav);  //otherwise, return correct OD value
+      return log10(Vrefs.Vref/Vdiode);  //otherwise, return correct OD value
     }
   }
   else
@@ -345,7 +344,7 @@ double calcOD(struct references Vrefs)
 	}
       else
 	{
-	  return log10(Vrefs.Vred/Vav);
+	  return log10(Vrefs.Vred/Vdiode);
 	}
       break;
     case GREEN:
@@ -355,7 +354,7 @@ double calcOD(struct references Vrefs)
 	}
       else
 	{
-	  return log10(Vrefs.Vgreen/Vav);
+	  return log10(Vrefs.Vgreen/Vdiode);
 	}
       break;
     case BLUE:
@@ -365,7 +364,7 @@ double calcOD(struct references Vrefs)
 	}
       else
 	{
-	  return log10(Vrefs.Vblue/Vav);
+	  return log10(Vrefs.Vblue/Vdiode);
 	}
       break;
     default:
@@ -379,81 +378,48 @@ double calcOD(struct references Vrefs)
 //measures all the wanted values (photodiode voltage and temperature) and stores them on the SD-card if a measurement is started
 void doMeasurement()
 {
-  //Readout ADC's for photodiode voltage
-  //Shouldn't this be in a ReadADC function or so? LEON. TODO.
-  uint16_t adc0, adc1, adc2, adc3;
-  double Temperature_voltage;
-  adc0 = myadc.ads.readADC_SingleEnded(0);
-  adc1 = myadc.ads.readADC_SingleEnded(1);
-  adc2 = myadc.ads.readADC_SingleEnded(2);
-  adc3 = myadc.ads.readADC_SingleEnded(3);
-  
-  //Convert to voltage and OD
-  Vled = double(adc0)/32768*myadc.adsMaxV;
-  Vscat = double(adc1)/32768*myadc.adsMaxV;
-  Vdwn = double(adc2)/32768*myadc.adsMaxV;
-  Vup = double(adc3)/32768*myadc.adsMaxV; ///adc3 goes to upper part of slit photodiode, adc2 to lower part
-  // Perhaps do calculations only when you update the screen. TODO. LEON
-  Vav = ((Vup + Vdwn)/2.0);    
-  OD = calcOD(Vrefs);
-  //calculates the temperature from datasheet calibration
+  /* Read the DACs to get the signals on the fotodiodes */
+  Vdiodes=myadc.readDiodes();
+  /* Calculate OD */
+  OD = calcOD(Vrefs, Vdiodes.Vdiode);
+
   //TODO Hide this in some ReadTemp function. Separate library? Also, why at the same speed at the other values? LEON.
-  Temperature_voltage = analogRead(mypins.Temp_read)*5.0/1024.0; 
-  Temperature_degrees = 3.4328 * pow(Temperature_voltage,3)-25.099*pow(Temperature_voltage,2)+76.047*Temperature_voltage-61.785;
+
+  Temperature_degrees = myadc.readTemp();
  
   //Save results, if we are recording
   if (isRecording)
   {
     //Record time
     time_of_data_point = millis()-time_of_start;
-    
-    //Save data, if SD card present
+
+    /* This is all not very elegant. Needs major overhaul
+       Writing to file and writing to serial should be separated
+       The many small files is really akward as well. There must be
+       better ways to avoid lengthly open/close sequences */
+  
+    //Save data to file and serial port, if SD card present
     if (SDpresent)
     {
-      // Write data to file and serial port
-      //myfile.saveToFileAndSerial() //Give parameters as well? Leon.
-      
-      //Should be a function in fileandserial.cpp. Than also SD_etc can be private. TODO LEON
-      myfile.dataFile = SD.open(myfile.fName_char, FILE_WRITE);
-      myfile.writeDataLine(myfile.dataFile);
-      myfile.dataFile.close(); 
-
+      /* Write measurements to datafile*/
+      myfile.saveToFile(myfile.fName_char,time_of_data_point,
+			Vdiodes,Temperature_degrees,OD,
+			LED_type,Looppar_1,Vfb);
+      /* update file length */
       myfile.SD_file_length_count = myfile.SD_file_length_count + 1;
-     //when the file length is longer as the maximum length and a field sequence has finished, a new file is made with the same name + the addition of "_i" with i = 1,2,3,4,5.... and for this new file again all the headers are stored, in the exact same way as the origional header
 
       // This does not work, why? I think it should be B_nr_set-1
       //      if ((SD_file_length_count > SD_file_length_count_max) && (Looppar_1 >= (B_nr_set))){
-	if (myfile.SD_file_length_count > myfile.SD_file_length_count_max){
-        myfile.SD_file_length_count = 0;
-	
-	//Send the file to the serial port
+      if (myfile.SD_file_length_count > myfile.SD_file_length_count_max){
+	/* reset file length counter */
+	myfile.SD_file_length_count = 0;
+	/* Send the file to the serial port */
 	myfile.sendFileToSerial(myfile.fName_char);
-	
-        myfile.fName_str = "f" + (String)myfile.file_number + "_" +
-	  (String)myfile.SD_file_number_count +".csv";
-        myfile.fName_str.toCharArray(myfile.fName_char, myfile.fN_len);
-        myfile.SD_file_number_count = myfile.SD_file_number_count +1;
-        myfile.dataFile = SD.open(myfile.fName_char, FILE_WRITE);
-        myfile.dataFile.print("Time[ms],Vup[V],Vdwn[V],Vav[V],Vled[V],Vscat[V],OD[],Temp[C],Color[],Output[],Vref=");
-        myfile.dataFile.print(Vrefs.Vref,5);
-        if (ref_all_wavelength == 1)
-        {
-          myfile.dataFile.print(",Vrefred=");
-          myfile.dataFile.print(Vrefs.Vred,5);
-          myfile.dataFile.print(",Vrefgreen=");
-          myfile.dataFile.print(Vrefs.Vgreen,5);
-          myfile.dataFile.print(",Vrefblue=");
-          myfile.dataFile.print(Vrefs.Vblue,5);
-        }
-        if (save_extra_parameter == 1)
-        {
-          myfile.dataFile.print(",extrapar=");
-          myfile.dataFile.print(extra_par,5);
-        }
-        myfile.dataFile.print(",Prg=");
-        myfile.dataFile.println(program_cnt);
-        myfile.dataFile.close();
-	
+	/* Get a new filename */
+	myfile.updateFileName(myfile.fName_char);
+	/* for this new file again all the headers are stored*/
+	myfile.writeHeader(myfile.fName_char);
+
 	//Update display
 	myscreen.updateFILE(myfile.fName_char);
 
@@ -506,18 +472,8 @@ void setup()
 
   myrecipes.LED_init();
 
-  //This should be a function init_adc in adc.cpp. LEON. TODO.
-  //set gain of the adc
-  //Create serial connection
-  //Initialize the adc gain and thereby the maximal detectable values
-  //ads.setGain(GAIN_TWOTHIRDS); adsMaxV=6.144; // 2/3x gain +/- 6.144V  1 bit = 3mV      0.1875mV (default)
-  // ads.setGain(GAIN_ONE); adsMaxV=4.096; // 1x gain   +/- 4.096V  1 bit = 2mV      0.125mV
-  // ads.setGain(GAIN_TWO); adsMaxV=2.048; // 2x gain   +/- 2.048V  1 bit = 1mV      0.0625mV
-   myadc.ads.setGain(GAIN_FOUR); myadc.adsMaxV=1.024; // 4x gain   +/- 1.024V  1 bit = 0.5mV    0.03125mV
-  // ads.setGain(GAIN_EIGHT); adsMaxV=0.512; // 8x gain   +/- 0.512V  1 bit = 0.25mV   0.015625mV
-  // ads.setGain(GAIN_SIXTEEN); adsMaxV=0.256 // 16x gain  +/- 0.256V  1 bit = 0.125mV  0.0078125mV
-  myadc.ads.begin();
-
+  //Initialize ADC(s)
+  myadc.initADC();
 
   //setup the screen
   Serial.println("Initializing screen...");
@@ -533,9 +489,9 @@ void setup()
     Serial.println("SD Card not found");
     myscreen.updateFILE(" NO SD CARD");
     delay(1000);
-#if defined(_MagOD1)
+#if defined(_MAGOD1)
     // More testing, works only for MagOD1 because card is defined.
-    Serial.prinln("Retrying");
+    Serial.println("Retrying");
     if (!myfile.card.init(SPI_HALF_SPEED, SD_CS)) {
 	Serial.println("card initialization failed");
 	//If card not present, continue without using 
@@ -555,8 +511,8 @@ void setup()
 	SDpresent = true;
       }
     }
-#endif //defined(MagOD1)
-#if defined(_MagOD2) // Card is not defined for EPS32
+#endif //defined(MAGOD1)
+#if defined(_MAGOD2) // Card is not defined for EPS32
     Serial.println("card initialization failed");
     myscreen.updateFILE(" NO SD CARD");
 #endif
@@ -567,6 +523,7 @@ void setup()
     myscreen.updateFILE("SD CARD READY");
     SDpresent = true;
 
+#if defined(_MAGOD2)
     uint8_t cardType = SD.cardType();
 
     if(cardType == CARD_NONE){
@@ -587,9 +544,10 @@ void setup()
 
     uint64_t cardSize = SD.cardSize() / (1024 * 1024);
     Serial.printf("SD Card Size: %lluMB\n", cardSize);
-
+#endif //Defined MAGOD2
   }
 
+  
   Serial.println("Updating screen.");
   myscreen.updateInfo(Looppar_1, Looppar_2, program_cnt);
   
@@ -622,7 +580,7 @@ void loop()
   if(screenUpdateFlag)
     {
       screenUpdateFlag=false; // reset flag for next time
-      myscreen.updateV(Vav, Vled, Vrefs.Vref, OD); //Update values
+      myscreen.updateV(Vdiodes, Vrefs, OD); //Update values
       myscreen.updateGraph(OD,LED_type); //Update graph
       myscreen.updateInfo(Looppar_1, Looppar_2, program_cnt); //Update program status
     }

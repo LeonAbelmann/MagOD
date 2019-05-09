@@ -23,9 +23,9 @@ class timer
     // isr: which interupt servicing function to attach to
  private:
 #if defined(_MAGOD2)
-  hw_timer_t * timer1 = NULL;
-  hw_timer_t * timer3 = NULL;
-  hw_timer_t * timer4 = NULL;
+  hw_timer_t * timer1;
+  hw_timer_t * timer3;
+  hw_timer_t * timer4;
 #endif
 };
 

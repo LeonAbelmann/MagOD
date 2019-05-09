@@ -319,9 +319,13 @@ void field::Init_current_feedback()
   V_current_init_y /= Nmb_av_current;
   V_current_init_z /= Nmb_av_current;
   Serial.print("The initial currents are (x,y,z): ");
-  Serial.println(V_current_init_x);
-  Serial.println(V_current_init_y);
+  Serial.print(V_current_init_x);Serial.print(", ");
+  Serial.print(V_current_init_y);Serial.print(", ");
   Serial.println(V_current_init_z);
+  //Assign these values to the global variabel, for export to file
+  Vfb.x=V_current_init_x;
+  Vfb.y=V_current_init_y;
+  Vfb.z=V_current_init_z;
 }
 
 void field::Reset_Bfield()

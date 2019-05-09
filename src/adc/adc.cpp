@@ -1,10 +1,11 @@
 /* adc.cpp
  MagOD libary 
- Jan 2019
+ April 2019
  Measures reference voltages
  Tijmen Hageman, Jordi Hendrix, Hans Keizer, Leon Abelmann 
 */
 
+#include "../../MagOD.h"
 #include "Arduino.h"
 #include "adc.h"
 
@@ -12,8 +13,70 @@
 adc::adc(){
 };
 
+/* Initialize the ADC(s) with the correct amplification */
+void adc::initADC(){
+#if defined(_MAGOD1)
+   Adafruit_ADS1115 ads0(ADS1115_ADDRESS_0); //adc0-3;
+  Adafruit_ADS1115 ads1(ADS1115_ADDRESS_1); //adc4-7;
+
+  //GAIN_TWOTHIRDS  +/- 6.144V  1 bit = 3mV      0.1875mV (default)
+  //GAIN_ONE        +/- 4.096V  1 bit = 2mV      0.125mV
+  //GAIN_TWO        +/- 2.048V  1 bit = 1mV      0.0625mV
+  //GAIN_FOUR       +/- 1.024V  1 bit = 0.5mV    0.03125mV
+  //GAIN_EIGHT      +/- 0.512V  1 bit = 0.25mV   0.015625mV
+  //GAIN_SIXTEEN    +/- 0.256V  1 bit = 0.125mV  0.0078125mV
+  myadc.ads.setGain(GAIN_FOUR);
+  myadc.adsMaxV=1.024;
+  myadc.ads.begin();
+#elif defined(_MAGOD2)
+  /* ADC 0: used for photodiodes */
+  myadc.ads0.setGain(GAIN_TWOTHIRDS);
+  myadc.adsMaxV0=6.114;
+  myadc.ads0.begin();
+  /* ADC 1: used for temperature */
+  myadc.ads1.setGain(GAIN_TWOTHIRDS);
+  myadc.adsMaxV1=6.114;
+  myadc.ads1.begin();
+#endif
+}
+
+/* Read the fotodiode signals */
+diodes adc::readDiodes()
+{
+#if defined(_MAGOD1)
+  uint16_t adc0, adc1, adc2, adc3;  
+  //Readout ADC's for photodiode voltage
+  adc0 = myadc.ads.readADC_SingleEnded(0);
+  adc1 = myadc.ads.readADC_SingleEnded(1);
+  adc2 = myadc.ads.readADC_SingleEnded(2);
+  adc3 = myadc.ads.readADC_SingleEnded(3);
+  
+  //Convert to voltage
+  Vdiodes.Vdwn = double(adc2)/32768*myadc.adsMaxV; /* upper part of
+						     slit
+						     photodiode */
+  Vdiodes.Vup = double(adc3)/32768*myadc.adsMaxV; /* lower part */
+  Vdiodes.Vdiode = ((Vdiodes.Vup + Vdiodes.Vdwn)/2.0);
+  Vdiodes.Vled = double(adc0)/32768*myadc.adsMaxV;
+  Vdiodes.Vscat = double(adc1)/32768*myadc.adsMaxV;
+#elif defined(_MAGOD2)
+  uint16_t adc0, adc1, adc2;  
+  /* Read out ADC's */
+  adc0=myadc.ads0.readADC_SingleEnded(0);
+  adc1=myadc.ads0.readADC_SingleEnded(1);
+  adc2=myadc.ads0.readADC_SingleEnded(2);
+/* Convert to voltage */
+  Vdiodes.Vdiode = double(adc2)/32768*myadc.adsMaxV0;
+  Vdiodes.Vled = double(adc0)/32768*myadc.adsMaxV0;
+  Vdiodes.Vscat = double(adc1)/32768*myadc.adsMaxV0;
+#endif
+  return Vdiodes;
+}
+
+
 void adc::set_vrefs(references &Vrefs, bool ref_all_wavelength, led theled)
 {
+#if defined(_MAGOD1)
 //Measure reference diode voltage. If ref_all_wavelength true, than cycle over all led colours
 //  struct references Vrefs;
   double _Vref;
@@ -71,4 +134,52 @@ void adc::set_vrefs(references &Vrefs, bool ref_all_wavelength, led theled)
       _Vref = _Vref/32768*adsMaxV;
       Vrefs.Vblue = _Vref;
     }
+#elif defined(_MAGOD2)
+  /* Iterate over all colors in the LEDs list
+     note that there might be only one color :) */
+  for(auto iter = LEDs.begin(); iter != LEDs.end(); iter++)
+    {
+      theled.Set_LED_color(iter);
+      /* Read out ADC2 10 times and average*/
+      double adc2, Vdiode;  
+      adc2=0;
+      for (int i=0; i<10; i++){
+	adc2 += double(myadc.ads0.readADC_SingleEnded(2));
+      }
+      adc2=adc2/10;
+      /* Convert to voltage */
+      Vdiode = double(adc2)/32768*myadc.adsMaxV0;
+      /* Assign to the correct reference */
+      switch(iter) {
+      case RED   : Vrefs.Vred   =Vdiode;
+	break;
+      case GREEN : Vrefs.Vgreen =Vdiode;
+	break;
+      case BLUE  : Vrefs.Vblue  =Vdiode;
+	break;
+      }
+      /* And remember the last one */
+      Vrefs.Vref=Vdiode;
+    }
+#endif 
+}
+
+double adc::readTemp(){
+  double Temperature_voltage, Temperature_degrees;
+#if defined(_MAGOD1)
+  Temperature_voltage = analogRead(mypins.Temp_read)*5.0/1024.0;
+    //calculates the temperature from datasheet calibration
+  Temperature_degrees = 3.4328*pow(Temperature_voltage,3)
+    -25.099*pow(Temperature_voltage,2)
+    +76.047*Temperature_voltage-61.785;
+  
+#elif defined(_MAGOD2)
+  uint16_t adc4; // Is this the correct port? Leon
+  adc4=double(ads1.readADC_SingleEnded(0));
+  Temperature_voltage=double(adc4)/32768*myadc.adsMaxV1;
+  Temperature_degrees = 3.4328*pow(Temperature_voltage,3)
+    -25.099*pow(Temperature_voltage,2)
+    +76.047*Temperature_voltage-61.785;
+#endif 
+  return Temperature_degrees;
 }

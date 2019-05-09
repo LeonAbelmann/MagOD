@@ -11,9 +11,38 @@
 _MAGOD1: Version with Arduino MEGA and ST7735 1.8" 128x160 screen with joystick button
 /_MAGOD2: Version with ESP32 Devkit and TFTM050 5" 480x272 screen and
 capacitive touch */
-#define _MAGOD2
+#define _MAGOD1
 
-/* MagOD libraries, should be subdirectory MagOD.ino folder */
+/* Declaration of stuctures */
+
+/* Photodiode signals */
+struct diodes {
+  double Vdiode; /* photodector */
+  double Vled; /* photodiode that measures LED directly */
+  double Vscat; /* scattering photodiode */
+  /* MagOD1 has a split photodiode */
+#if defined(_MAGOD1)
+  double Vup; 
+  double Vdwn;
+#endif
+};
+
+/* Diode reference voltages */
+struct references {
+  double Vref;   // Current value
+  double Vred;   // Voltage for red LED
+  double Vgreen; // Voltage for green LED
+  double Vblue;  // Voltage for blue LED
+};
+
+/* Current feedback loop voltages */
+struct feedbacks {
+  double x;
+  double y;
+  double z;
+};
+
+/* MagOD libraries, should be src subdirectory MagOD.ino folder */
 /* This is still puzzling. I want all includes in this header file,
    not only timer.h, but get errors about references not
    declared. Needs attention. Leon */
@@ -22,6 +51,7 @@ capacitive touch */
 #include "src/pins/pins.h" // Definition of Arduino pins 
 #include "src/buttons/buttons.h" //Control of buttons (joystick)
 #include "src/field/field.h"  //Field control
+#include "src/adc/adc.h" //ADC input control
 
 #if defined(_MAGOD1)
 #include "src/screen/screen.h" // TFT Screen with button
@@ -33,33 +63,26 @@ capacitive touch */
 //#include <FS.h> // Routines for filesystem SD Card
 #endif
 
+/* Definition of global (extern) variables */
+
 extern timer mytimer;
 extern screen myscreen;
 extern buttons mybuttons;
-
-/* Reference diode voltages */
-struct references {
-  double Vref;   // Current value
-  double Vred;   // Voltage for red LED
-  double Vgreen; // Voltage for green LED
-  double Vblue;  // Voltage for blue LED
-};
+extern adc myadc;
+extern pins mypins;
 
 /* The measured parameters */
-extern double Vup; // Signal of top part of split photodiode
-extern double Vdwn; // Signal of bottom part of split photodiode
-extern double Vled; // Signal of reference photodiode monitoring the LED
-extern double Vscat; // Signal of side scatter photodiode
-extern double Temperature_degrees; //Temperature estimated from temperature sensor
-extern references Vrefs; 
+extern diodes Vdiodes;   /*Signals of photodiodes */
+extern references Vrefs; /* Reference photodiode signals */
+extern feedbacks Vfb;    /* Settings of current feedback loop */
+extern double Temperature_degrees; /* Temperature estimated from temperature sensor */
+
+/* Calculated parameters */
+extern double OD;  //Optical Density. Calculated in CaldOD()
 
 /* Update frequencies */
 extern float freq_meas; //Measurement frequency in Hz
 extern float freq_screen; //Screen update frequency in Hz
-
-/* Calculated parameters */
-extern double Vav; //(Vup+Vdwn)/2
-extern double OD;  //Optical Density. Calculated in CaldOD()
 
 /* Time parameters */
 extern unsigned long time_of_data_point; //Store time when datapoint was taken
@@ -75,7 +98,6 @@ extern bool ref_all_wavelength; //Set this to 1 for specific programs where you 
 /* Parameters to control the menu */
 extern const uint16_t program_nmb;//Total number of menus.
 extern uint16_t program_cnt; //Current program menu
-
 
 /* Declare variables to define the field sequence */
 #define B_NR_MAX 12 //Max number of elements

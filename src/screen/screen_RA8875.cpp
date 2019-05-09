@@ -184,10 +184,10 @@ void screen::setupScreen()
   tft.textWrite("STP:");
 
   //Draw rectangle for graph
-  this->updateV(0,0,0,0);
+  this->updateV(Vdiodes,Vref,0);
   char welcomeword[] = "WELCOME!"; 
   this->updateFILE(welcomeword);
-  this->updateInfo(10,1,1);
+  this->updateInfo(0,0,0);
   tft.drawRect(g_x, g_y, g_w, g_h, TFTCOLOR_WHITE);
   //tft.drawRect(g_x+1, g_y+1, g_w-2, g_h-2, TFTCOLOR_RED);
 
@@ -195,13 +195,13 @@ void screen::setupScreen()
 }
 
 //filling in the values on the screen
-void screen::updateV(double Vav, double Vled, double Vref, double OD)
+void screen::updateV(diodes Vdiodes, references Vref, double OD)
 {
   /* Debug */
-  Serial.print("Vav  : ");Serial.println(Vav);
-  Serial.print("Vled : ");Serial.println(Vled);
-  Serial.print("Vref : ");Serial.println(Vref);
-  Serial.print("OD   : ");Serial.println(OD);
+  Serial.print("V     : ");Serial.println(Vdiodes.Vdiode);
+  Serial.print("Vled  : ");Serial.println(Vdiodes.Vled);
+  Serial.print("Vref  : ");Serial.println(Vref.Vref);
+  Serial.print("OD    : ");Serial.println(OD);
   
   //Clear existing data
   tft.fillRect(locText_x+locText_hSpace, locText_y,   column_space-locText_hSpace, 4*locText_vSpace+1, TFTCOLOR_BLACK);
@@ -210,28 +210,31 @@ void screen::updateV(double Vav, double Vled, double Vref, double OD)
   tft.textTransparent(TFTCOLOR_RED);
   char string[15];
   
-  //Voltage slit average
+  //Signal photodiode
   tft.textSetCursor(locText_x+locText_hSpace, locText_y);
- Serial.println("Passed texsetcursor");
- dtostrf(Vav, 5, 2, string);
-Serial.println("Passed dtostrf");
-Serial.print("String is :");Serial.println(string);
+  Serial.println("Passed texsetcursor");
+  dtostrf(Vdiodes.Vdiode, 5, 2, string);
+  Serial.println("Passed dtostrf");
+  Serial.print("String is :");Serial.println(string);
   tft.textWrite(string,5);
-Serial.println("Passed textwrite");
-  //Voltage led reference
+  Serial.println("Passed textwrite");
+
+  //LED signal
   tft.textSetCursor(locText_x+locText_hSpace, locText_y+locText_vSpace);
-  dtostrf(Vled, 5, 2, string); 
+  dtostrf(Vdiodes.Vled, 5, 2, string); 
   tft.textWrite(string,5);
-  //Voltage reference
+
+  //Reference signal
   tft.textSetCursor(locText_x+locText_hSpace, locText_y+2*locText_vSpace);
-  dtostrf(Vref, 5, 2, string); 
+  dtostrf(Vrefs.Vref, 5, 2, string); 
   tft.textWrite(string,5);
+
   //OD
   tft.textSetCursor(locText_x+locText_hSpace, locText_y+3*locText_vSpace);
   dtostrf(OD, 5, 2, string);
   tft.textWrite(string,5);
 
-Serial.println("Passed updateV");
+  Serial.println("Passed updateV");
 }
 
 //update program settings whenever requested
@@ -268,7 +271,7 @@ void screen::updateFILE(const char *str)
   tft.fillRect(locText_x+locText_hSpace, locText_y+4*locText_vSpace +1, column_space - locText_hSpace , locText_vSpace, TFTCOLOR_BLACK);
   tft.textTransparent(TFTCOLOR_RED);
   tft.textSetCursor(locText_x+locText_hSpace, 	locText_y+4*locText_vSpace);
-  tft.textWrite(str,min(strlen(str),15));//Avoid printing too long filenames	
+  tft.textWrite(str,min((unsigned)strlen(str),15));//Avoid printing too long filenames	
 }
 
 #endif // defined _MAGOD2

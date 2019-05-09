@@ -11,6 +11,7 @@
 //Constructor
 led::led(){
   //nothing to initialize
+  int LEDs[] = {RED, GREEN, BLUE};
 };
 
 //Initializes the RGB led color and changes the color during the running of the program.
