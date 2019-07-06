@@ -21,12 +21,13 @@ class timer
 						     routine */
     // Timer: which timer (1,3,4,5 for Arduino, 1-16 for ESP32
     // isr: which interupt servicing function to attach to
- private:
 #if defined(_MAGOD2)
-  hw_timer_t * timer1;
-  hw_timer_t * timer3;
-  hw_timer_t * timer4;
+  // hw_timer_t * timer1 = NULL;
+  //  hw_timer_t * timer3;
+  //hw_timer_t * timer4;
 #endif
+ private:
+
 };
 
 #endif

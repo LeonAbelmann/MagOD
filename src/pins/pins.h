@@ -14,7 +14,7 @@ class pins
 {
  public:
   //does this really have to be public. Shield it in a function ReadTemp or so. TODO. LEON.
-  const int Temp_read = 12;
+  //const int Temp_read = 12;
  private:
 };
 

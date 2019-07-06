@@ -14,9 +14,9 @@
 
 #include <Adafruit_GFX.h>
 #include "Adafruit_RA8875.h"
-#define TFT_INT 2
+#define TFT_INT 16
 #define TFT_CS 5
-#define TFT_RST 4
+#define TFT_RST 17
 #define SCRN_VERT 272
 #define SCRN_HOR 480
 
@@ -42,7 +42,7 @@ class screen{
   screen(); //Constructor
   Adafruit_RA8875 tft = Adafruit_RA8875(TFT_CS, TFT_RST);
   void setupScreen();
-  void updateInfo(unsigned int Looppar_1, unsigned int Looppar_2, int16_t program_cnt);
+  void updateInfo(unsigned int Looppar_1, unsigned int Looppar_2, int16_t program_cnt, const char *filename);
   void updateGraph(double value, int led);
   //void setScreenLimit(uint16_t val1, uint16_t val2);
   void updateV(diodes Vdiodes, references Vref, double OD);

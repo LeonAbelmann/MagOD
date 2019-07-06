@@ -32,18 +32,23 @@ void field::Init_field() /*Sets the pins in the correct status*/
   SetPinFrequencySafe(Coil_y, Frequency_PWM);
   SetPinFrequencySafe(Coil_z, Frequency_PWM);
 #elif defined(_MAGOD2)
-  // attach the channel to the GPIO2 to be controlled
-  //ledcAttachPin(LED, ledChannel);
   
-  //sets the frequency for the specified pins to 20kHz
   // Initialize channels 
   /*  channels 0-15, resolution 1-16 bits, freq limits depend on resolution
-       ledcSetup(uint8_t channel, uint32_t freq, uint8_t resolution_bits); https://github.com/espressif/esp-idf/blob/master/docs/en/api-reference/peripherals/ledc.rst
-  I guessed 11, Leon
+      ledcSetup(uint8_t channel, uint32_t freq, uint8_t resolution_bits); https://github.com/espressif/esp-idf/blob/master/docs/en/api-reference/peripherals/ledc.rst
   */
-  ledcSetup(Coil_x, Frequency_PWM, 11);
-  ledcSetup(Coil_y, Frequency_PWM, 11);
-  ledcSetup(Coil_z, Frequency_PWM, 11);
+
+  ledcSetup(Coil_x, Frequency_PWM, resolution);
+  ledcSetup(Coil_y, Frequency_PWM, resolution);
+  ledcSetup(Coil_z, Frequency_PWM, resolution);
+  
+  /* attach the channel to the GPIO2 to be controlled */
+  //ledcAttachPin(pin, Channel);
+  
+  ledcAttachPin(CoilPinX, Coil_x);
+  ledcAttachPin(CoilPinY, Coil_y);
+  ledcAttachPin(CoilPinZ, Coil_z);
+   
 #endif
   
   //sets the direction pin as output
@@ -353,14 +358,14 @@ coilPwmWrite(Coil_z, 0);
 }
 
 void field::coilPwmWrite(int Coil, int PWM_value)
-  // Write PWM _value to pin Coil
+  // Write PWM _value to pin Coil (MagOD1) or channel Coil (MagOD2)
 {
   /* Implementation depends on platform */
 #if defined(_MAGOD1)
   // If Arduino, use pwm.h. PWM_Value 0:255
       pwmWrite(Coil, PWM_value);
 #elif defined(_MAGOD2)
-   // If ESP32, use ledcWrite. PMW_value 0:2^(resolution)
+   // If ESP32, use ledcWrite(channel, pwm). PMW_value 0:2^(resolution)
    // Resolution is set in ledcSetup
       ledcWrite(Coil, PWM_value);
 #endif

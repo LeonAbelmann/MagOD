@@ -13,7 +13,7 @@ recipes::recipes(){
 
 /* LED_init()
 initialization program of mainly the LED color, this is not added to the function program_init because this should be executed immediately when the program number switches, such that the LED color then immediately switches and not only when the program starts. This is required for the measurement of the reference value, wich should be done with the right color
-LED_type: 1 = RED, 2 = GREEN, 3 = BLUE
+LED_type: RED, GREEN, BLUE
 ref_all_wavelenght: 0 = measure only selected color, 1 = do all 3 colours
 save_extra_parameter: for backward compatibility
 */
@@ -21,11 +21,11 @@ void recipes::LED_init()
 {
   switch (program_cnt){
    case 1:
-     LED_type = 2; /* Green only */
+     LED_type = GREEN; /* Green only */
      ref_all_wavelength = 0;
      break;
    case 2:
-     LED_type = 2;
+     LED_type = GREEN;
      ref_all_wavelength = 1; /* Cycle through all LED colors */
      break;
      // TODO Default, Leon
@@ -71,13 +71,13 @@ void recipes::program_init()
   
   switch (program_cnt){
     //case 1: /* Sequence for MC-1, monocolor */
-    // B_nr_set = 2; // If fieldarrays [0..1], B_nr_set = 2 e.g.
+    B_nr_set = 2; // If fieldarrays [0..1], B_nr_set = 2 e.g.
     
-    // B_arrayfield_z[0] = 0.4; //Field up, same as how we ended
-    // Switching_time[0] = 400000; //Leave it on for 400 sec, giving time for saving data
-    // B_arrayfield_z[1] = -0.4; //Field down, same as how we ended
-    // Switching_time[1] = 150000; //Leave it on for 300 sec, don't give MC-1 that were on the bottom time to reach the top, where there might be oxygen
-    // break;
+    B_arrayfield_z[0] = 1; //Field up, same as how we ended
+    Switching_time[0] = 400000; //Leave it on for 400 sec, giving time for saving data
+    B_arrayfield_z[1] = -1; //Field down, same as how we ended
+    Switching_time[1] = 150000; //Leave it on for 300 sec, don't give MC-1 that were on the bottom time to reach the top, where there might be oxygen
+    break;
     // case 1: /* Sequence for MSR-1 analysis, monocolor */
     // B_nr_set = 5; // [0..4]
     
@@ -92,15 +92,15 @@ void recipes::program_init()
     // B_arrayfield_x[4] = 0.4; // 0.4 mT parallel to field
     // Switching_time[4] = 20000; // Leave it on for 20 sec 
     // break;
-  case 1: /* Sequence for testing cross-talk */
-    B_nr_set = 3; // [0..2]
+  // case 1: /* Sequence for testing cross-talk */
+  //   B_nr_set = 3; // [0..2]
     
-    B_arrayfield_x[0] = 3;     //field parallel to the light, same as how we ended
-    Switching_time[0] = 10000; //Leave it on for 10 sec, giving time for saving data
-    B_arrayfield_y[1] = 3;    //field perpendicular to the light
-    Switching_time[1] = 20000; // For 20 sec
-    B_arrayfield_x[2] = 3;    //field parallel to the light
-    Switching_time[2] = 10000; // For 10 sec
+  //   B_arrayfield_x[0] = 3;     //field parallel to the light, same as how we ended
+  //   Switching_time[0] = 10000; //Leave it on for 10 sec, giving time for saving data
+  //   B_arrayfield_y[1] = 3;    //field perpendicular to the light
+  //   Switching_time[1] = 20000; // For 20 sec
+  //   B_arrayfield_x[2] = 3;    //field parallel to the light
+  //   Switching_time[2] = 10000; // For 10 sec
     // case 2:  /* Sequence for MSR-1 analysis, multi-color */
   //   LED_switch_cycles = 1; /* Change the color after every field cycle */
   //   B_nr_set = 5; // [0..5]

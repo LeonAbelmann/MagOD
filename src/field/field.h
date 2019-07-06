@@ -11,9 +11,20 @@
 #include "../timer/timer.h"
 
 // These should be capitalized, TODO LEON
-#define Coil_x 44 // output of the coils in the x direction
-#define Coil_y 45               // output of the coils in the y direction
-#define Coil_z 46               // output of the coils in the z direction
+#if defined(_MAGOD1)
+#define Coil_x 44 // output pins of the coils in the x direction
+#define Coil_y 45 // output pins of the coils in the y direction
+#define Coil_z 46 // output pins of the coils in the z direction
+#elif defined(_MAGOD2)
+#define CoilPinX 33 //Physical pin to which the PWM is sent for coil x
+#define CoilPinY 26 //Physical pin to which the PWM is sent for coil y
+#define CoilPinZ 15 //Physical pin to which the PWM is sent for coil z
+/* Note that we share the channels with LED driver
+   Keep 0-2 for the LEDs */
+#define Coil_x  3 // output channel of the coils in the x direction
+#define Coil_y  4 // output channel of the coils in the y direction
+#define Coil_z  5 // output channel of the coils in the z direction
+#endif
 
 #define Dir_x 25                // direction of the coils in the x direction     low: output A of motor driver is then high and B is low (positive direction),     high: output A of motor driver is then low and B is high (negative direction)
 #define Dir_y 26                // direction of the coils in the y direction
@@ -50,6 +61,9 @@ class field
 
  private:
   const int Frequency_PWM = 20000;    //set the pwm frequency of the coil-drivers
+#if defined(_MAGOD2)
+  const int resolution = 8; /* number bits resolution to set PWM, 1-16 bit */
+#endif
   const double Res_initial_x = 3.19; //the initial resistance of the coil set in the x direction, which is used to estimate the wanted current from the initial PWM value (This is used in current feedback to adjust the measured current)
   const double Res_initial_y = 3.19; //same as above but for y
   const double Res_initial_z = 3.19; //same as above but for z

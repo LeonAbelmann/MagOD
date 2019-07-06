@@ -20,10 +20,11 @@ screen::screen(void)
 {
   screenSiz_x=SCRN_HOR,	screenSiz_h=SCRN_VERT;
   //Text area
-  locText_x=0, locText_y=0,locText_vSpace=12,locText_hSpace = 40;
-  column_space = 140;
+  locText_x=0, locText_y=0; //Top left of text area
+  locText_hSpace = 40, locText_vSpace=12;//Size of each line
+  column_space = 140; //Space between the two columns of text data
   //Graph display
-  g_x=0,g_y=88,g_w=SCRN_HOR-1,g_h=SCRN_VERT-g_y-1;
+  g_x=0,g_y=88,g_w=SCRN_HOR-1,g_h=SCRN_VERT-g_y-2;
   g_xCursor=g_x+1;
   g_minVal=0;
   g_maxVal=1.024;
@@ -148,46 +149,53 @@ void screen::setupScreen()
   tft.textSetCursor(100, 148);
   tft.textWrite("Marcel Welleweerd, Dave van As, Leon Abelmann");
   delay(1000);
-  
-  
-  //Voltage average slit
-  tft.textSetCursor(locText_x, locText_y);
-  tft.textTransparent(TFTCOLOR_YELLOW);
-  tft.textWrite("Vav:");
 
-  //Voltage led reference
-  tft.textSetCursor(locText_x, locText_y+locText_vSpace);
+  /* Color of all text labels */
+  tft.textTransparent(TFTCOLOR_YELLOW);
+
+  /* Left column */
+
+  //Voltage photodiode
+  tft.textSetCursor(locText_x, locText_y+0*locText_vSpace);
+  tft.textWrite("Vdio:");
+
+  //Voltage reference diode
+  tft.textSetCursor(locText_x, locText_y+1*locText_vSpace);
   tft.textWrite("Vled:");
   
-  //Voltage reflection
+  //Temperature
   tft.textSetCursor(locText_x, locText_y+2*locText_vSpace);	
-  tft.textWrite("Vref:");
+  tft.textWrite("Temp:");
   
   //Calculated OD
   tft.textSetCursor(locText_x, locText_y+3*locText_vSpace);	
   tft.textWrite("OD:");
+
+  /* Right Column */
+  
+  //Voltage reference photodiode
+  tft.textSetCursor(column_space, locText_y+0*locText_vSpace);
+    tft.textWrite("Vref:");
   
   //Filename:
-  tft.textSetCursor(locText_x, locText_y+4*locText_vSpace);
+  tft.textSetCursor(column_space, locText_y+1*locText_vSpace);
   tft.textWrite("FILE:");
   
   //Program:
-  tft.textSetCursor(locText_x, locText_y+5*locText_vSpace);
+  tft.textSetCursor(column_space, locText_y+2*locText_vSpace);
   tft.textWrite("PRG:");
   
   //Which run in the program:
-  tft.textSetCursor(locText_x, locText_y+6*locText_vSpace);
+  tft.textSetCursor(column_space, locText_y+3*locText_vSpace);
   tft.textWrite("RUN:");
   
   //Which step in the program:
-  tft.textSetCursor(column_space, locText_y+6*locText_vSpace);
+  tft.textSetCursor(column_space, locText_y+4*locText_vSpace);
   tft.textWrite("STP:");
 
+  this->updateV(Vdiodes,Vrefs,0);
+  this->updateInfo(0,0,0,"MAGOD2");
   //Draw rectangle for graph
-  this->updateV(Vdiodes,Vref,0);
-  char welcomeword[] = "WELCOME!"; 
-  this->updateFILE(welcomeword);
-  this->updateInfo(0,0,0);
   tft.drawRect(g_x, g_y, g_w, g_h, TFTCOLOR_WHITE);
   //tft.drawRect(g_x+1, g_y+1, g_w-2, g_h-2, TFTCOLOR_RED);
 
@@ -203,75 +211,97 @@ void screen::updateV(diodes Vdiodes, references Vref, double OD)
   Serial.print("Vref  : ");Serial.println(Vref.Vref);
   Serial.print("OD    : ");Serial.println(OD);
   
-  //Clear existing data
-  tft.fillRect(locText_x+locText_hSpace, locText_y,   column_space-locText_hSpace, 4*locText_vSpace+1, TFTCOLOR_BLACK);
-  Serial.println("Passed clearrec");
+  //Clear existing data (x0,y0,x1,y1)
+  //Left column
+  tft.fillRect(locText_x+locText_hSpace,
+	       locText_y,
+	       column_space-locText_hSpace,
+	       4*locText_vSpace+1, TFTCOLOR_BLACK);
+  //Right column
+  tft.fillRect(column_space+locText_hSpace,
+	       locText_y,
+	       2*column_space-locText_hSpace,
+	       5*locText_vSpace+1, TFTCOLOR_BLACK);
   // Write measured voltages
   tft.textTransparent(TFTCOLOR_RED);
   char string[15];
   
   //Signal photodiode
-  tft.textSetCursor(locText_x+locText_hSpace, locText_y);
-  Serial.println("Passed texsetcursor");
-  dtostrf(Vdiodes.Vdiode, 5, 2, string);
-  Serial.println("Passed dtostrf");
-  Serial.print("String is :");Serial.println(string);
-  tft.textWrite(string,5);
-  Serial.println("Passed textwrite");
-
-  //LED signal
-  tft.textSetCursor(locText_x+locText_hSpace, locText_y+locText_vSpace);
-  dtostrf(Vdiodes.Vled, 5, 2, string); 
+  tft.textSetCursor(locText_x+locText_hSpace, locText_y+0*locText_vSpace);
+  dtostrf(Vdiodes.Vdiode, 5, 3, string);
   tft.textWrite(string,5);
 
-  //Reference signal
+  //Signal reference diode
+  tft.textSetCursor(locText_x+locText_hSpace, locText_y+1*locText_vSpace);
+  dtostrf(Vdiodes.Vled, 5, 3, string); 
+  tft.textWrite(string,5);
+
+  //Temperature
   tft.textSetCursor(locText_x+locText_hSpace, locText_y+2*locText_vSpace);
-  dtostrf(Vrefs.Vref, 5, 2, string); 
+  dtostrf(Temperature_degrees, 5, 3, string); 
   tft.textWrite(string,5);
-
+  
   //OD
   tft.textSetCursor(locText_x+locText_hSpace, locText_y+3*locText_vSpace);
-  dtostrf(OD, 5, 2, string);
+  dtostrf(OD, 5, 3, string);
   tft.textWrite(string,5);
-
-  Serial.println("Passed updateV");
+  
 }
 
 //update program settings whenever requested
-void screen::updateInfo(unsigned int Looppar_1, unsigned int Looppar_2, int16_t program_cnt)
+void screen::updateInfo(unsigned int Looppar_1, unsigned int Looppar_2, int16_t program_cnt, const char *filename)
 {
   //Clear existing data
-  tft.fillRect(locText_x+locText_hSpace, locText_y+5*locText_vSpace+2, column_space - locText_hSpace, 2*locText_vSpace, TFTCOLOR_BLACK);
-  tft.fillRect(locText_x+locText_hSpace+column_space, locText_y, column_space, 7*locText_vSpace+2, TFTCOLOR_BLACK);
+  tft.fillRect(locText_x+locText_hSpace,
+	       locText_y+5*locText_vSpace+2,
+	       column_space - locText_hSpace,
+	       2*locText_vSpace, TFTCOLOR_BLACK);
+  tft.fillRect(locText_x+locText_hSpace+column_space,
+	       locText_y,
+	       column_space,
+	       7*locText_vSpace+2, TFTCOLOR_BLACK);
   
   tft.textTransparent(TFTCOLOR_RED);
 
   char string[5];
+  char filestring[15];
+
+  //Reference signal
+  tft.textSetCursor(column_space+locText_hSpace,
+		    locText_y+0*locText_vSpace);
+  dtostrf(Vrefs.Vref, 5, 3, string); 
+  tft.textWrite(string,5);
+
+  //FILE
+  tft.textSetCursor(column_space+locText_hSpace,
+		    locText_y+1*locText_vSpace);
+  strcpy(filestring, filename); /* truncate to length of filestring */
+  tft.textWrite(filestring);
   
   //program number
-  tft.textSetCursor(locText_x+locText_hSpace,locText_y+5*locText_vSpace);
+  tft.textSetCursor(column_space+locText_hSpace,
+		    locText_y+2*locText_vSpace);
   dtostrf(program_cnt, 2, 0, string); 
   tft.textWrite(string);
   
-  //Looppar_2, number of cycles
-  tft.textSetCursor(locText_x+locText_hSpace, locText_y+6*locText_vSpace);
+  //Run: Looppar_2, number of cycles
+  tft.textSetCursor(column_space+locText_hSpace,
+		    locText_y+3*locText_vSpace);
   dtostrf(Looppar_2, 2, 0, string); 
   tft.textWrite(string);
   
-  //Looppar_1, which step in the cycle
-  tft.textSetCursor(locText_x+locText_hSpace+column_space, locText_y+6*locText_vSpace);
+  //Step: Looppar_1, which step in the cycle
+  tft.textSetCursor(column_space+locText_hSpace,
+		    locText_y+4*locText_vSpace);
   dtostrf(Looppar_1, 2, 0, string); 
   tft.textWrite(string);
 }
 
-//update the line of text on the screen which indicates the program number ect..
-void screen::updateFILE(const char *str)
-{	
-  //Clear existing data
-  tft.fillRect(locText_x+locText_hSpace, locText_y+4*locText_vSpace +1, column_space - locText_hSpace , locText_vSpace, TFTCOLOR_BLACK);
-  tft.textTransparent(TFTCOLOR_RED);
-  tft.textSetCursor(locText_x+locText_hSpace, 	locText_y+4*locText_vSpace);
-  tft.textWrite(str,min((unsigned)strlen(str),15));//Avoid printing too long filenames	
+// Update the filename field in the info column
+void screen::updateFILE(const char *filename)
+{
+  /* Loopar_ and program_cnt are globals defined in MagOD.h */
+  updateInfo(Looppar_1, Looppar_2, program_cnt, filename);
 }
 
 #endif // defined _MAGOD2

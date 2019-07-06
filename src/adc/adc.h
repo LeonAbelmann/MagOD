@@ -35,6 +35,11 @@ https://hackaday.io/project/11154-alli-gait-or-analysis/log/44744-need-for-speed
 #define ADS1115_ADDRESS_0 (0x48) // 1001 000 (ADDR -> GND)
 #define ADS1115_ADDRESS_1 (0x49) // 1001 001 (ADDR -> VDD)
 
+#if defined(_MAGOD1)
+#define Temp_read 12 //Pin for NTC ADC
+#endif
+/* MagOD2 uses adc1 for reading temperature */
+
 class adc
 {
  public:

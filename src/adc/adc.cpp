@@ -16,7 +16,7 @@ adc::adc(){
 /* Initialize the ADC(s) with the correct amplification */
 void adc::initADC(){
 #if defined(_MAGOD1)
-   Adafruit_ADS1115 ads0(ADS1115_ADDRESS_0); //adc0-3;
+  Adafruit_ADS1115 ads0(ADS1115_ADDRESS_0); //adc0-3;
   Adafruit_ADS1115 ads1(ADS1115_ADDRESS_1); //adc4-7;
 
   //GAIN_TWOTHIRDS  +/- 6.144V  1 bit = 3mV      0.1875mV (default)
@@ -30,12 +30,13 @@ void adc::initADC(){
   myadc.ads.begin();
 #elif defined(_MAGOD2)
   /* ADC 0: used for photodiodes */
-  myadc.ads0.setGain(GAIN_TWOTHIRDS);
-  myadc.adsMaxV0=6.114;
+  myadc.ads0.setGain(GAIN_ONE);
+  myadc.adsMaxV0=4.096;
   myadc.ads0.begin();
-  /* ADC 1: used for temperature */
-  myadc.ads1.setGain(GAIN_TWOTHIRDS);
-  myadc.adsMaxV1=6.114;
+
+  /* ADC 1: used for current measurement and temperature */
+  myadc.ads1.setGain(GAIN_ONE);
+  myadc.adsMaxV1=4.096;
   myadc.ads1.begin();
 #endif
 }
@@ -60,15 +61,22 @@ diodes adc::readDiodes()
   Vdiodes.Vled = double(adc0)/32768*myadc.adsMaxV;
   Vdiodes.Vscat = double(adc1)/32768*myadc.adsMaxV;
 #elif defined(_MAGOD2)
-  uint16_t adc0, adc1, adc2;  
-  /* Read out ADC's */
-  adc0=myadc.ads0.readADC_SingleEnded(0);
-  adc1=myadc.ads0.readADC_SingleEnded(1);
-  adc2=myadc.ads0.readADC_SingleEnded(2);
+  uint16_t adc0, adc1, adc2, adc3;  
+  /* Read out ADC's, always read all ports! */
+  adc0=myadc.ads0.readADC_SingleEnded(0);//n.c. future: scatterDiode
+  adc1=myadc.ads0.readADC_SingleEnded(1);//photoDiode
+  adc2=myadc.ads0.readADC_SingleEnded(2);//nc
+  adc3=myadc.ads0.readADC_SingleEnded(3);//refDiode
+  /*
+  Serial.print("adc0 = ");Serial.println(adc0);
+  Serial.print("adc1 = ");Serial.println(adc1);
+  Serial.print("adc2 = ");Serial.println(adc2);
+  Serial.print("adc3 = ");Serial.println(adc3);
+  */
 /* Convert to voltage */
-  Vdiodes.Vdiode = double(adc2)/32768*myadc.adsMaxV0;
-  Vdiodes.Vled = double(adc0)/32768*myadc.adsMaxV0;
-  Vdiodes.Vscat = double(adc1)/32768*myadc.adsMaxV0;
+  Vdiodes.Vdiode = double(adc1)/32768*myadc.adsMaxV0;
+  Vdiodes.Vled = double(adc3)/32768*myadc.adsMaxV0;
+  //Vdiodes.Vscat = double(adc0)/32768*myadc.adsMaxV0;
 #endif
   return Vdiodes;
 }
@@ -137,18 +145,17 @@ void adc::set_vrefs(references &Vrefs, bool ref_all_wavelength, led theled)
 #elif defined(_MAGOD2)
   /* Iterate over all colors in the LEDs list
      note that there might be only one color :) */
-  for(auto iter = LEDs.begin(); iter != LEDs.end(); iter++)
+  for(auto iter = 1; iter<sizeof(LEDs); iter++)
     {
       theled.Set_LED_color(iter);
-      /* Read out ADC2 10 times and average*/
-      double adc2, Vdiode;  
-      adc2=0;
+      /* Read out diodes 10 times and average*/
+      double Vdiode;  
+      Vdiode=0;
       for (int i=0; i<10; i++){
-	adc2 += double(myadc.ads0.readADC_SingleEnded(2));
+	  Vdiodes=myadc.readDiodes();
+	  Vdiode+= Vdiodes.Vdiode;
       }
-      adc2=adc2/10;
-      /* Convert to voltage */
-      Vdiode = double(adc2)/32768*myadc.adsMaxV0;
+      Vdiode=Vdiode/10;
       /* Assign to the correct reference */
       switch(iter) {
       case RED   : Vrefs.Vred   =Vdiode;

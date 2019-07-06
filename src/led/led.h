@@ -8,9 +8,27 @@
 #define led_h
 
 //Pins for the RGB LED.
-#define LED_red 30 //RED LED
-#define LED_green 31 //Green LED
-#define LED_blue 32 //BLUE LED
+#if defined(_MAGOD1)
+#define LED_red   30 
+#define LED_green 31 
+#define LED_blue  32 
+#elif defined(_MAGOD2)
+#define LED_red    2 
+#define LED_green 32 
+#define LED_blue   4
+/* ESP32 can drive the LED in PWM. We need it to reduce the light intenstity */
+const int LEDfreq = 5000;
+const int LEDresolution = 8;
+/* Note that you share these values with the pwm for the Motordrivers.
+   0-2 are for the LED. 3-5 are for the motors */
+const int LEDChannelRed = 0; 
+const int LEDChannelGreen = 1;
+const int LEDChannelBlue = 2;
+/* Brightness of LEDs */
+const int LEDMaxRed = 200;
+const int LEDMaxGreen = 200;
+const int LEDMaxBlue = 200;
+#endif
 
 #define RED 1
 #define GREEN 2
