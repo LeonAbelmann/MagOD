@@ -1,7 +1,7 @@
 /* MagOD.h
  MagOD libary 
- Jan 2019
- Struct definitions
+ July 2019
+ Struct definitions, global (external) variables
  Leon Abelmann 
 */
 #ifndef _MagOD_h
@@ -11,7 +11,7 @@
 _MAGOD1: Version with Arduino MEGA and ST7735 1.8" 128x160 screen with joystick button
 /_MAGOD2: Version with ESP32 Devkit and TFTM050 5" 480x272 screen and
 capacitive touch */
-#define _MAGOD1
+#define _MAGOD2
 
 /* Declaration of stuctures */
 
@@ -46,9 +46,8 @@ struct feedbacks {
 /* This is still puzzling. I want all includes in this header file,
    not only timer.h, but get errors about references not
    declared. Needs attention. Leon */
-#include "src/timer/timer.h"
+#include "src/timer/timer.h" // On board timers
 #include "src/led/led.h" // Control of three colour LED
-#include "src/pins/pins.h" // Definition of Arduino pins 
 #include "src/buttons/buttons.h" //Control of buttons (joystick)
 #include "src/field/field.h"  //Field control
 #include "src/adc/adc.h" //ADC input control
@@ -59,8 +58,17 @@ struct feedbacks {
 #include "src/screen/screen_RA8875.h" // RA8875 TFTM050 with touch 
 #endif
 
+#include "src/fileandserial/fileandserial.h" //File and serial port IO
+
 #if defined(_MAGOD2)
 //#include <FS.h> // Routines for filesystem SD Card
+#endif
+
+/* testing, should this be here? Leon */
+#if defined(_MAGOD2)
+extern hw_timer_t * timer1;
+extern hw_timer_t * timer3;
+extern hw_timer_t * timer4;
 #endif
 
 /* Definition of global (extern) variables */
@@ -69,7 +77,6 @@ extern timer mytimer;
 extern screen myscreen;
 extern buttons mybuttons;
 extern adc myadc;
-extern pins mypins;
 
 /* The measured parameters */
 extern diodes Vdiodes;   /*Signals of photodiodes */
@@ -90,6 +97,7 @@ extern unsigned long time_of_start; //Time at which the measurement was started
 extern unsigned long time_last_field_change; //Time since the last field step
 
 /* LED parameters */
+extern int LEDs[3];
 extern int LED_type; //The color of the LED, 1 = RED, 2 = GREEN, 3 = BlUE
 extern int LED_switch_cycles; //The number of cycles after which the LED changes the frequency, when a 0 is entered, the LED keeps the beginning frequency during the complete measurement 
 extern int Counter_cycles_led; //counter used to store the amount of complete cycles the LED has had the same colour, to check when the colour has to change (after LED_switch_cycles)

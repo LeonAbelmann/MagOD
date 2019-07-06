@@ -55,19 +55,26 @@ double extra_par = 0.0; //value of this extra parameter (specifiy this in the in
 
 /* MagOD libraries, should be subdirectory MagOD.ino folder */
 // screen and timer are in MagOD.h. Don't understand why not all can be there.
-#include "src/fileandserial/fileandserial.h" //File and serial port IO
+
 #include "src/recipes/recipes.h" //User measurement recipe
 
 /* Init classes */
 screen myscreen;
 timer mytimer;
 led myled;
-pins mypins;
 buttons mybuttons;
 field myfield;
 adc myadc;
 fileandserial myfile;
 recipes myrecipes;
+
+
+/* Should this be here? LEON*/
+#if defined(_MAGOD2)
+hw_timer_t * timer1 = NULL;
+hw_timer_t * timer3 = NULL;
+hw_timer_t * timer4 = NULL;
+#endif
 
 /* Define variables */
 /* The measured parameters */
@@ -89,6 +96,7 @@ unsigned long time_last_field_change = 0; //Time since the last field step
 
 /* LED parameters */
 int LED_type = GREEN; //The color of the LED
+int LEDs[3] = {RED, GREEN, BLUE};
 int LED_switch_cycles = 0; //The number of cycles after which the LED changes the frequency, when a 0 is entered, the LED keeps the beginning frequency during the complete measurement 
 int Counter_cycles_led = 1; //counter used to store the amount of complete cycles the LED has had the same colour, to check when the colour has to change (after LED_switch_cycles)
 bool ref_all_wavelength = 0; //Set this to 1 for specific programs where you work with multiple wavelengths in a single measurement (such that it stores the reference value of all 3 wavelengths
@@ -311,7 +319,8 @@ void processButtonPress()
       myled.Set_LED_color(LED_type);
       
       //Update display
-      myscreen.updateInfo(Looppar_1, Looppar_2, program_cnt);
+      myscreen.updateInfo(Looppar_1, Looppar_2, program_cnt,
+			  myfile.fName_char);
     }
     prevButton = buttonPress;
   } //end if buttonPress!=prevButton
@@ -464,15 +473,13 @@ void setup()
   myfield.Init_field();/*Sets the pins in the correct status*/
   myfield.Reset_Bfield();
  
-  // Init led, should go to some initled function in led.cpp
-  pinMode(LED_red, OUTPUT);
-  pinMode(LED_green, OUTPUT);
-  pinMode(LED_blue, OUTPUT);
+  // Init led
+  Serial.println("Init led");
   myled.Set_LED_color(LED_type);
-
-  myrecipes.LED_init();
+  //myrecipes.LED_init();
 
   //Initialize ADC(s)
+  Serial.println("Init ADC");
   myadc.initADC();
 
   //setup the screen
@@ -549,7 +556,8 @@ void setup()
 
   
   Serial.println("Updating screen.");
-  myscreen.updateInfo(Looppar_1, Looppar_2, program_cnt);
+  myscreen.updateInfo(Looppar_1, Looppar_2, program_cnt,
+		      myfile.fName_char);
   
   Serial.println("Intializing current feedback");
   myfield.Init_current_feedback();
@@ -582,7 +590,8 @@ void loop()
       screenUpdateFlag=false; // reset flag for next time
       myscreen.updateV(Vdiodes, Vrefs, OD); //Update values
       myscreen.updateGraph(OD,LED_type); //Update graph
-      myscreen.updateInfo(Looppar_1, Looppar_2, program_cnt); //Update program status
+      myscreen.updateInfo(Looppar_1, Looppar_2, program_cnt,
+			  myfile.fName_char); //Update program status
     }
   
   /* Recalibrate current if timer 3 has set the flag */
