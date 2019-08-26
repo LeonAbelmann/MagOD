@@ -2,7 +2,7 @@
 % Used in combination with MagOD instrumentation 
 % http://koreumtb.manucodiata.org/index.php/intranet/20-magod
 % Tijmen Hageman, Leon Abelmann
-% April 2017 - May 2019
+% April 2017 - Aug 2019
 
 
 function varargout = MagOD_Cmag(varargin)

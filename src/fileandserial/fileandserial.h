@@ -33,6 +33,13 @@ class fileandserial
 #elif defined(_MAGOD2)
   #define SD_CS      15 //Pin for SD card.
 #endif
+
+  /* SD.h for Arduino does not discriminate between write and append? */
+#if defined(_MAGOD1)
+#define FILE_APPEND FILE_WRITE
+#elif defined(_MAGOD2)
+#endif
+
   
   /* finds a base file name that has not been used on the microSD card */
   void setFileName(char fName_char[]);

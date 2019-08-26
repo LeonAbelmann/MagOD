@@ -15,10 +15,20 @@
 #define Coil_x 44 // output pins of the coils in the x direction
 #define Coil_y 45 // output pins of the coils in the y direction
 #define Coil_z 46 // output pins of the coils in the z direction
+/* direction of the coils in the x direction     low: output A of motor driver is then high and B is low (positive direction),     high: output A of motor driver is then low and B is high (negative direction) */
+#define Dir_x 25  
+#define Dir_y 26
+#define Dir_z 27
+
+  //pins for selecting a single coil by means of the mosfet switching
 #elif defined(_MAGOD2)
 #define CoilPinX 33 //Physical pin to which the PWM is sent for coil x
 #define CoilPinY 26 //Physical pin to which the PWM is sent for coil y
-#define CoilPinZ 15 //Physical pin to which the PWM is sent for coil z
+#define CoilPinZ 14 //Physical pin to which the PWM is sent for coil z
+#define Dir_x 25  
+#define Dir_y 26
+#define Dir_z 12
+
 /* Note that we share the channels with LED driver
    Keep 0-2 for the LEDs */
 #define Coil_x  3 // output channel of the coils in the x direction
@@ -26,20 +36,13 @@
 #define Coil_z  5 // output channel of the coils in the z direction
 #endif
 
-#define Dir_x 25                // direction of the coils in the x direction     low: output A of motor driver is then high and B is low (positive direction),     high: output A of motor driver is then low and B is high (negative direction)
-#define Dir_y 26                // direction of the coils in the y direction
-#define Dir_z 27                // direction of the coils in the z direction
-  //pins for selecting a single coil by means of the mosfet switching
-
-#define Relay_x 34 //1 is no gradient, 0 is gradient (with 1 the NC is connected on the relay and with 0 the NO is connected)
-#define Relay_y 35
-#define Relay_z 36
-
 //pins for the analog signals from the current sensing system and the temperature sensing
+#if defined(_MAGOD1)
 #define Current_read_x 15
 #define Current_read_y 14
 #define Current_read_z 13
-
+#endif
+/* MagOD2 uses adc1,inputs 0-3 for that */
 
 class field
 {
@@ -77,22 +80,25 @@ class field
   //the following parameters are used to make an accurate estimate of the current when using the measured voltage, as these values depend on the exact resistor values, they differ for each op amp, this also compensates for the op-amp offset
 
   //current_sense to field, these values have been found by characterization measurements of the coils (measure the field and output of current sense at same time)
-  //device 3
+
+
+#if defined(_MAGOD1)
   const double Ax_neg_VT = 0.016491; //parameter A of (Field = A * (measured voltage of current sensing) + B) when current is negative for the x-direction
   const double Bx_neg_VT = 0.142405 ; //parameter B of (Field = A * (measured voltage of current sensing) + B) when current is negative for the x-direction
   const double Ax_pos_VT = 0.015052; //parameter A of (Field = A * (measured voltage of current sensing) + B) when current is positive for the x-direction
   const double Bx_pos_VT = 0.0082232; //parameter B of (Field = A * (measured voltage of current sensing) + B) when current is positive for the x-direction
-  //device 4
+
   const double Ay_neg_VT = 0.015689; //same but for y
   const double By_neg_VT = 0.15482; //same but for y
   const double Ay_pos_VT = 0.0144144; //same but for y
   const double By_pos_VT = -0.013692; //same but for y
-//device 2
+
   const double Az_neg_VT = 0.0147; //same but for z
   const double Bz_neg_VT = 0.14772; //same but for z
   const double Az_pos_VT = 0.013822; //same but for z
   const double Bz_pos_VT = 0.0037237; //same but for z
 
+  
 //field to PWM, to find the required PWM values to get the wanted field, these values have been found by characterization measurements of the coils
   const double Ax_neg_TPWM = 43.798; //parameter A of (PWM = A * field + B) when current is negative for the x-direction
   const double Bx_neg_TPWM = -1.9599 ; //parameter B of (PWM = A * field + B) when current is negative for the x-direction
@@ -109,6 +115,43 @@ class field
   const double Az_pos_TPWM = 46.999; //same but for z
   const double Bz_pos_TPWM = -0.4293; //same but for z
 
+#elif defined(_MAGOD2)
+  // PWM_value=abs(Ax_neg_TPWM * Val_Bmag_x + Bx_neg_TPWM)
+  /* In first order 3.1V gives 1A gives 5 mT. 12/3.1 V is PWM of 25%.
+     So 0.25/5*2^resolution PWM/mT = 13 bits/mT
+   */
+  const double Ax_neg_TPWM = 22.37; 
+  const double Bx_neg_TPWM = 0; 
+  const double Ax_pos_TPWM = 22.37; 
+  const double Bx_pos_TPWM = 0; 
+
+  const double Ay_neg_TPWM = 22.35; 
+  const double By_neg_TPWM = 0; 
+  const double Ay_pos_TPWM = 22.35; 
+  const double By_pos_TPWM = 0; 
+
+  const double Az_neg_TPWM = 22.03; 
+  const double Bz_neg_TPWM = 0; 
+  const double Az_pos_TPWM = 22.03; 
+  const double Bz_pos_TPWM = 0;
+
+  const double Ax_neg_VT = 0.015689;
+  const double Bx_neg_VT = 0.15482; 
+  const double Ax_pos_VT = 0.0144144;
+  const double Bx_pos_VT = -0.013692;
+
+  const double Ay_neg_VT = 0.015689; 
+  const double By_neg_VT = 0.15482; 
+  const double Ay_pos_VT = 0.0144144;
+  const double By_pos_VT = -0.013692;
+  
+  const double Az_neg_VT = 0.015689; 
+  const double Bz_neg_VT = 0.15482; 
+  const double Az_pos_VT = 0.0144144;
+  const double Bz_pos_VT = -0.013692;
+
+  
+#endif
 
 
   int Current_PWM_value_x; //tracks the x part of the PWM value that is currently used at the output, which may be different from the PWM value set at the B_arrayfield to compensate for the heating of the coils (changing the resistance and thus the required voltage for the same current)

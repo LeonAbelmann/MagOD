@@ -17,22 +17,18 @@
 #define LED_green 32 
 #define LED_blue   4
 /* ESP32 can drive the LED in PWM. We need it to reduce the light intenstity */
-const int LEDfreq = 5000;
+const int LEDfreq = 10000;
 const int LEDresolution = 8;
 /* Note that you share these values with the pwm for the Motordrivers.
    0-2 are for the LED. 3-5 are for the motors */
 const int LEDChannelRed = 0; 
 const int LEDChannelGreen = 1;
 const int LEDChannelBlue = 2;
-/* Brightness of LEDs */
-const int LEDMaxRed = 200;
-const int LEDMaxGreen = 200;
-const int LEDMaxBlue = 200;
 #endif
 
-#define RED 1
-#define GREEN 2
-#define BLUE 3
+#define RED 0
+#define GREEN 1
+#define BLUE 2
 
 class led
 {
@@ -40,7 +36,11 @@ class led
   //Colors
   led();
   int LEDs[];
+#if defined(_MAGOD1)
   void Set_LED_color(int color); //Initializes the RGB led color and changes the color during the running of the program.
+#elif defined(_MAGOD2)
+  void Set_LED_color(int color, int intensity[]); //MagOD2 has PWM on leds
+#endif
   private:
 };
 

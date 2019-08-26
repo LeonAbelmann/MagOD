@@ -21,7 +21,8 @@ void recipes::LED_init()
 {
   switch (program_cnt){
    case 1:
-     LED_type = GREEN; /* Green only */
+     LED_type = GREEN;
+     LED_intensity[GREEN]=65; /* Only MagOD2 */
      ref_all_wavelength = 0;
      break;
    case 2:
@@ -70,28 +71,27 @@ void recipes::program_init()
   memset(Gradient_z, 1, B_NR_MAX);
   
   switch (program_cnt){
-    //case 1: /* Sequence for MC-1, monocolor */
-    B_nr_set = 2; // If fieldarrays [0..1], B_nr_set = 2 e.g.
-    
-    B_arrayfield_z[0] = 1; //Field up, same as how we ended
-    Switching_time[0] = 400000; //Leave it on for 400 sec, giving time for saving data
-    B_arrayfield_z[1] = -1; //Field down, same as how we ended
-    Switching_time[1] = 150000; //Leave it on for 300 sec, don't give MC-1 that were on the bottom time to reach the top, where there might be oxygen
-    break;
-    // case 1: /* Sequence for MSR-1 analysis, monocolor */
-    // B_nr_set = 5; // [0..4]
-    
-    // B_arrayfield_x[0] = 0.4; //0.4 mT field along the light, same as how we ended
-    // Switching_time[0] = 10000; //Leave it on for 10 sec, giving time for saving data
-    // B_arrayfield_y[1] = 2; //Start with 2 mT field perpendicular to the light
-    // Switching_time[1] = 20000; // For 10 sec
-    // B_arrayfield_x[2] = 2; //Than 2 mT parallel to the field
-    // Switching_time[2] = 20000; // For 10 sec
-    // B_arrayfield_y[3] = 0.4; //0.4 mT field perpendicular to the light
-    // Switching_time[3] = 20000; // For 20 sec, because it will take longer
-    // B_arrayfield_x[4] = 0.4; // 0.4 mT parallel to field
-    // Switching_time[4] = 20000; // Leave it on for 20 sec 
-    // break;
+    // case 1: /* Sequence for MC-1, monocolor */
+    //   B_nr_set = 2; // If fieldarrays [0..1], B_nr_set = 2 e.g.
+      
+    //   B_arrayfield_z[0] = 1; //Field up
+    //   Switching_time[0] = 800000; //Leave it on for 800 sec
+    //   B_arrayfield_z[1] = -1; //Field down, 
+    //   Switching_time[1] = 300000; //Leave it on for 300 sec, don't give MC-1 that were on the bottom time to reach the top, where there might be oxygen
+    //   break;    
+  case 1: /* Sequence for MSR-1 analysis, monocolor */
+    B_nr_set = 5; // [0..4]
+    B_arrayfield_x[0] = 0.5; //0.4 mT field along the light, same as how we ended
+    Switching_time[0] = 10000; //Leave it on for 10 sec, giving time for saving data
+    B_arrayfield_y[1] = 1; //Start with 4 mT field perpendicular to the light
+    Switching_time[1] = 20000; // For 20 sec
+    B_arrayfield_x[2] = 1; //Than 2 mT parallel to the field
+    Switching_time[2] = 20000; // For 20 sec
+    B_arrayfield_y[3] = 0.5; //0.4 mT field perpendicular to the light
+    Switching_time[3] = 30000; // For 30 sec, because it will take longer
+    B_arrayfield_x[4] = 0.5; // 0.4 mT parallel to field
+    Switching_time[4] = 30000; // Leave it on for 30 sec 
+     break;
   // case 1: /* Sequence for testing cross-talk */
   //   B_nr_set = 3; // [0..2]
     

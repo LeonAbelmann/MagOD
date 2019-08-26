@@ -19,11 +19,11 @@ TO = handles.data.cycle.time_sec(1);
 TOF = handles.dataF.cycle.time_sec(1);
 
 switch handles.data.cycle.LED(1) % for a cycle the color of the led must be all the same, so first one is ok
-    case 1 
+    case 0 
         linecolor = handles.settings.colors.red;
-    case 2
+    case 1
         linecolor = handles.settings.colors.green;
-    case 3
+    case 2
         linecolor = handles.settings.colors.blue;
 end
 % Plot unfiltered results

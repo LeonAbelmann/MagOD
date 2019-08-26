@@ -57,26 +57,32 @@ void led::Set_LED_color(int color)
   }
 }
 #elif defined(_MAGOD2)
-void led::Set_LED_color(int color)
+void led::Set_LED_color(int color, int intensity[])
 {
   switch (color){
   case RED: 
-      ledcWrite(LEDChannelRed, LEDMaxRed);
+    ledcWrite(LEDChannelRed, intensity[RED]);
       ledcWrite(LEDChannelGreen, 0);
       ledcWrite(LEDChannelBlue, 0);
-      Serial.println("Switched to Red ");
+      Vrefs.Vref=Vrefs.Vred;//Not elegant, update. We don't need Vref.Vref. LEON
+      Serial.print("Switched to Red, intensity: ");
+      Serial.println(intensity[RED]);
       break;
   case GREEN: 
       ledcWrite(LEDChannelRed, 0);
-      ledcWrite(LEDChannelGreen, LEDMaxGreen);
+      ledcWrite(LEDChannelGreen, intensity[GREEN]);
       ledcWrite(LEDChannelBlue, 0);
-      Serial.println("Switched to Green ");
+      Vrefs.Vref=Vrefs.Vgreen;
+      Serial.print("Switched to Green, intensity: ");
+      Serial.println(intensity[GREEN]);
       break;
   case BLUE: 
       ledcWrite(LEDChannelRed, 0);
       ledcWrite(LEDChannelGreen, 0);
-      ledcWrite(LEDChannelBlue, LEDMaxBlue);
-      Serial.println("Switched to Blue ");
+      ledcWrite(LEDChannelBlue, intensity[BLUE]);
+      Vrefs.Vref=Vrefs.Vblue;
+      Serial.print("Switched to Blue, intensity: ");
+      Serial.println(intensity[BLUE]);      
       break;
   }
 }

@@ -48,6 +48,11 @@ void field::Init_field() /*Sets the pins in the correct status*/
   ledcAttachPin(CoilPinX, Coil_x);
   ledcAttachPin(CoilPinY, Coil_y);
   ledcAttachPin(CoilPinZ, Coil_z);
+
+  /* Set outputs to zero */
+  coilPwmWrite(Coil_x, 0);
+  coilPwmWrite(Coil_y, 0);
+  coilPwmWrite(Coil_z, 0);
    
 #endif
   
@@ -56,57 +61,15 @@ void field::Init_field() /*Sets the pins in the correct status*/
   pinMode(Dir_y, OUTPUT);
   pinMode(Dir_z, OUTPUT);
 
-  //sets the mosfet pins as output
-  pinMode(Relay_x, OUTPUT);
-  pinMode(Relay_y, OUTPUT);
-  pinMode(Relay_z, OUTPUT);
 }
   
 void field::SetBfieldFast(double Val_Bmag_x, double Val_Bmag_y, double Val_Bmag_z, bool Gx, bool Gy, bool Gz)
 /* sets the B-field and the direction for given values of the magnetic field magnitudes, the input should be the magnetic field where the sign determines the direction, the function also stores the latest set PWM values, which are used in the current feedback calculations*/
 {
-  double fact_x;
-  double fact_y;
-  double fact_z;
-
-  //these functions sets the gradient for each direction
-  //fact_i is the extra factor for the gradient, PWM must be twice as high to get same field with one coil, compared to getting the field with 2 coils
-  if (Gx ==1)
-   {
-      digitalWrite(Relay_x, HIGH); 
-      fact_x = 1.0;
-   }
-   else
-   {
-      digitalWrite(Relay_x, LOW); 
-      fact_x = 2.0;
-   }
-
-
-  if (Gy ==1)
-   {
-      digitalWrite(Relay_y, HIGH); 
-      fact_y = 1.0;
-   }
-   else
-   {
-      digitalWrite(Relay_y, LOW);
-      fact_y = 2.0; 
-   }
-
-
-   if (Gz ==1)
-   {
-      digitalWrite(Relay_z, HIGH);
-      fact_z = 1.0; 
-   }
-   else
-   {
-      digitalWrite(Relay_z, LOW); 
-      fact_z = 2.0;
-   }
-
-   
+  double fact_x = 1;
+  double fact_y = 1;
+  double fact_z = 1;
+  
   //first checks whether the field is positive, negative or 0 (is required because otherwise the offset (B-term) in linearization of relation between Field and PWM is non-zero)
   //whether the B-field is negative or positive determines the direction of the motor driver (Dir_i)
   //the PWM value is calculated from the wanted B-field (using the characterization measurements giving the parameters A and B) teh compensationfactors for a gradient (use 1 coil) and for heating (current sense) are then used to calculate the PWM value required
@@ -114,16 +77,10 @@ void field::SetBfieldFast(double Val_Bmag_x, double Val_Bmag_y, double Val_Bmag_
   if (Val_Bmag_x < -0.0001)
     { 
       Current_PWM_value_x =
-	round(
-	   abs(fact_x * Comp_fact_x*Ax_neg_TPWM * Val_Bmag_x + Bx_neg_TPWM)
+	round( abs(fact_x * Comp_fact_x*Ax_neg_TPWM * Val_Bmag_x +
+	       Bx_neg_TPWM)
 	     );
-#if defined(_MAGOD1)
-      pwmWrite(Coil_x, Current_PWM_value_x);
-#elif defined(_MAGOD2)
-      /* ledcWrite(channel, dutycycle)
-	 note that dutycycle ranges from 0-2^(resolution) set in ledcSetup */
-      ledcWrite(Coil_x, Current_PWM_value_x);
-#endif
+      coilPwmWrite(Coil_x, Current_PWM_value_x);
       digitalWrite(Dir_x, HIGH);
     }
    else if (Val_Bmag_x > 0.0001)
@@ -148,19 +105,19 @@ void field::SetBfieldFast(double Val_Bmag_x, double Val_Bmag_y, double Val_Bmag_
 	 round(
 	       abs(fact_y *Comp_fact_y*Ay_neg_TPWM * Val_Bmag_y + By_neg_TPWM)
 	       );
-     coilPwmWrite(Coil_y, Current_PWM_value_y);
+       coilPwmWrite(Coil_y, Current_PWM_value_y);
        digitalWrite(Dir_y, HIGH);
     }
    else if (Val_Bmag_y > 0.0001)
    {
       Current_PWM_value_y = round(abs(fact_y * Comp_fact_y*Ay_pos_TPWM * Val_Bmag_y + By_pos_TPWM));
-    coilPwmWrite(Coil_y, Current_PWM_value_y);
+      coilPwmWrite(Coil_y, Current_PWM_value_y);
       digitalWrite(Dir_y, LOW);
     }
    else
    {
       Current_PWM_value_y = 0;
-    coilPwmWrite(Coil_y, Current_PWM_value_y);
+      coilPwmWrite(Coil_y, Current_PWM_value_y);
       digitalWrite(Dir_y, LOW);
    }
    if (Val_Bmag_z < -0.0001)
@@ -168,30 +125,30 @@ void field::SetBfieldFast(double Val_Bmag_x, double Val_Bmag_y, double Val_Bmag_
        
        
        Current_PWM_value_z = round(abs(fact_z * Comp_fact_z*Az_neg_TPWM * Val_Bmag_z + Bz_neg_TPWM));
-     coilPwmWrite(Coil_z, Current_PWM_value_z);
+       coilPwmWrite(Coil_z, Current_PWM_value_z);
        digitalWrite(Dir_z, HIGH);
     }
    else if (Val_Bmag_z > 0.0001)
    {
       
       Current_PWM_value_z = round(abs(fact_z * Comp_fact_z*Az_pos_TPWM * Val_Bmag_z + Bz_pos_TPWM));
-    coilPwmWrite(Coil_z, Current_PWM_value_z);
+      coilPwmWrite(Coil_z, Current_PWM_value_z);
       digitalWrite(Dir_z, LOW);
     }
     else
     {
       Current_PWM_value_z = 0;
-    coilPwmWrite(Coil_z, Current_PWM_value_z);
+      coilPwmWrite(Coil_z, Current_PWM_value_z);
       digitalWrite(Dir_z, LOW);
     }
 
     //print the PWM values for debugging
-    //Serial.print("PWM_x: ");
-    //Serial.println(Current_PWM_value_x);
-    //Serial.print("PWM_y: ");
-    //Serial.println(Current_PWM_value_y);
-    //Serial.print("PWM_z: ");
-    //Serial.println(Current_PWM_value_z);
+    Serial.print("PWM_x: ");
+    Serial.println(Current_PWM_value_x);
+    Serial.print("PWM_y: ");
+    Serial.println(Current_PWM_value_y);
+    Serial.print("PWM_z: ");
+    Serial.println(Current_PWM_value_z);
    
    
  }
@@ -263,9 +220,11 @@ double field::Current_feedback_calculation(double T_wanted, int Read_pin, double
 void field::Current_feedback()
 /* Calls the Current_feedback_calculation function for each direction (x,y,z) and then changes the outut PWM value to the newly found adapted value */
 {
-   double Comp_fact_x_prev = Comp_fact_x;
-   double Comp_fact_y_prev = Comp_fact_y;
-   double Comp_fact_z_prev = Comp_fact_z;
+
+#if defined(_MAGOD1)
+  double Comp_fact_x_prev = Comp_fact_x;
+  double Comp_fact_y_prev = Comp_fact_y;
+  double Comp_fact_z_prev = Comp_fact_z;
    
    if (B_arrayfield_x[Looppar_1] != 0)
    {
@@ -286,6 +245,8 @@ void field::Current_feedback()
 
    //set the field with the new compensated values
    SetBfieldFast(B_arrayfield_x[Looppar_1], B_arrayfield_y[Looppar_1], B_arrayfield_z[Looppar_1],Gradient_x[Looppar_1],Gradient_y[Looppar_1],Gradient_z[Looppar_1]);
+#endif
+   /* Needs to be implemented in different way for MagOD2 */
 }
 
 
@@ -307,6 +268,7 @@ bool field::CheckUpdatedCurrentTime()
 //initialization of the current sensing, used to measure the offset values of the difference amplfiers
 void field::Init_current_feedback()
 {
+#if defined(_MagOD1)
   Serial.println("Initialising current feedback timer to 1000 sec");
   // ESP32 handles timers in a different way. Perhaps make a timer wrapper?
   //https://techtutorialsx.com/2017/10/07/esp32-arduino-timer-interrupts/
@@ -331,25 +293,24 @@ void field::Init_current_feedback()
   Vfb.x=V_current_init_x;
   Vfb.y=V_current_init_y;
   Vfb.z=V_current_init_z;
+  #endif
+  /* Needs new implementation for MagOD2 
+     Perhaps one where we read the currents only once
+  */
 }
 
 void field::Reset_Bfield()
 //resets all settings for the B-field, direction, gradient and feedback correction
 {
   //make all coils inactive
-coilPwmWrite(Coil_x, 0);
-coilPwmWrite(Coil_y, 0);
-coilPwmWrite(Coil_z, 0);
+  coilPwmWrite(Coil_x, 0);
+  coilPwmWrite(Coil_y, 0);
+  coilPwmWrite(Coil_z, 0);
   
   //set coil direction
   digitalWrite(Dir_x, LOW); 
   digitalWrite(Dir_y, LOW);
   digitalWrite(Dir_z, LOW);
-
-  //reset short circuit relay
-  digitalWrite(Relay_x, HIGH); 
-  digitalWrite(Relay_y, HIGH);
-  digitalWrite(Relay_z, HIGH);
 
   //reset current feedback control
   Comp_fact_z = 1;
@@ -365,9 +326,20 @@ void field::coilPwmWrite(int Coil, int PWM_value)
   // If Arduino, use pwm.h. PWM_Value 0:255
       pwmWrite(Coil, PWM_value);
 #elif defined(_MAGOD2)
-   // If ESP32, use ledcWrite(channel, pwm). PMW_value 0:2^(resolution)
-   // Resolution is set in ledcSetup
+      // If ESP32, use ledcWrite(channel, pwm). PMW_value 0:2^(resolution)
+      // Resolution is set in ledcSetup
+      double maxPWM = round(0.5*pow(2,resolution)); //Limit to 6V/3Ohm=2 A
+      //double maxPWM = round(1*pow(2,resolution)); //Don't limit
+      if (PWM_value > maxPWM)
+	{ Serial.print("PWM limited to");
+	  Serial.println(maxPWM);
+	  PWM_value=maxPWM;
+	}
       ledcWrite(Coil, PWM_value);
+      // Serial.print("Setting PWM of coil ");
+      // Serial.print(Coil);
+      // Serial.print(" to ");
+      // Serial.println(PWM_value);
 #endif
 }
       

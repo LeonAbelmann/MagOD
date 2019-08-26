@@ -6,6 +6,7 @@
 */
 
 #include "Arduino.h"
+#include "../../MagOD.h"
 #include "buttons.h"
 #include "../screen/screen_RA8875.h" //Definition of pins
 #include "touch_calibrate.h" // Calibration file for touchscreen
@@ -117,7 +118,9 @@ void buttons::showButtonArea(int i, const char* str, int bgcolor, int fgcolor)
   myscreen.tft.textTransparent(fgcolor);
   myscreen.tft.textWrite(str);
 }
+#endif
 
+#if defined(_MAGOD2)
 /* Did the user press button, if so, which one?
 return 0 if button was not hit
 int x,y: coordinates that were hit
@@ -137,7 +140,6 @@ int buttons::whichButton(int x, int y){
   }
   return buttonpressed;
 }
-
 #endif //defined(_MAGOD2)
 
 /* Setup the hardware buttons or touchscreen */
@@ -170,6 +172,11 @@ void buttons::initButton(){
   /* Size of a button */
   buttonSize_x = myscreen.screenSiz_x - 2*myscreen.column_space;
   buttonSize_y =  30;
+
+  /* We should rename the buttons. 1,2 etc should be BUTTON_START,
+  BUTTON_VREF etc. This implies that MagOD1 also needs to be
+  changed. Work... LEON  */
+
   /* Button 1: Start/Stop */
   showButtonArea(1, (char *)"Start", TFTCOLOR_GREEN, TFTCOLOR_BLACK);
 
@@ -217,9 +224,13 @@ uint8_t buttons::readButton() {
 	    {
 	    case 1 :
 	      Serial. println("1: BUTTON_SELECT");
+	      showButtonArea(1, (char *)"Starting...",
+			     TFTCOLOR_WHITE, TFTCOLOR_BLACK);
 	      return BUTTON_SELECT; //Start/stop button
 	    case 2 :
 	      Serial. println("2: BUTTON_LEFT");
+	      showButtonArea(2, (char *)"Setting Vref...",
+			     TFTCOLOR_WHITE, TFTCOLOR_BLACK);
 	      return BUTTON_LEFT; //Set Vref
 	    default:
 	      Serial. println("0: BUTTON_NONE");

@@ -45,17 +45,15 @@ class adc
  public:
   adc();
 #if defined(_MAGOD1)
-  Adafruit_ADS1115 ads; //adc0-3
   double adsMaxV;  //max voltage that can be measured by the ADC
 #elif defined(_MAGOD2)
-  Adafruit_ADS1115 ads0; //adc0-3;
-  Adafruit_ADS1115 ads1; //adc4-7;
   double adsMaxV0,adsMaxV1;  //max voltages, for two ADCs
 #endif
   void initADC(); //Start the ADCs with correct amplification
   void set_vrefs(references &Vref, bool ref_all_wavelength, led myled); //measure reference voltage
   diodes readDiodes(); // Read the signals from the photodiodes
   double readTemp(); //Read the temperature sensor
+  feedbacks readFeedbacks();//Read the currents to the coils
  private:
   //none
 };

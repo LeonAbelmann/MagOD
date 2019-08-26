@@ -24,13 +24,18 @@
 
 // Color definitions
 //https://wiibrew.org/wiki/U16_colors
-#define	TFTCOLOR_BLACK   0x0000
-#define	TFTCOLOR_BLUE    0x001F
-#define	TFTCOLOR_RED     0xF800
-#define	TFTCOLOR_GRAY    0xEEEE
-#define	TFTCOLOR_GREEN   0x07E0
-#define	TFTCOLOR_YELLOW  0xFFE0
-#define	TFTCOLOR_WHITE   0xFFFF
+#define	TFTCOLOR_BLACK     0x0000
+#define	TFTCOLOR_BLUE      0x001F
+#define	TFTCOLOR_RED       0xF800
+#define	TFTCOLOR_GRAY      0xEEEE
+#define	TFTCOLOR_GREEN     0x07E0
+#define	TFTCOLOR_YELLOW    0xFFE0
+#define	TFTCOLOR_WHITE     0xFFFF
+#define	TFTCOLOR_LIGHTGRAY 0xBDF7
+#define	TFTCOLOR_DARKGRAY  0x7BEF
+#define	TFTCOLOR_ORANGE    0xFBE0
+#define	TFTCOLOR_BROWN     0x79E0
+#define	TFTCOLOR_PINK      0xF81F
 
 
 class screen{
@@ -38,10 +43,11 @@ class screen{
   //screen(int16_t w, int16_t h, Adafruit_GFX *tft_p); //Constructor
   screen(); //Constructor
   void setupScreen();
-  void updateInfo(unsigned int Looppar_1, unsigned int Looppar_2, int16_t program_cnt);
+  void updateInfo(unsigned int Looppar_1, unsigned int Looppar_2, int16_t program_cnt, const char *filename);
   void updateGraph(double value, int led);
   //void setScreenLimit(uint16_t val1, uint16_t val2);
-  void updateV(diodes Vdiodes, references Vref, double OD);
+  void updateV(diodes Vdiodes, references Vref, double OD,
+	       feedbacks currents);
   void updateFILE(const char *str);
   void setRecButton(bool active);
 

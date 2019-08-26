@@ -43,9 +43,6 @@ struct feedbacks {
 };
 
 /* MagOD libraries, should be src subdirectory MagOD.ino folder */
-/* This is still puzzling. I want all includes in this header file,
-   not only timer.h, but get errors about references not
-   declared. Needs attention. Leon */
 #include "src/timer/timer.h" // On board timers
 #include "src/led/led.h" // Control of three colour LED
 #include "src/buttons/buttons.h" //Control of buttons (joystick)
@@ -57,21 +54,20 @@ struct feedbacks {
 #elif defined(_MAGOD2)
 #include "src/screen/screen_RA8875.h" // RA8875 TFTM050 with touch 
 #endif
-
+// Load screen before fileandserial and recipes 
 #include "src/fileandserial/fileandserial.h" //File and serial port IO
+#include "src/recipes/recipes.h" //User measurement recipe
 
-#if defined(_MAGOD2)
-//#include <FS.h> // Routines for filesystem SD Card
-#endif
 
-/* testing, should this be here? Leon */
+/* Definition of global (extern) variables */
+
+/* This should not be here, but in timer.h, but I cannot make that compile
+   LEON */
 #if defined(_MAGOD2)
 extern hw_timer_t * timer1;
 extern hw_timer_t * timer3;
 extern hw_timer_t * timer4;
 #endif
-
-/* Definition of global (extern) variables */
 
 extern timer mytimer;
 extern screen myscreen;
@@ -97,8 +93,12 @@ extern unsigned long time_of_start; //Time at which the measurement was started
 extern unsigned long time_last_field_change; //Time since the last field step
 
 /* LED parameters */
-extern int LEDs[3];
-extern int LED_type; //The color of the LED, 1 = RED, 2 = GREEN, 3 = BlUE
+#define LEDnumber 3 //Number of LEDs available
+extern int LEDs[LEDnumber];
+extern int LED_type; //The color of the LED e.g (RED, GREEN, BlUE)
+#if defined(_MAGOD2)
+extern int LED_intensity[LEDnumber];//The brightness of the leds
+#endif
 extern int LED_switch_cycles; //The number of cycles after which the LED changes the frequency, when a 0 is entered, the LED keeps the beginning frequency during the complete measurement 
 extern int Counter_cycles_led; //counter used to store the amount of complete cycles the LED has had the same colour, to check when the colour has to change (after LED_switch_cycles)
 extern bool ref_all_wavelength; //Set this to 1 for specific programs where you work with multiple wavelengths in a single measurement (such that it stores the reference value of all 3 wavelengths)

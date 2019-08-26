@@ -45,7 +45,8 @@ class screen{
   void updateInfo(unsigned int Looppar_1, unsigned int Looppar_2, int16_t program_cnt, const char *filename);
   void updateGraph(double value, int led);
   //void setScreenLimit(uint16_t val1, uint16_t val2);
-  void updateV(diodes Vdiodes, references Vref, double OD);
+  void updateV(diodes Vdiodes, references Vref, double OD,
+	       feedbacks currents);
   void updateFILE(const char *str);
   void setRecButton(bool active);
 

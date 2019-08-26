@@ -8,6 +8,7 @@
 #define buttons_h
 
 #include <Adafruit_ADS1015.h>  // ADC library
+#include "../../MagOD.h"
 
 #define BUTTON_NONE 0
 #define BUTTON_DOWN 1
@@ -19,14 +20,16 @@
 class buttons
 {
  public:
-  buttons();
+  buttons();//Constructor
   void initButton();//Setup buttons 
   uint8_t readButton();//Read button status, any of defined stati above
+  #if defined(_MAGOD2)
   void showButtonArea(int i, const char* str, int bgcolor, int fgcolor);//Draw button i
   int buttonOffset_x, buttonOffset_y; // Upper left corner of button area
   int buttonSize_x,buttonSize_y; // Size of a button
  private:
   int whichButton(int x, int y); //Check which button is pressed on touchscreen
+  #endif
 };
 
 #endif

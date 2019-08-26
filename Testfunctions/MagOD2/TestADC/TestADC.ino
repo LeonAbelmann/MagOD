@@ -3,9 +3,9 @@
 #include <Adafruit_RA8875.h> // TFTM50 screen
 #include <Adafruit_ADS1015.h>  // ADC library
 
-#define RA8875_INT 2 
+#define RA8875_INT 16
 #define RA8875_CS 5 
-#define RA8875_RESET 4
+#define RA8875_RESET 17
 
 /* Intialize screen */
 Adafruit_RA8875 tft = Adafruit_RA8875(RA8875_CS,RA8875_RESET);
@@ -17,15 +17,37 @@ Adafruit_RA8875 tft = Adafruit_RA8875(RA8875_CS,RA8875_RESET);
    0x4B (1001011) ADR -> SCL */
 /* MagOD2 has two ADS1115. 
    U2 with address pin to gnd, used for AIN0-3.
-   U5 with address pint to VDD (3.3V), used for AIN4-7 */
+   U5 with address pin to VDD (3.3V), used for AIN4-7 */
 #define ADS1015_ADDRESS_0 (0x48)// 1001 000 (ADDR -> GND)
 #define ADS1015_ADDRESS_1 (0x49)// 1001 001 (ADDR -> VDD)
 Adafruit_ADS1115 ads0(ADS1015_ADDRESS_0); //adc0-3;
 Adafruit_ADS1115 ads1(ADS1015_ADDRESS_1); //adc4-7;
 
+/* Coil variables (to switch them off) */
+uint8_t Coil_x = 33; // output of the coils in the x direction
+uint8_t Coil_y = 26; // output of the coils in the y direction
+uint8_t Coil_z = 14; // output of the coils in the z direction
+const int ledChannel_x = 3; /*0-15*/
+const int ledChannel_y = 4; /*0-15*/
+const int ledChannel_z = 5; /*0-15*/
+
+
 void setup () {
   Serial.begin(115200);
   delay(1000);
+
+  //Switch off the magnets:
+  ledcSetup(ledChannel_x, 1000, 8);
+  ledcSetup(ledChannel_y, 1000, 8);
+  ledcSetup(ledChannel_z, 1000, 8);
+
+  ledcAttachPin(Coil_x, ledChannel_x);
+  ledcAttachPin(Coil_y, ledChannel_y);
+  ledcAttachPin(Coil_z, ledChannel_z);
+
+  ledcWrite(ledChannel_x, 0);
+  ledcWrite(ledChannel_y, 0);
+  ledcWrite(ledChannel_z, 0);
   
   Serial.println("Trying to find RA8875 screen...");
   /* Initialise the display using 'RA8875_480x272' or 'RA8875_800x480' */
@@ -36,9 +58,9 @@ void setup () {
   Serial.println("RA8875 Found");
 
   /* Initialize ADC */
-  ads0.setGain(GAIN_FOUR);
+  ads0.setGain(GAIN_ONE);
   ads0.begin();
-  ads1.setGain(GAIN_FOUR);
+  ads1.setGain(GAIN_ONE);
   ads1.begin();
   
   // Initiliaze display
@@ -68,15 +90,15 @@ void loop()
   Serial.print("adc0: ");
   Serial.println(adc0);
   
-  adc1=double(ads0.readADC_SingleEnded(0));
+  adc1=double(ads0.readADC_SingleEnded(1));
   Serial.print("adc1: ");
   Serial.println(adc1);
   
-  adc2=double(ads0.readADC_SingleEnded(0));
+  adc2=double(ads0.readADC_SingleEnded(2));
   Serial.print("adc2: ");
   Serial.println(adc2);
   
-  adc3=double(ads0.readADC_SingleEnded(0));
+  adc3=double(ads0.readADC_SingleEnded(3));
   Serial.print("adc3: ");
   Serial.println(adc3);
 
@@ -85,15 +107,15 @@ void loop()
   Serial.print("adc0: ");
   Serial.println(adc4);
   
-  adc5=double(ads1.readADC_SingleEnded(0));
+  adc5=double(ads1.readADC_SingleEnded(1));
   Serial.print("adc1: ");
   Serial.println(adc5);
   
-  adc6=double(ads1.readADC_SingleEnded(0));
+  adc6=double(ads1.readADC_SingleEnded(2));
   Serial.print("adc2: ");
   Serial.println(adc6);
   
-  adc7=double(ads1.readADC_SingleEnded(0));
+  adc7=double(ads1.readADC_SingleEnded(3));
   Serial.print("adc3: ");
   Serial.println(adc7);
 

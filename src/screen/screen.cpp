@@ -144,10 +144,10 @@ void screen::setupScreen()
   tft.println("STP:");
   
   //Draw rectangle for graph
-  this->updateV(Vdiodes,Vrefs,OD);
+  this->updateV(Vdiodes,Vrefs,OD,Vfb);
   char welcomeword[] = "WELCOME!"; 
   this->updateFILE(welcomeword);
-  this->updateInfo(10,1,1);
+  this->updateInfo(10,1,1,welcomeword);
   tft.drawRect(g_x, g_y, g_w, g_h, TFTCOLOR_WHITE);
   //tft.drawRect(g_x+1, g_y+1, g_w-2, g_h-2, TFTCOLOR_RED);
   
@@ -157,7 +157,7 @@ void screen::setupScreen()
 
 
 //filling in the values on the screen
-void screen::updateV(diodes Vdiodes, references Vref, double OD)
+void screen::updateV(diodes Vdiodes, references Vref, double OD, feedbacks Vfb)
 {
   //Clear existing data
   tft.fillRect(locText_x+locText_hSpace, locText_y,
@@ -179,10 +179,12 @@ void screen::updateV(diodes Vdiodes, references Vref, double OD)
   //OD
   tft.setCursor(locText_x+locText_hSpace,locText_y+3*locText_vSpace);
   tft.println(OD,5);
+
+  // For Vfb there is no space :(
 }
 
 //update program settings whenever requested
-void screen::updateInfo(unsigned int Looppar_1, unsigned int Looppar_2, int16_t program_cnt)
+void screen::updateInfo(unsigned int Looppar_1, unsigned int Looppar_2, int16_t program_cnt, const char *filename)
 {
   //Clear existing data
   tft.fillRect(locText_x+locText_hSpace, locText_y+5*locText_vSpace, 50, locText_vSpace, TFTCOLOR_BLACK);

@@ -24,11 +24,11 @@ if settings.LEDcolor
     y_color = zeros(length(y_data),3);
     for i=1:length(y_data)
         switch data.all.LED(i)
-            case 1 % red
+            case 0 % red
                 y_color(i,:) = settings.colors.red;
-            case 2 % green 
+            case 1 % green 
                 y_color(i,:) = settings.colors.green;
-            case 3 % blue
+            case 2 % blue
                 y_color(i,:) = settings.colors.blue;
         end
     end

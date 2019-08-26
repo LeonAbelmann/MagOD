@@ -1,12 +1,15 @@
 /* file.cpp
  MagOD libary 
- Oct 2018
+ Juli 2019
  File IO
  Tijmen Hageman, Jordi Hendrix, Hans Keizer, Leon Abelmann 
 */
 
 #include "Arduino.h"
 #include "fileandserial.h"
+
+/* We should consider saving the files in directories. LEON */
+
 
 //Constructor
 fileandserial::fileandserial(){
@@ -18,11 +21,14 @@ void fileandserial::setFileName(char fName_char[]){
   String fName_str;
   //Keeps looping until found
   while (true){
-    fName_str = "f" + (String)i + ".csv";
+    fName_str = "/f" + (String)i + ".csv"; /* Not sure if MagOD1
+					      understands the /,
+					      LEON */
     fName_str.toCharArray(fName_char, fN_len);
+
     //prints for debugging
-    //Serial.print("Filename = ");
-    //Serial.println(fName_char);
+    Serial.print("Filename = ");
+    Serial.println(fName_char);
     
     if (!SD.exists(fName_char)){
       file_number = i;
@@ -35,7 +41,7 @@ void fileandserial::setFileName(char fName_char[]){
 /*when the file length is longer as the maximum length and a field sequence has finished, a new file is made with the same name + the addition of "_i" with i = 1,2,3,4,5.... */
 void fileandserial::updateFileName(char fName_char[]){
   String fName_str;
-  fName_str = "f" + (String)file_number + "_" +
+  fName_str = "/f" + (String)file_number + "_" +
 	  (String)SD_file_number_count +".csv";
   fName_str.toCharArray(fName_char, fN_len);
   SD_file_number_count = SD_file_number_count +1;
@@ -46,65 +52,67 @@ void fileandserial::updateFileName(char fName_char[]){
 void fileandserial::saveSettingsFile(char fName_char[]){
 
   //Create filename for settings
-  String fName_settings_str = "f" + (String)file_number + "_set.csv";
+  String fName_settings_str = "/f" + (String)file_number + "_set.csv";
   char fName_settings_char[fN_len];
   fName_settings_str.toCharArray(fName_settings_char, fN_len);
   //Serial.println(fName_settings_str);
   //Serial.println(fName_settings_char);
 
-  /*char testchar[8] = "test.csv";
-  dataFile = SD.open(testchar, FILE_WRITE);
-  dataFile.print("SomeTextstuff");
-  dataFile.close();*/
-
   //Create file and save settings data
   dataFile = SD.open(fName_settings_char, FILE_WRITE);
-
+  if(!dataFile)
+    {
+      Serial.print(fName_settings_char);
+      Serial.println(" failed to open.");
+    }
+  else
+    {
 #if defined(_MAGOD1)
-  dataFile.println("# Version=MAGOD1");
+      dataFile.println("# Version=MAGOD1");
 #elif defined(_MAGOD2)
-  dataFile.println("# Version=MAGOD2");
+      dataFile.println("# Version=MAGOD2");
 #else
-  datafile.println("# No version defined!");
+      datafile.println("# No version defined!");
 #endif
     
-  dataFile.print("# Vref=");
-  dataFile.print(Vrefs.Vref,5);
-  //store also all references for the specific colors if required
-  if (ref_all_wavelength == 1)
-    {
-      dataFile.print(",Vrefred=");
-      dataFile.print(Vrefs.Vred,5);
-      dataFile.print(",Vrefgreen=");
-      dataFile.print(Vrefs.Vgreen,5);
-      dataFile.print(",Vrefblue=");
-      dataFile.print(Vrefs.Vblue,5);
+      dataFile.print("# Vref=");
+      dataFile.print(Vrefs.Vref,5);
+      //store also all references for the specific colors if required
+      if (ref_all_wavelength == 1)
+	{
+	  dataFile.print(",Vrefred=");
+	  dataFile.print(Vrefs.Vred,5);
+	  dataFile.print(",Vrefgreen=");
+	  dataFile.print(Vrefs.Vgreen,5);
+	  dataFile.print(",Vrefblue=");
+	  dataFile.print(Vrefs.Vblue,5);
+	}
+      dataFile.println();
+      dataFile.print("# Prg=");dataFile.println(program_cnt);
+      dataFile.print("# B_nr_set=");dataFile.println(B_nr_set); 
+      dataFile.print("# LED_switch_cycles=");
+      dataFile.println(LED_switch_cycles);
+      dataFile.print("# Nr_cycles=");dataFile.println(Nr_cycles);
+      dataFile.println("");
+      dataFile.println("# Recipe: ");
+      dataFile.print("seq,B_x[mT],B_y[mT],B_z[mT],T_switch[ms]");
+      dataFile.println(",Grad_x,Grad_y,Grad_z");
+      for (unsigned int i=0; i<B_nr_set; i++){
+	dataFile.print(i); dataFile.print(",");
+	dataFile.print(B_arrayfield_x[i]); dataFile.print(",");
+	dataFile.print(B_arrayfield_y[i]); dataFile.print(",");
+	dataFile.print(B_arrayfield_z[i]); dataFile.print(",");
+	dataFile.print(Switching_time[i]); dataFile.print(",");
+	dataFile.print(Gradient_x[i]); dataFile.print(",");
+	dataFile.print(Gradient_y[i]); dataFile.print(",");
+	dataFile.println(Gradient_z[i]);
+      }
+      dataFile.close();
     }
-  dataFile.println();
-  dataFile.print("# Prg=");dataFile.println(program_cnt);
-  dataFile.print("# B_nr_set=");dataFile.println(B_nr_set); 
-  dataFile.print("# LED_switch_cycles=");dataFile.println(LED_switch_cycles);
-  dataFile.print("# Nr_cycles=");dataFile.println(Nr_cycles);
-  dataFile.println("");
-  dataFile.println("# Recipe: ");
-  dataFile.println("seq, B_x[mT],B_y[mT],B_z[mT],T_switch[ms],Grad_x,Grad_y,Grad_z");
-  for (unsigned int i=0; i<B_nr_set; i++){
-    dataFile.print(i); dataFile.print(",");
-    dataFile.print(B_arrayfield_x[i]); dataFile.print(",");
-    dataFile.print(B_arrayfield_y[i]); dataFile.print(",");
-    dataFile.print(B_arrayfield_z[i]); dataFile.print(",");
-    dataFile.print(Switching_time[i]); dataFile.print(",");
-    dataFile.print(Gradient_x[i]); dataFile.print(",");
-    dataFile.print(Gradient_y[i]); dataFile.print(",");
-    dataFile.println(Gradient_z[i]);
-  }
-  dataFile.close();
-
   //Send settings file to serial port
   Serial.print("Sending settings file ...");
   sendFileToSerial(fName_settings_char);
   Serial.println("Done");   
-
 }
 
 /* Write data to SD card */
@@ -115,15 +123,23 @@ void fileandserial::saveToFile(char fName_char[fN_len],
 			       double OD,
 			       int LED_type,
 			       int Looppar_1,
-			       feedbacks Vfb){
-  File dataFile = SD.open(fName_char, FILE_WRITE);
-      if (dataFile) {
-	writeDataLine(dataFile, time_of_data_point, Vdiodes,
-		      Temperature,OD,LED_type,Looppar_1,Vfb);
-	dataFile.close();
-      }
-}
+			       feedbacks Vfb)
+{
+  
+  File dataFile = SD.open(fName_char, FILE_APPEND);
 
+  if (!dataFile)
+    {
+      Serial.print(fName_char);
+      Serial.println(" failed to open.");
+    }
+  else
+    {
+      writeDataLine(dataFile, time_of_data_point, Vdiodes,
+		    Temperature,OD,LED_type,Looppar_1,Vfb);
+      dataFile.close();
+    }
+}
 
 //void sendFileToSerial(char fName_char[fN_len]) {
 void fileandserial::sendFileToSerial(char fName_char[]) {
@@ -132,8 +148,8 @@ void fileandserial::sendFileToSerial(char fName_char[]) {
   if (dataFile) {
     // Announce file is coming, and Write filename on first line
     Serial.print("$FILE: ");
-    // Than write the data
     Serial.println(fName_char);
+    /* Send data */
     while (dataFile.available()) {
       Serial.write(dataFile.read());
     }
@@ -206,8 +222,8 @@ void fileandserial::writeDataLine(Stream &file,
 
 
 void fileandserial::writeHeader(char fName_char[]){
+  /* Create file and write header line */
   File dataFile = SD.open(fName_char, FILE_WRITE);
-
   dataFile.print("Time[ms],Vup[V],Vdwn[V],Vdiode[V],Vled[V],Vscat[V],");
   dataFile.print("OD[],Temp[C],Color[],LoopCount[],");
   dataFile.println("Vfb_x[V],Vfb_y[V],Vfb_z[V]");
