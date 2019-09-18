@@ -1,12 +1,14 @@
 /* Read Recipes 0.1 */
 /* Sep 2019 */
 /* Rutvik, Leon */
+
 /* Test to improve recipe reading from Flash */
+/* Compile with Arduino IDE for ESP32 Dev Board */
 
 /* Class definitions */
 #include "ReadRecipes.h"
 
-/* Init classes */
+/* Init class */
 recipes myrecipes;
 
 /* Setup card and load datafile*/
@@ -22,8 +24,8 @@ void setup()
   {
     Serial.println("SD Card Ready");
 
+    /* Get some info about the card */
     uint8_t cardType = SD.cardType();
-
     if(cardType == CARD_NONE){
         Serial.println("Card Type not recognized");
         return;

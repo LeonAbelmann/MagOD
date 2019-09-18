@@ -11,5 +11,9 @@
 
 /* Constants */
 #define SD_CS      15 //Pin for SD card.
+/* Globals */
+#define RED 0
+#define GREEN 1
+#define BLUE 2
 
 #endif
