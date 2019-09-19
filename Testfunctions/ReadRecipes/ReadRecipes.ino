@@ -13,7 +13,9 @@ recipes myrecipes;
 
 /* Setup card and load datafile*/
 void setup()
-{ delay(1000);//Give serial monitor time
+{
+   Serial.begin(115200);
+  delay(1000);//Give serial monitor time
 
   // Setup the SD Card
   // see if the card is present and can be initialized
@@ -26,10 +28,11 @@ void setup()
 
     /* Get some info about the card */
     uint8_t cardType = SD.cardType();
-    if(cardType == CARD_NONE){
+    if(cardType == CARD_NONE)
+      {
         Serial.println("Card Type not recognized");
         return;
-    }
+      }
 
     Serial.print("SD Card Type: ");
     if(cardType == CARD_MMC){
@@ -47,23 +50,42 @@ void setup()
 
     /* Test if file can actually be opened for writing */
     File dataFile = SD.open("/test.txt", FILE_WRITE);
-    if(!dataFile){
+    if(!dataFile)
+      {
         Serial.println("Failed to open file for writing");
         return;
-    }
-    if(dataFile.print("Hello world")){
+      }
+    if(dataFile.print("Hello world"))
+      {
         Serial.println("test.txt written");
-    } else {
+      } else
+      {
         Serial.println("Write test.txt failed");
-    }
+      }
     dataFile.close();
-  }
+    
 
-  /* Read Recipes from file */
-  if (myrecipes.LoadRecipes())
-    {Serial.println("Recipes loaded fine");}
-  else
-    {Serial.println("Error loading recipes");}
+    /* Test if recipes file can be read */
+    File recipeFile = SD.open("/RECIPES.CSV");
+    if(!recipeFile)
+      {
+	Serial.println("Failed to open file for writing");
+	return;
+      }
+    /* Read file contents character by character and display on serial
+       monitor */
+    while(recipeFile.available())
+      {
+	Serial.write(recipeFile.read());
+      }
+    recipeFile.close();
+    
+    /* Read Recipes from file */
+    if (myrecipes.LoadRecipes())
+      {Serial.println("Recipes loaded fine");}
+    else
+      {Serial.println("Error loading recipes");}
+  }
 }
 
 /* Main loop */
