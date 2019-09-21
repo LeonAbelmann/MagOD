@@ -7,7 +7,20 @@
 ,,,,,,,,,
 #,Programs are listed below,,,,,,,,
 ,,,,,,,,,
-@,Name,“Cmag Green”,,,,,,,
+@,Recipe,“Cmag Green”,,,,,,,
+#,"If N_cycles = 0, run indefinitely",,,,,,,,
+@,N_cycles,0,,,,,,,
+@,Sequence,,,,,,,,
+#,B_x[mT],B_y[mT],B_z[mT],T_switch[s],LED Color,LED Intensity [0-255],Grad_x,Grad_y,Grad_z
+,0.5,0,0,10,“GREEN”,60,1,1,1
+,0,1,0,20,“GREEN”,60,1,1,1
+,1,0,0,20,“GREEN”,60,1,1,1
+,0,0.5,0,30,“GREEN”,60,1,1,1
+,0.5,0,0,29.5,“GREEN”,60,1,1,1
+@,EndSequence,,,,,,,,
+@,EndRecipe,,,,,,,,
+,,,,,,,,,
+@,Recipe,“Cmag Multicolor”,,,,,,,
 #,"If N_cycles = 0, run indefinitely",,,,,,,,
 @,N_cycles,0,,,,,,,
 @,Recipe:,,,,,,,,
