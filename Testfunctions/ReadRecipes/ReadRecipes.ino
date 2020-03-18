@@ -14,7 +14,7 @@ recipes myrecipes;
 /* Setup card and load datafile*/
 void setup()
 {
-   Serial.begin(115200);
+  Serial.begin(115200);
   delay(1000);//Give serial monitor time
 
   // Setup the SD Card
@@ -69,22 +69,21 @@ void setup()
     File recipeFile = SD.open("/RECIPES.CSV");
     if(!recipeFile)
       {
-	Serial.println("Failed to open file for writing");
+	Serial.println("Failed to open file for writing recipes file");
 	return;
       }
     /* Read file contents character by character and display on serial
        monitor */
-    while(recipeFile.available())
-      {
-	Serial.write(recipeFile.read());
-      }
-    recipeFile.close();
+    // while(recipeFile.available())
+    //   {
+    // 	Serial.write(recipeFile.read());
+    //   }
+    // recipeFile.close();
     
     /* Read Recipes from file */
-    if (myrecipes.LoadRecipes())
-      {Serial.println("Recipes loaded fine");}
-    else
-      {Serial.println("Error loading recipes");}
+    int numRecipes= myrecipes.LoadRecipes(recipeFile,myrecipes.recipes_array);
+    Serial.print("Number of recipes found : ");
+    Serial.println(numRecipes);
   }
 }
 

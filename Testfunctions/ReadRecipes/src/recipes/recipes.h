@@ -1,57 +1,71 @@
 /* Recipes.h 
-Sep 2019. Ruthvik, Leon
+Sep 2019. Leon
 */
 #ifndef recipes_h
 #define recipes_h
 
-#include "../../ReadRecipes.h"
+#include <SD.h>
+#include "../LED/led.h"
 
-int MaxNameLenght = 12; /*Not too long because we need to display it on the screen */
-int MaxRecipes = 25; /*Not too long because we need to display it on the screen */
-int MaxSequences = 25; /*Not too long because we need to display it on the screen */
+/*Not too long because we need to display it on the screen and it will consume memory*/
+#define MaxNameLength       15 // Length of recipe name
+#define MaxRecipes          5  // Maximum number of recipes MagOD can load
+#define MaxSequenceLength   20 // Maximum number of steps per recipes (not too big, consumes memory
 
 
 /* Definition of led parameters */
 struct LEDpars
 { 
-  int color;     //LED colors
-  int intensity; //LED intensity
+  int color;     //LED colors  [RED, GREEN, BLUE]
+  int intensity; //LED intensity [0..255]
 };
 
-
-/* Definition of recipe steps */
-struct recipe {
-  char name[MaxNameLength]; //Array of field values
-  int N_cycles;  // Number of cycles to run, 0 for infinite
-  sequence sequences[MaxSequences]
-  /* and more... */
-};
-
-
-/* Definition of recipe steps */
+/* Definition of a measurement sequence in a recipe */
 struct sequence {
-  double fields[3]; //Array of field values
-  int time; //time for this step (is int big enough? LEON)
-  LEDpars led;      //Struct of led parameters
+  int length; // Number of steps in this sequence [0..length]
+  double  Bx[MaxSequenceLength]; //Array of Bx field values [mT]
+  double  By[MaxSequenceLength];
+  double  Bz[MaxSequenceLength]; 
+  double  time[MaxSequenceLength]; //time in ms for this step
+  LEDpars led[MaxSequenceLength];  //Struct of led parameters
   //GradPars grad; //TBD LEON
 };
 
+/* Definition of recipe */
+struct recipe {
+  char name[MaxNameLength]; // Name of the recipe
+  int N_cycles;  // Number of cycles to run, default 0 for infinite
+  sequence recipe_sequence; /* Measurement sequence. Could be an array
+			       in the future so that every recipe has
+			       multiple sequences, one for
+			       initialization, one for measurement
+			       e.g. Other option is that we reserve
+			       step 0 for initialization, and than
+			       loop back to step 1. LEON*/
+};
 
 class recipes
 {
  public:
   recipes(); /* constructor, does nothing at moment */
 
-  /* Recipe definition of general parameters */
+  /* Recipe definitions: general parameters */
   int version;   // Hardware version (MAGOD1, MAGOD2)
-  /* perhaps more */
+  // perhaps Parameters should go here, LEON
 
-  /* Definition of every single step in the recipe */
-  recipe recipes_array[MaxRecipes]; // Array of step
+  /* Definition of recipes themselves*/
+  recipe recipes_array[MaxRecipes]; // [0..] The number of recipes is limited, should fit on the screen.
 
   /* Functions to manupulate class */
-  bool LoadRecipes(recipe& recipes_array); //Load the recipe from file and stores them in the recipes_array. Return true if success. Did I define the pointer passing correct? LEON
+  /* Load the recipe from file and stores them in the recipes_array. Return true if success. */
+  int LoadRecipes(File file,recipe recipes_array[]);
 
+  /* Initialize the measurement arrays to those defined in recipe 'recipe_num' */
+  void program_init(recipe recipes_array[],int recipe_num);
+  
+  /* Intialize LED parameters. Should not need to be necessary. LEON*/
+  void LED_init(recipe recipes_array[],int recipe_num);
+  
  private:
   /* In case we need something local */
 };
