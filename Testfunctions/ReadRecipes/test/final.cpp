@@ -77,7 +77,7 @@ int getparameters(string names[], CSVCol col){
     // Forget the empty fields
     if (col[i]!="") {
       names[j]=col[i];
-      //cout << i << ", " << j << " " << col[i] << " " << names[j] << "\n";
+      cout << i << ", " << j << " " << col[i] << " " << names[j] << "\n";
       j=j+1;}
   };
   return j;
@@ -107,6 +107,7 @@ int main(){
 	//   i=i+1;
 	// }
 	//cout << "\n";
+	continue;
       }
       // Parameter
       else if(col[0]=="@"){
@@ -157,5 +158,7 @@ int main(){
       // 	  cout << "\n";
       // 	}
     }
+	int a;
+	cin >> a;
 }
 
