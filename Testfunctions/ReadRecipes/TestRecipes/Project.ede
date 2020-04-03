@@ -1,11 +1,6 @@
-;; Object ede-proj-project
+;; Object TestRecipes
 ;; EDE Project Files are auto generated: Do Not Edit
-(ede-proj-project "ede-proj-project"
+(ede-proj-project "TestRecipes"
   :file "Project.ede"
   :name "TestRecipes"
-  :targets
-  (list
-    (ede-proj-target-makefile-program "ede-proj-target-makefile-program"
-      :name "TestRecipes"
-      :path ""
-      :source '("TestRecipes.cpp"))))
+  :targets nil)
