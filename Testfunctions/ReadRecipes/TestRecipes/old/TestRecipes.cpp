@@ -6,7 +6,7 @@ using namespace std;
 
 #define MAX_PARAMS 20
 int Recipe::count = -1; 			// initializing the Recipe_Count
-char Recipe::version[32] = "MAGOD2";
+char Recipe::version[32] = "MAGOD2"; 
 //int count = -1;
 
 bool param_flag;				// set when "Parameters" detected 
@@ -56,7 +56,6 @@ void TestRecipes::split_text(char * in_text, Recipe * recipe) // for splitting t
         {
             //cout<<"In endSequence"<<endl;
             seq_flag = false;	// false when EndSequence is detected
-			//recipe->seq_idx = 0;
             return;
         }
         
@@ -67,6 +66,7 @@ void TestRecipes::split_text(char * in_text, Recipe * recipe) // for splitting t
         //serialprintln(word);
     }
 	if(strcmp(out_text[1], "Recipe") == 0){ // 'count + 1' if Recipe is detected
+		//count+=1;
 		Recipe::count++;
 		strcpy(recipe[Recipe::count].name, out_text[2]);
 		
