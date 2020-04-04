@@ -10,19 +10,20 @@
 top="$(CURDIR)"/
 ede_FILES=Project.ede Makefile
 
-TestRecipes_SOURCES=TestRecipes.cpp
+TestRecipes_SOURCES=TestRecipes.cpp TestRecipes.cpp
 TestRecipes_OBJ= TestRecipes.o
 CXX= g++
 CXX_COMPILE=$(CXX) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 CXX_DEPENDENCIES=-Wp,-MD,.deps/$(*F).P
 CXX_LINK=$(CXX) $(CFLAGS) $(LDFLAGS) -L.
+TestRecipes_OBJ= TestRecipes.o
 VERSION=1.0
 DISTDIR=$(top)TestRecipes-$(VERSION)
 top_builddir = 
 
-DEP_FILES=.deps/TestRecipes.P .deps/TestRecipes.P
+DEP_FILES=.deps/TestRecipes.P .deps/TestRecipes.P .deps/TestRecipes.P
 
-all: TestRecipes
+all: TestRecipes TestRecipes
 
 DEPS_MAGIC := $(shell mkdir .deps > /dev/null 2>&1 || :)
 -include $(DEP_FILES)
@@ -30,6 +31,9 @@ DEPS_MAGIC := $(shell mkdir .deps > /dev/null 2>&1 || :)
 %.o: %.cpp
 	@echo '$(CXX_COMPILE) -c $<'; \
 	$(CXX_COMPILE) $(CXX_DEPENDENCIES) -o $@ -c $<
+
+TestRecipes: $(TestRecipes_OBJ)
+	$(CXX_LINK) -o $@ $^ $(LDDEPS)
 
 TestRecipes: $(TestRecipes_OBJ)
 	$(CXX_LINK) -o $@ $^ $(LDDEPS)
@@ -45,7 +49,7 @@ clean:
 dist:
 	rm -rf $(DISTDIR)
 	mkdir $(DISTDIR)
-	cp $(TestRecipes_SOURCES) $(ede_FILES) $(DISTDIR)
+	cp $(TestRecipes_SOURCES) $(TestRecipes_SOURCES) $(ede_FILES) $(DISTDIR)
 	tar -cvzf $(DISTDIR).tar.gz $(DISTDIR)
 	rm -rf $(DISTDIR)
 

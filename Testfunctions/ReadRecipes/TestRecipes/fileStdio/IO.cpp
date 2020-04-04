@@ -1,19 +1,19 @@
 /* IO functions for command line on PC */
 
-void initSerial(){
+void IO::initSerial(){
   //Nothing to do
 }
 
-void serialPrint(const char* message) {
+void IO::serialPrint(char message[]) {
   cout << message;
 }
 
-void serialPrintln(const char* message) {
+void IO::serialPrintln(char message[]) {
   cout << message\n;
 }
 
 /* Test if recipes file is present */
-bool checkFile(char* filename) {
+bool IO::checkFile(char* filename) {
   // THIS NEED TO BE DONE:
   //recipeFile = SD.open("/RECIPES.CSV"); // recipeFile is global to IO.h
   if recipeFile {
@@ -25,19 +25,19 @@ bool checkFile(char* filename) {
 }
 
 /* Check if recipefile still has on more character */
-bool recipeFileavailable() {
+bool IO::recipeFileavailable() {
   // THIS NEED TO BE DONE:
   //return recipeFile.available();
 }
 
 /* Read next character from recipe file */
-char recipeFileread(){
+char* IO::recipeFileread(){
   // THIS NEED TO BE DONE:
   //return recipeFile.read();
 }
 
 /* Close the recipefile */
-void recipeFileclose(){
+void IO::recipeFileclose(){
   // THIS NEED TO BE DONE:
   //recipeFile.close();
 }
