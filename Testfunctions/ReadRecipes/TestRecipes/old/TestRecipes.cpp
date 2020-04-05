@@ -14,13 +14,13 @@ bool seq_flag;					// set when "Sequence" detected
 //char version[20];               //Holds version
 
 // Print to commandline, to mimic Serial.print
-void serialprint(const char* message) {
-  printf("%s",message);
+void serialprint(char* message) {
+  cout << message;
 }
 
 // Print to commandline, to mimic Serial.println (add linefeed)
-void serialprintln(const char* message) {
-  printf("%s\n",message);
+void serialprintln(char* message) {
+  cout << message << '\n';
 }
 
 
@@ -70,7 +70,7 @@ void TestRecipes::split_text(char * in_text, Recipe * recipe) // for splitting t
 		Recipe::count++;
 		strcpy(recipe[Recipe::count].name, out_text[2]);
 		
-		//serialprintln(recipe[count].name);
+		serialprintln(recipe[Recipe::count].name);
 	}
     else if(seq_flag)	// assigning the sequence values to recipe parameters  
     {
@@ -154,24 +154,24 @@ void file_read(TestRecipes& csv_handler)
     if (i == csv_handler.max_lines) //close when maximum lines reached
         in_file.close();
         
-    for (i = 0; i <= Recipe::count; i++)
-    {   
-        cout<<"Recipe "<<recipe[i].name<<endl;
-        cout<<"Version: "<<recipe[i].version<<"\t"
-            <<"N_cycles: "<<recipe[i].n_cycles<<"\t"<<endl;
-        for (j = 0; j < recipe[i].seq_idx; j++)
-        {
-            cout<<"b_x: "<<recipe[i].sequence[j].b_x<<"\t"
-                <<"b_y: "<<recipe[i].sequence[j].b_y<<"\t"
-                <<"b_z: "<<recipe[i].sequence[j].b_z<<"\t"
-                <<"t_switch: "<<recipe[i].sequence[j].t_switch<<"\t" 
-                <<"led_color: "<<recipe[i].sequence[j].led_color<<"\t"
-                <<"led_intensity: "<<recipe[i].sequence[j].led_intensity<<"\t"
-                <<"grad_x: "<<recipe[i].sequence[j].grad_x<<"\t"
-                <<"grad_y: "<<recipe[i].sequence[j].grad_y<<"\t"
-                <<"grad_z: "<<recipe[i].sequence[j].grad_z<<"\t"<<endl;
-        }
-     }
+    // for (i = 0; i <= Recipe::count; i++)
+    // {   
+        // cout<<"Recipe "<<recipe[i].name<<endl;
+        // cout<<"Version: "<<recipe[i].version<<"\t"
+            // <<"N_cycles: "<<recipe[i].n_cycles<<"\t"<<endl;
+        // for (j = 0; j < recipe[i].seq_idx; j++)
+        // {
+            // cout<<"b_x: "<<recipe[i].sequence[j].b_x<<"\t"
+                // <<"b_y: "<<recipe[i].sequence[j].b_y<<"\t"
+                // <<"b_z: "<<recipe[i].sequence[j].b_z<<"\t"
+                // <<"t_switch: "<<recipe[i].sequence[j].t_switch<<"\t" 
+                // <<"led_color: "<<recipe[i].sequence[j].led_color<<"\t"
+                // <<"led_intensity: "<<recipe[i].sequence[j].led_intensity<<"\t"
+                // <<"grad_x: "<<recipe[i].sequence[j].grad_x<<"\t"
+                // <<"grad_y: "<<recipe[i].sequence[j].grad_y<<"\t"
+                // <<"grad_z: "<<recipe[i].sequence[j].grad_z<<"\t"<<endl;
+        // }
+     // }
     return;
 }
 

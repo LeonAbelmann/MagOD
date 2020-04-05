@@ -37,7 +37,7 @@ class TestRecipes
  private:         
  //Declare private variables here
  protected: 
-        char filename[80];   //Holds filename
+        char filename[10];   //Holds filename
 	    int max_lines;       //Max lines to read
 	    int index;             //Position of file pointer
  public:

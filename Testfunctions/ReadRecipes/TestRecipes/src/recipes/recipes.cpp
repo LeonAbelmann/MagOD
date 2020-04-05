@@ -72,9 +72,9 @@ int readColumns(String line, const char* ch, String col[], int numCol){
 /* Strip first and last quotes of text string. NOT TESTED! */
 bool stripQuotes(String& str){
   //Should check if string really has quotes! Leon
-  Serial.print("stripQuotes: ");Serial.print(str);
+  serialPrint((char *)"stripQuotes: ");serialPrint((char *)str);
   str.substring(1,str.length()-2);
-  Serial.print(" -> ");Serial.print(str);
+  serialPrint((char *)" -> ");serialPrint((char *)str);
   return true;
 }
 
@@ -93,7 +93,7 @@ int getversion(String str){
   if (comparestring(str,"MAGOD1")) {version = 1;}
   else
     if (comparestring(str,"MAGOD2")) {version = 2;}
-    else {Serial.print("Version not recognized");} 
+    else {serialPrint((char *)"Version not recognized");} 
   return version;
 }
 
@@ -232,7 +232,7 @@ int recipes::LoadRecipes(recipe recipes_array[]){
 	      // Sequence
 	      if (comparestring(col[1],"Sequence")){
 		if (not readSequence(recipes_array[recipeNumber].recipe_sequence))
-		  { Serial.println("Error, sequence not found");
+		  { serialPrintln((char *)"Error, sequence not found");
 		    error=true;
 		  }
 	      }
@@ -246,20 +246,20 @@ int recipes::LoadRecipes(recipe recipes_array[]){
     };//End if readOneLine for entire recipe
   }
   /* For debug, send recipe to serial port for monitoring */
-  Serial.print(recipeNumber);Serial.println(" recipes found: ");
+  serialPrint(recipeNumber);serialPrintln(" recipes found: ");
   for (int i=0;i<recipeNumber;i++){
-    Serial.print(i);Serial.print(" : \"");Serial.print(recipes_array[i].name);
-    Serial.print("\" Number of steps : ");
-    Serial.println(recipes_array[i].recipe_sequence.length+1);
+    serialPrint(i);Serial.print(" : \"");serialPrint(recipes_array[i].name);
+    serialPrint("\" Number of steps : ");
+    serialPrint(recipes_array[i].recipe_sequence.length+1);
     for (int j=0;j<=recipes_array[i].recipe_sequence.length;j++){
-      Serial.print("[ ");
-      Serial.print(recipes_array[i].recipe_sequence.Bx[j]);Serial.print(", ");
-      Serial.print(recipes_array[i].recipe_sequence.By[j]);Serial.print(", ");
-      Serial.print(recipes_array[i].recipe_sequence.Bz[j]);Serial.print(", ");
-      Serial.print(recipes_array[i].recipe_sequence.time[j]);Serial.print(", ");
-      Serial.print(recipes_array[i].recipe_sequence.led[j].color);Serial.print(", ");
-      Serial.print(recipes_array[i].recipe_sequence.led[j].intensity);
-      Serial.println("] ");
+      serialPrint("[ ");
+      serialPrint(recipes_array[i].recipe_sequence.Bx[j]);serialPrint(", ");
+      serialPrint(recipes_array[i].recipe_sequence.By[j]);serialPrint(", ");
+      serialPrint(recipes_array[i].recipe_sequence.Bz[j]);serialPrint(", ");
+      serialPrint(recipes_array[i].recipe_sequence.time[j]);serialPrint(", ");
+      serialPrint(recipes_array[i].recipe_sequence.led[j].color);serialPrint(", ");
+      serialPrint(recipes_array[i].recipe_sequence.led[j].intensity);
+      serialPrintln("] ");
       };
   }
   return recipeNumber; /* If succesfull recipeNumber >=0 */

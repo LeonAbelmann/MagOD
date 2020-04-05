@@ -10,7 +10,7 @@ void setup(){
 
 int main(){
   
-  myIO.serialPrintln("TestRecipes, expects RECIPES.CSV in current directory");
+  myIO.serialPrintln((char*)"TestRecipes, expects RECIPES.CSV in current directory");
 
   /* check if Recipes file exists */
   char* filename = (char*)"RECIPES.CSV";
