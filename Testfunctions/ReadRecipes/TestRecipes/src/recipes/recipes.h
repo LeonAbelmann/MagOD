@@ -3,7 +3,7 @@ Sep 2019. Leon
 */
 #ifndef recipes_h
 #define recipes_h
-
+#include <string> // for string class 
 #include "../led/led.h"
 //#include <Arduino.h>
 #include "../../TestRecipes.h"

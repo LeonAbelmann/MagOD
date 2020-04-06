@@ -4,8 +4,7 @@
 
 #include <stdio.h>
 
-class IO
-{
+class IO {
  public:
   IO(); //constructor
   /* Initialize serial communication */
@@ -15,16 +14,19 @@ class IO
   void serialPrintln(char message[]);
   /* Check for presence of file */
   bool checkFile(char* filename);
+
   /* Check if recipefile still has on more character */
   bool recipeFileavailable();
   /* Read next character from recipe file */
   char* recipeFileread();
   /* Close the recipefile */
   void recipeFileclose();
-
+  
  private:
   // TO BE DONE:
   // File recipeFile; // Global variable to remember the file handle
+  // Quick fix, REMOVE LATER!!! LEON
+  bool recipeFile;
 };
 
 #endif
