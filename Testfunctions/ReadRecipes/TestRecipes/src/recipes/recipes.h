@@ -3,9 +3,9 @@ Sep 2019. Leon
 */
 #ifndef recipes_h
 #define recipes_h
-
+#include <string> // for string class 
 #include "../led/led.h"
-//#include <Arduino.h>
+#include <Arduino.h>
 #include "../../TestRecipes.h"
 
 /*Not too long because we need to display it on the screen and it will consume memory*/

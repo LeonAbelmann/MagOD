@@ -322,4 +322,3 @@ void recipes::program_init(recipe recipes_array[],int recipe_num)
     LEDInt_array[i]   = recipes_array[recipe_num].recipe_sequence.led[i].intensity;
   }
 }
-

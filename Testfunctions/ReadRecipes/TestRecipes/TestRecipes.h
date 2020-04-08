@@ -9,7 +9,7 @@
 #include "fileStdio/IO.h"
 #elif defined(SDVersion)
 /* Library for file IO if we are compiling for Arduino and Flashcard */
-//#include <Arduino.h>
+#include <Arduino.h>
 #include "fileSD/IO.h"
 #endif
 
