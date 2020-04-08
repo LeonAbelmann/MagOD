@@ -13,8 +13,8 @@
 #include "fileSD/IO.h"
 #endif
 
-/* myIO needs to be know to recipes.cpp */
-extern IO myIO;
+/* myIO needs to be known to recipes.cpp */
+extern IO * myIO;
 
 /* Declare variables to define the field sequence (originally from MagOD.h) */
 #define B_NR_MAX 12 //Max number of elements

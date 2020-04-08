@@ -5,7 +5,7 @@ Sep 2019. Leon
 #define recipes_h
 #include <string> // for string class 
 #include "../led/led.h"
-#include <Arduino.h>
+//#include <Arduino.h>
 #include "../../TestRecipes.h"
 
 /*Not too long because we need to display it on the screen and it will consume memory*/
@@ -49,7 +49,7 @@ class recipes
 {
  public:
   recipes(); /* constructor, does nothing at moment */
-
+  
   /* Recipe definitions: general parameters */
   int version;   // Hardware version (MAGOD1, MAGOD2)
   // perhaps Parameters should go here, LEON

@@ -1,19 +1,20 @@
 /* IO functions for command line on PC */
 #include "IO.h"
 
-//Constructor
-IO::IO(istream * fp){
-  //Nothing to do
-  recipeFile_ = fp;
-}
 
+//Constructor
+IO::IO(char * fname){
+  //Nothing to do
+  recipeFile_.open(fname, ios::in);
+}
 void IO::initSerial(){
   //Nothing to do
 }
 
 
 void IO::serialPrint(char message[]) {
-  printf("%s",message);
+
+  printf("%s\n",message);
 }
 
 void IO::serialPrintln(char message[]) {
@@ -24,12 +25,12 @@ void IO::serialPrintln(char message[]) {
 bool IO::checkFile(char* filename) {
   // THIS NEED TO BE DONE:
   //recipeFile = SD.open("/RECIPES.CSV"); // recipeFile is global to IO.h
-  if (recipeFile.good()) {
-	  serialPrintln((char*)"checked");
+  if (recipeFile_.good()) {
+	  serialPrintln((char*)"File checked");
       return true;
     }
   else {
-	  serialPrintln((char*)"unable to checked");
+	  serialPrintln((char*)"File not exists");
     return false;
   }
 }
@@ -37,23 +38,18 @@ bool IO::checkFile(char* filename) {
 /* Check if recipefile still has on more character */
 bool IO::recipeFileavailable() {
   // THIS NEED TO BE DONE:
-  //return recipeFile.available();
-  //return true;//fix
-  if(recipeFile.is_open()) return true;
-  else return false;
+  return recipeFile_.is_open() && !recipeFile_.eof();
 }
 
+
 /* Read next character from recipe file */
-char* IO::recipeFileread(){
+void IO::recipeFileread(char * line){
   // THIS NEED TO BE DONE:
-  char* ln;
-  recipeFile.getline(ln,1,'\n');
-  return ln;
-  //return 0;//fix
+  recipeFile_.getline(line, 150, '\n');
 }
 
 /* Close the recipefile */
 void IO::recipeFileclose(){
   // THIS NEED TO BE DONE:
-  recipeFile.close();
+  recipeFile_.close();
 }

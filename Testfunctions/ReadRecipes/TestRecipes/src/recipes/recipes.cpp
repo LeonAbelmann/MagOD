@@ -7,6 +7,10 @@ recipes::recipes(){
   //Nothing to do
 };
 
+// recipes::recipes(recipes *){
+  // //Nothing to do
+// }
+
 /* Read one line from file, return store into line. Return true if end of line
 was found */
 bool readOneLine(String& line){
@@ -248,7 +252,7 @@ int recipes::LoadRecipes(recipe recipes_array[]){
   /* For debug, send recipe to serial port for monitoring */
   serialPrint(recipeNumber);serialPrintln(" recipes found: ");
   for (int i=0;i<recipeNumber;i++){
-    serialPrint(i);Serial.print(" : \"");serialPrint(recipes_array[i].name);
+    serialPrint(i);serialPrint(" : \"");serialPrint(recipes_array[i].name);
     serialPrint("\" Number of steps : ");
     serialPrint(recipes_array[i].recipe_sequence.length+1);
     for (int j=0;j<=recipes_array[i].recipe_sequence.length;j++){
