@@ -15,4 +15,5 @@ To create: http://esp32sd.local/folder?create=1 or http://esp32sd.local/folder/f
 
 
 Uploading a file is a bit harder as the internet browser can only send HTTP GET commands and not HTTP PUSH commands which are required for file uploading. The program curl can be used for this fairly simply (python could be used as well)
+
 To upload: curl -F "data=@fileToUpload.txt" -X POST http://esp32sd.local/edit?dir=/folder/fileToUpload.txt
