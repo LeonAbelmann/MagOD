@@ -6,6 +6,7 @@ Program to try out an implementation of a HTTP webserver on the second core of t
 
 
 Files and folders can be read, downloaded, created and deleted from the SD card through a internet browser using simple commands:
+
 To read or download: http://esp32sd.local/folder or http://esp32sd.local/folder/file.txt or http://esp32sd.local/folder/file.txt?download=1
 
 To delete: http://esp32sd.local/folder?delete=1 or http://esp32sd.local/folder/file.txt?delete=1
