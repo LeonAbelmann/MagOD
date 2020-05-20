@@ -1,6 +1,6 @@
-#,"Example, for testing",,,,,,,,
+#,"Example for testing",,,,,,,,
 ,,,,,,,,,
-#,"Which hardware version, MagOD1 cannot set LED intensity!",,,,,,,,
+#,"Which hardware version MagOD1 cannot set LED intensity!",,,,,,,,
 @,Version,MAGOD2,,,,,,,
 @,Parameters,,,,,,,,
 ,B_x,B_y,B_z,T_switch,LED_Color,LED_Intensity,Grad_x,Grad_y,Grad_z

@@ -1,3 +1,5 @@
+#ifndef TestRecipes_h
+#define TestRecipes_h
 /* Define what you are compiling for here */
 #define stdioVersion // Version that we can test on a PC
 //#define SDVersion // Version that will run on an Arduino
@@ -11,8 +13,8 @@
 #include "fileSD/IO.h"
 #endif
 
-/* myIO needs to be know to recipes.cpp */
-extern IO myIO;
+/* myIO needs to be known to recipes.cpp */
+extern IO * myIO;
 
 /* Declare variables to define the field sequence (originally from MagOD.h) */
 #define B_NR_MAX 12 //Max number of elements
@@ -32,3 +34,5 @@ extern int LEDInt_array[B_NR_MAX]; // array containing LED intensities (0-255), 
 extern bool Gradient_x[B_NR_MAX];  //determines whether both coils must be on or just one of them for the x-direction, 0 is both on, 1 is only one on
 extern bool Gradient_y[B_NR_MAX];  //determines whether both coils must be on or just one of them for the y-direction, 0 is both on, 1 is only one on
 extern bool Gradient_z[B_NR_MAX];  //determines whether both coils must be on or just one of them for the z-direction, 0 is both on, 1 is only one on
+
+#endif

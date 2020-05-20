@@ -49,7 +49,7 @@ class recipes
 {
  public:
   recipes(); /* constructor, does nothing at moment */
-
+  
   /* Recipe definitions: general parameters */
   int version;   // Hardware version (MAGOD1, MAGOD2)
   // perhaps Parameters should go here, LEON
