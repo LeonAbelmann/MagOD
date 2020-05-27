@@ -1,4 +1,6 @@
 # Ignore directories that are not suitable for public sharing yet
 arduino-esp32/
 SDplusTFTtest/
-
+SDplusTFTplusADCtest/
+TestLEDDimmed/
+TestNoise/
