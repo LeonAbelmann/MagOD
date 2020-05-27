@@ -89,7 +89,7 @@ diodes adc::readDiodes()
   return Vdiodes;
 }
 
-
+/* Maybe this routine should be in MagOD.ino. It is a measurement, after all.... Leon */
 void adc::set_vrefs(references &Vrefs, bool ref_all_wavelength, led theled)
 {
 #if defined(_MAGOD1)
@@ -154,7 +154,7 @@ void adc::set_vrefs(references &Vrefs, bool ref_all_wavelength, led theled)
      note that there might be only one color :) */
   for(auto iter = 0; iter<LEDnumber; iter++)
     {
-      theled.Set_LED_color(LEDs[iter],LED_intensity);
+      theled.Set_LED_color(LEDs[iter],LED_intensity[LEDs[iter]]);
       delay(3000);//Wait for the LED to stabilize
       /* Read out diodes 10 times and average*/
       double Vdiode;  

@@ -58,7 +58,6 @@ struct feedbacks {
 #include "src/fileandserial/fileandserial.h" //File and serial port IO
 #include "src/recipes/recipes.h" //User measurement recipe
 
-
 /* Definition of global (extern) variables */
 
 /* This should not be here, but in timer.h, but I cannot make that compile
@@ -73,6 +72,9 @@ extern timer mytimer;
 extern screen myscreen;
 extern buttons mybuttons;
 extern adc myadc;
+extern IO *  myIO; /*The exact IO routines depend on platform:
+	      ESP32 serial monitor (ESP_PLATFORM)
+	      Command line (stdioVersion)) */
 
 /* The measured parameters */
 extern diodes Vdiodes;   /*Signals of photodiodes */
@@ -104,7 +106,7 @@ extern int Counter_cycles_led; //counter used to store the amount of complete cy
 extern bool ref_all_wavelength; //Set this to 1 for specific programs where you work with multiple wavelengths in a single measurement (such that it stores the reference value of all 3 wavelengths)
 
 /* Parameters to control the menu */
-extern const uint16_t program_nmb;//Total number of menus.
+extern uint16_t program_nmb; //Total number of recipes.
 extern uint16_t program_cnt; //Current program menu
 
 /* Declare variables to define the field sequence */
@@ -114,13 +116,16 @@ extern long Nr_cycles; //The number of cycles throught the array, a value of 0 m
 extern unsigned int Looppar_1; //Looppar_1,2 track at which point of the field-array the program is
 extern unsigned int Looppar_2; 
 
+extern unsigned long Switching_time[B_NR_MAX]; //the time the program waits before switching to the next value of the magnetic field, in matrix to allow an alterating switching time, keep all values the same to have a constant switching time
 extern double B_arrayfield_x[B_NR_MAX]; //an array containing B_Nr_set elements for the field in the x-direction, each element has to be an integer between -256 and 256 and negative numbers can be used for opposite directions
 extern double B_arrayfield_y[B_NR_MAX]; //an array containing B_Nr_set elements for the field in the y-direction, each element has to be an integer between -256 and 256 and negative numbers can be used for opposite directions
 extern double B_arrayfield_z[B_NR_MAX]; //an array containing B_Nr_set elements for the field in the z-direction, each element has to be an integer between -256 and 256 and negative numbers can be used for opposite directions
+
+extern int LEDColor_array[B_NR_MAX]; // array containing color of the LED (RED, GREEN, BLUE)
+extern int LEDInt_array[B_NR_MAX]; // array containing LED intensities (0-255), MagOD2 only
+
 extern bool Gradient_x[B_NR_MAX];  //determines whether both coils must be on or just one of them for the x-direction, 0 is both on, 1 is only one on
 extern bool Gradient_y[B_NR_MAX];  //determines whether both coils must be on or just one of them for the y-direction, 0 is both on, 1 is only one on
 extern bool Gradient_z[B_NR_MAX];  //determines whether both coils must be on or just one of them for the z-direction, 0 is both on, 1 is only one on
-extern unsigned long Switching_time[B_NR_MAX]; //the time the program waits before switching to the next value of the magnetic field, in matrix to allow an alterating switching time, keep all values the same to have a constant switching time
-  
 
 #endif

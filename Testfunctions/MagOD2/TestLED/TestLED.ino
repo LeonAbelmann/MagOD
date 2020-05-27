@@ -13,7 +13,7 @@ const int ledChannel_z = 5; /*0-15*/
 
 
 void setup () {
-    //Switch off the magnets:
+  //Switch off the magnets:
   ledcSetup(ledChannel_x, 1000, 8);
   ledcSetup(ledChannel_y, 1000, 8);
   ledcSetup(ledChannel_z, 1000, 8);
@@ -26,6 +26,7 @@ void setup () {
   ledcWrite(ledChannel_y, 0);
   ledcWrite(ledChannel_z, 0);
 
+  // set the LEDs
   pinMode(LED_red, OUTPUT);
   pinMode(LED_green, OUTPUT);
   pinMode(LED_blue, OUTPUT);

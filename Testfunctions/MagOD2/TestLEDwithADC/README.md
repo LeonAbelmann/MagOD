@@ -1,5 +1,4 @@
-# TestFieldWithADC.ino
-Leon Abelmann, Jun 2019
-Program to test the PWM ports that set the field. You can program the
-PWM values per channel. The ADC converter outputs on the measurement
-resistors are displayed
+# TestLEDWithADC.ino
+Leon Abelmann, April 2020
+Change PWM of LEDs in all colours and record the signal from the photodiode and
+reference photodiode.

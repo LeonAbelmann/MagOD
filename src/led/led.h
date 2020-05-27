@@ -35,11 +35,11 @@ class led
  public:
   //Colors
   led();
-  int LEDs[];
+  int LEDs[3];
 #if defined(_MAGOD1)
   void Set_LED_color(int color); //Initializes the RGB led color and changes the color during the running of the program.
 #elif defined(_MAGOD2)
-  void Set_LED_color(int color, int intensity[]); //MagOD2 has PWM on leds
+  void Set_LED_color(int color, int intensity); //MagOD2 has PWM on leds
 #endif
   private:
 };

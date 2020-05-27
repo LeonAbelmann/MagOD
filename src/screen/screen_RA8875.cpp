@@ -7,6 +7,7 @@
 */
 
 
+
 #include "Arduino.h"
 
 //Avoid that Arduino IDE compiles this file when not MagOD2
@@ -128,7 +129,7 @@ void screen::setupScreen()
   //Text area
   locText_x=0, locText_y=0; //Top left of text area
   locText_hSpace = 40, locText_vSpace=12;//Size of each line
-  column_space = 140; //Space between the two columns of text data
+  column_space = 85; //Space between the two columns of text data
   //Graph display
   g_x=40,g_y=88; // Top left of graph
   g_w=SCRN_HOR-g_x-1,g_h=SCRN_VERT-g_y-2;
@@ -161,7 +162,7 @@ void screen::setupScreen()
   tft.textMode();
   tft.textSetCursor(100, 100);
   tft.textTransparent(RA8875_BLACK);
-  tft.textWrite("MagOD 2");
+  tft.textWrite("MagOD 2.2");
   tft.textSetCursor(100, 124);
   tft.textWrite("Tijmen Hageman, Jordi Hendrix, Hans Keizer");
   tft.textSetCursor(100, 148);
@@ -300,13 +301,27 @@ void screen::updateV(diodes Vdiodes, references Vref, double OD, feedbacks curre
   tft.textWrite(string,5);
 }
 
+//update list of recipe, highight the currently selected recipe
+void screen::showRecipes(int16_t program_cnt){
+  // OTTO
+  Serial.print("Changing recipe to: ");Serial.println(program_cnt);
+
+  //Clear existing data
+  tft.fillRect(locText_x+2*column_space+locText_hSpace,
+	       locText_y,
+	       column_space+locText_hSpace,
+	       7*locText_vSpace+2, TFTCOLOR_WHITE);
+  
+  
+};
+
 //update program settings whenever requested
 void screen::updateInfo(unsigned int Looppar_1, unsigned int Looppar_2, int16_t program_cnt, const char *filename)
 {
   //Clear existing data
-  tft.fillRect(locText_x+locText_hSpace+column_space,
+  tft.fillRect(locText_x+column_space+locText_hSpace,
 	       locText_y,
-	       column_space,
+	       column_space-locText_hSpace,
 	       7*locText_vSpace+2, TFTCOLOR_BLACK);
   
   tft.textTransparent(TFTCOLOR_RED);
@@ -325,7 +340,7 @@ void screen::updateInfo(unsigned int Looppar_1, unsigned int Looppar_2, int16_t 
 		    locText_y+1*locText_vSpace);
   //strcpy(filestring, filename); /* truncate to length of filestring */
   //tft.textWrite(filestring);
-  tft.textWrite(filename);
+  tft.textWrite(filename,5);
   
   //program number
   tft.textSetCursor(column_space+locText_hSpace,

@@ -96,13 +96,16 @@ void fileandserial::saveSettingsFile(char fName_char[]){
       dataFile.println("");
       dataFile.println("# Recipe: ");
       dataFile.print("seq,B_x[mT],B_y[mT],B_z[mT],T_switch[ms]");
+      dataFile.print(", LED_color, LED_intensity");
       dataFile.println(",Grad_x,Grad_y,Grad_z");
-      for (unsigned int i=0; i<B_nr_set; i++){
+      for (unsigned int i=0; i<=B_nr_set; i++){
 	dataFile.print(i); dataFile.print(",");
 	dataFile.print(B_arrayfield_x[i]); dataFile.print(",");
 	dataFile.print(B_arrayfield_y[i]); dataFile.print(",");
 	dataFile.print(B_arrayfield_z[i]); dataFile.print(",");
 	dataFile.print(Switching_time[i]); dataFile.print(",");
+	dataFile.print(LEDColor_array[i]); dataFile.print(",");
+	dataFile.print(LEDInt_array[i]); dataFile.print(",");
 	dataFile.print(Gradient_x[i]); dataFile.print(",");
 	dataFile.print(Gradient_y[i]); dataFile.print(",");
 	dataFile.println(Gradient_z[i]);

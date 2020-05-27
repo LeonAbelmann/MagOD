@@ -16,6 +16,9 @@
 #define BUTTON_SELECT 3
 #define BUTTON_UP 4
 #define BUTTON_LEFT 5
+// New MagOD2 buttons start at 10
+#define BUTTON_NEXTRECIPE 10
+#define BUTTON_PREVRECIPE 11
 
 class buttons
 {

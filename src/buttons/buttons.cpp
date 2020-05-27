@@ -1,6 +1,6 @@
 /* buttons.cpp
  MagOD2 libary 
- March 2019
+ Feb 2020
  Controls buttons (joystick for MagOD1, touchscreen for MagOD2)
  Tijmen Hageman, Jordi Hendrix, Hans Keizer, Leon Abelmann 
 */
@@ -98,25 +98,66 @@ boolean getTouchCoordinates(uint16_t *x, uint16_t *y){
     }
 }      
 
-/* Define button area.*/
-void buttons::showButtonArea(int i, const char* str, int bgcolor, int fgcolor)
-/* i: which button [1,2...]
+/* Draw button */
+void drawButton(int off_x, int off_y, int size_x, int size_y,
+		const char* str,
+		int bgcolor, int fgcolor){
+  /* (off_x, off_y)  : Upper left corner
+     (size_x,size_y) : Size of button
+     str             : Text in center of button (assume character is 12x20)
+     bgcolor         : Color of button
+     fgcolor         : Textcolor
+  */
+  /* Text halfway button with center. Substract half the length of
+       the string */
+  int text_x = off_x + round(size_x/2) - 6*strlen(str);
+  int text_y = off_y + round(size_y/2) -10;
+  //Draw rectangle
+  myscreen.tft.fillRect(off_x,off_y,size_x,size_y, bgcolor);
+  //Black edge around area
+  myscreen.tft.drawRect(off_x, off_y, size_x, size_y, TFTCOLOR_BLACK);
+  // Write texts
+  myscreen.tft.textSetCursor(text_x, text_y);
+  myscreen.tft.textTransparent(fgcolor);
+  myscreen.tft.textWrite(str);
+}
+
+/* Define button area. There are four buttons, 1 and 2 are on the right, 
+   BUTTON_NEXTRECIPE and BUTTON_PREVRECIPE are on the left */
+void buttons::showButtonArea(int button, const char* str,
+			     int bgcolor, int fgcolor)
+/* button: which button [1,2,3,4]
    string : text in button
    bgcolor : which fill color TFTCOLOR_RED etc. defined in screen_RA8875.h
    fgcolor : which text color
 */
 { int off_x, off_y, size_x, size_y, text_x, text_y;
-  off_x = buttonOffset_x;
-  off_y = buttonOffset_y + (i-1)*buttonSize_y;
-  size_x = buttonSize_x;
+  size_x = buttonSize_x; // For now, all buttons have same size...
   size_y = buttonSize_y;
-  //Text halfway button with center. Substract half the length of the string
-  text_x = buttonOffset_x + round(buttonSize_x/2) - 6*strlen(str);
-  text_y = buttonOffset_y + (i-1)*buttonSize_y+ round(buttonSize_y/2) -10;
-  myscreen.tft.fillRect(off_x,off_y,size_x,size_y, bgcolor);
-  myscreen.tft.textSetCursor(text_x, text_y);
-  myscreen.tft.textTransparent(fgcolor);
-  myscreen.tft.textWrite(str);
+  switch (button) {
+  case 1 : // top right
+    off_x = buttonOffset_x+size_x;
+    off_y = buttonOffset_y;
+    drawButton(off_x, off_y, size_x, size_y, str, bgcolor, fgcolor);
+    break;
+  case 2 : // bottom right
+    off_x = buttonOffset_x + size_x;
+    off_y = buttonOffset_y + size_y;
+    drawButton(off_x, off_y, size_x, size_y, str, bgcolor, fgcolor);
+    break;
+  case BUTTON_NEXTRECIPE : // top left
+    off_x = buttonOffset_x;
+    off_y = buttonOffset_y;
+    drawButton(off_x, off_y, size_x, size_y, str, bgcolor, fgcolor);
+    break;
+  case BUTTON_PREVRECIPE : // bottom left
+    off_x = buttonOffset_x;
+    off_y = buttonOffset_y + size_y;
+    drawButton(off_x, off_y, size_x, size_y, str, bgcolor, fgcolor);
+    break;
+  default :
+    break;
+  }
 }
 #endif
 
@@ -131,13 +172,33 @@ int buttons::whichButton(int x, int y){
   // Serial.print(buttonOffset_x + buttonSize_x);Serial.print(" ");
   // Serial.print(buttonOffset_y);Serial.print(" ");
   // Serial.println(buttonOffset_y+ buttonSize_y);
-  for (int i=1; i<=2; i++){
-    if (((x > buttonOffset_x &&
-	  x < buttonOffset_x + buttonSize_x)   &&
-	 (y > buttonOffset_y + (i-1)*buttonSize_y &&
-	  y < buttonOffset_y + (i)*buttonSize_y))){
-      buttonpressed = i;}
-  }
+  int off_x, off_y, size_x, size_y, text_x, text_y;
+  size_x = buttonSize_x; // For now, all buttons have same size...
+  size_y = buttonSize_y;
+  // Button 1, top right
+  if ((x > buttonOffset_x+size_x)   &&
+      (x < buttonOffset_x+2*size_x) &&
+      (y > buttonOffset_y)          &&
+      (y < buttonOffset_y + size_y)) {
+    buttonpressed = 1;}
+  // Button 2, bottom right
+  if ((x > buttonOffset_x+size_x)   &&
+      (x < buttonOffset_x+2*size_x) &&
+      (y > buttonOffset_y + size_y) &&
+      (y < buttonOffset_y + 2*size_y)) {
+    buttonpressed = 2;}
+  // Button NEXTRECIPE , top left
+  if ((x > buttonOffset_x)         &&
+      (x < buttonOffset_x+size_x)  &&
+      (y > buttonOffset_y)         &&
+      (y < buttonOffset_y + size_y)) {
+    buttonpressed = BUTTON_NEXTRECIPE;}
+  // Button PREV_RECIPE , bottom left
+  if ((x > buttonOffset_x)         &&
+      (x < buttonOffset_x+size_x)  &&
+      (y > buttonOffset_y+size_y)         &&
+      (y < buttonOffset_y+2*size_y)) {
+    buttonpressed = BUTTON_PREVRECIPE;}
   return buttonpressed;
 }
 #endif //defined(_MAGOD2)
@@ -166,12 +227,12 @@ void buttons::initButton(){
   _tsMatrix.Fn = TOUCH_Fn;
 
   /* create button fields */
-  /* Upper left corner of button area */
-  buttonOffset_x = 2*myscreen.column_space + myscreen.locText_hSpace; 
+  /* Upper left corner of left button area */
+  buttonOffset_x = 3*myscreen.column_space;// + myscreen.locText_hSpace; 
   buttonOffset_y = 0;
   /* Size of a button */
-  buttonSize_x = myscreen.screenSiz_x - 2*myscreen.column_space;
-  buttonSize_y =  30;
+  buttonSize_x = 0.5*(myscreen.screenSiz_x - 3*myscreen.column_space);
+  buttonSize_y = 0.5*(7*myscreen.locText_vSpace); // 7 lines high, we want two buttons
 
   /* We should rename the buttons. 1,2 etc should be BUTTON_START,
   BUTTON_VREF etc. This implies that MagOD1 also needs to be
@@ -182,6 +243,12 @@ void buttons::initButton(){
 
   /* Button 2: Set Vref */
   showButtonArea(2, (char *)"Set Vref", TFTCOLOR_DARKGRAY, TFTCOLOR_YELLOW);
+
+  /* Button BUTTON_NEXTRECIPE: Toggle to next recipe in list */
+  showButtonArea(BUTTON_NEXTRECIPE, (char *)">", TFTCOLOR_RED, TFTCOLOR_BLACK);
+
+  /* Button BUTTON_PREVRECIPE: Toggle to next recipe in list */
+  showButtonArea(BUTTON_PREVRECIPE, (char *)"<", TFTCOLOR_RED, TFTCOLOR_BLACK);
 #endif
 }
 
@@ -224,14 +291,29 @@ uint8_t buttons::readButton() {
 	    {
 	    case 1 :
 	      Serial. println("1: BUTTON_SELECT");
-	      showButtonArea(1, (char *)"Starting...",
+	      showButtonArea(1, (char *)"Starting",
 			     TFTCOLOR_WHITE, TFTCOLOR_BLACK);
 	      return BUTTON_SELECT; //Start/stop button
 	    case 2 :
 	      Serial. println("2: BUTTON_LEFT");
-	      showButtonArea(2, (char *)"Setting Vref...",
+	      showButtonArea(2, (char *)"Setting...",
 			     TFTCOLOR_WHITE, TFTCOLOR_BLACK);
 	      return BUTTON_LEFT; //Set Vref
+
+	      // BUTTON_NEXTRECIPE is for next menu item
+	    case BUTTON_NEXTRECIPE :
+	      Serial. println("Button: BUTTON_NEXTRECIPE");
+	      showButtonArea(BUTTON_NEXTRECIPE, (char *)">",
+			     TFTCOLOR_WHITE, TFTCOLOR_BLACK);
+	      return BUTTON_NEXTRECIPE;
+
+	      // BUTTON_UP is for previous item
+	    case BUTTON_PREVRECIPE :
+	      Serial. println("Button: BUTTON_PREVRECIPE");
+	      showButtonArea(BUTTON_PREVRECIPE, (char *)"<",
+			     TFTCOLOR_WHITE, TFTCOLOR_BLACK);
+	      return BUTTON_PREVRECIPE;
+
 	    default:
 	      Serial. println("0: BUTTON_NONE");
 	      return BUTTON_NONE;

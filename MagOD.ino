@@ -1,5 +1,5 @@
-/* MagOD version 2.2 */
-/* Aug 2019 */
+/* MagOD version 2.3 */
+/* Feb 2020 */
 /* Tijmen Hageman, Jordi Hendrix, Hans Keizer, Leon Abelmann */
 /* Based on original code, modified by Leon for readablity and ease of recipe change */
 
@@ -28,8 +28,8 @@ float freq_meas = 7; //Measurement frequency in Hz
 float freq_screen = 2; //Screen update frequency in Hz
 
 /* Program menu settings */
-uint16_t program_cnt = 1; //Current program menu, default 1 
-const uint16_t program_nmb = 1;//Total number of menus. Right now, there is only one measurement program. When you want more, make sure there is a good menu selection procedure. The joystick on the 1.8" screen suckcs...
+uint16_t program_cnt = 0; //Current program menu, default 0
+uint16_t program_nmb = 0; //1 -total number of recipes in recipe_array [0..program_nmb]. IS THIS CORRECT? LEON
 
 /* State variables (global) used in this program */
 bool doMeasurementFlag = false; //Read the ADC inputs
@@ -64,8 +64,9 @@ led myled;
 buttons mybuttons;
 field myfield;
 fileandserial myfile;
+IO *  myIO; /* Wraps IO for recipes, used by TestRecipes. Perhaps
+	       merge with fileandserial. LEON */
 recipes myrecipes;
-
 
 /* Should this be here? LEON*/
 #if defined(_MAGOD2)
@@ -107,7 +108,7 @@ int Counter_cycles_led = 1; //counter used to store the amount of complete cycle
 bool ref_all_wavelength = 0; //Set this to 1 for specific programs where you work with multiple wavelengths in a single measurement (such that it stores the reference value of all 3 wavelengths
 
 /* Declare variables to define the field sequence */
-unsigned int B_nr_set = 1; //the number of elements in the array
+unsigned int B_nr_set = 1; //the length of the field sequence array [0..B_nr_set];
 long Nr_cycles = 0; //The number of cycles throught the array, a value of 0 means an infinite amound of cycles
 unsigned int Looppar_1 = 0; //Looppar_1,2 track at which point of the field-array the program is
 unsigned int Looppar_2 = 0;
@@ -117,11 +118,15 @@ double B_arrayfield_x[B_NR_MAX] = {0.0}; //an array containing B_Nr_set elements
 double B_arrayfield_y[B_NR_MAX] = {0.0}; //Same for y
 double B_arrayfield_z[B_NR_MAX] = {0.0}; //Same for z
 unsigned long Switching_time[B_NR_MAX] ={1000};
+int LEDColor_array[B_NR_MAX] = {GREEN}; // Default color is green
+int LEDInt_array[B_NR_MAX] = {0}; // Default intensity is off
 
 bool Gradient_x[B_NR_MAX]={1};  //determines whether both coils must be on or just one of them for the x-direction, 0 is both on, 1 is only one. When the set of coils is connected, set to 1. Note that MagOD2 no longer has relays to do this automatically, you need to manually route the currents through one coil only.
 bool Gradient_y[B_NR_MAX] = {1};  //same for y
 bool Gradient_z[B_NR_MAX] = {1};  //same for z
 
+/* Recipes array, will be read from Flash card */
+recipe recipesArray[MaxRecipes];
 
 /*** Top level functions ***/
 
@@ -146,57 +151,36 @@ void screenUpdateEvent()
   screenUpdateFlag=true;
 }
 
-// Calculate in which part of the B-field array the program currently is, when the program has a specified number of iterations (0 is infinite) this part will ensure that the program stops after that number.
-//the program also calculates when to switch the wavelength of the lightsource when this is wanted
-void SetBfield_array()
-{
-  Looppar_1++; //parameter of which element in the B-field array the program currently is
-  if (Looppar_1 >= (B_nr_set)) //when larger than total number of values in the array, gos back to first value
-    {
-      Looppar_1 = 0;
-      //this part is responsible for changing the LED color after the predefined number of cycles
-      if ((Counter_cycles_led >= LED_switch_cycles) && (LED_switch_cycles != 0))
-        {
-          Counter_cycles_led = 1;
-          LED_type++;
-          if (LED_type >= 4)
-            {
-              LED_type = GREEN;
-            }
-#if defined(_MAGOD1)
-          myled.Set_LED_color(LED_type);
-#elif defined(_MAGOD2)
-	  myled.Set_LED_color(LED_type,LED_intensity);
-#endif
-        }
-      else if (LED_switch_cycles != 0)
-        {
-          Counter_cycles_led++;
-        }
-      
-      Looppar_2++; // Counts number of times a cycle has completed
-      //check whether the program should end if Nr_cylces is set:
-      if (Nr_cycles != 0)
-      {
-        if (Looppar_2 >= Nr_cycles)
-        {      
-           //stop the recording
-           stopRec();  
-           
-        }
-      }
-  }
-  //Sets the field whenever the program should be running and stores the time at which the field is changed (for the waiting period of the current sensing)
+/* Calculate in which part of the B-field array the program currently is, when the program has a specified number of iterations (0 is infinite) this part will ensure that the program stops after that number.*/
+void SetBfield_array(int step) {
+  /* Sets the field whenever the program should be running and stores
+     the time at which the field is changed (for the waiting period of
+     the current sensing) */
   if (Exit_program_1 == LOW){
-    myfield.SetBfieldFast(B_arrayfield_x[Looppar_1],
-			  B_arrayfield_y[Looppar_1],
-			  B_arrayfield_z[Looppar_1],
-			  Gradient_x[Looppar_1],
-			  Gradient_y[Looppar_1],
-			  Gradient_z[Looppar_1]);
+    myfield.SetBfieldFast(B_arrayfield_x[step],
+			  B_arrayfield_y[step],
+			  B_arrayfield_z[step],
+			  Gradient_x[step],
+			  Gradient_y[step],
+			  Gradient_z[step]);
+    myled.Set_LED_color(LEDColor_array[step],
+			LEDInt_array[step]);
+    //prints for debugging
+    Serial.print("step = ");Serial.print(step);
+    Serial.print(" out of [0..");Serial.print(B_nr_set);Serial.println("]");
+    Serial.print("Magnetic field in the x-direction = ");
+    Serial.println(B_arrayfield_x[step]);
+    Serial.print("Magnetic field in the y-direction = ");
+    Serial.println(B_arrayfield_y[step]);
+    Serial.print("Magnetic field in the z-direction = ");
+    Serial.println(B_arrayfield_z[step]);
+    Serial.print("LED color = ");
+    Serial.println(LEDColor_array[step]);
+    Serial.print("LED Intensity = ");
+    Serial.println(LEDInt_array[step]);
+    Serial.println();
   }
 }
- 
 
 void startRec()
 //Start the measurement
@@ -204,17 +188,35 @@ void startRec()
     //checks whether SD card is present
   if (!SD.begin(SD_CS)) {
     //If card not present, continue without using
-    strlcpy(myfile.fName_char,"NO SD CARD",myfile.fN_len);
-    myscreen.updateFILE(myfile.fName_char);
+    strlcpy(myfile.fName_char,"NO SD",myfile.fN_len);
+    myscreen.updateFILE(myfile.fName_char); //Print "NO SD CARD"
+    myscreen.setRecButton(false); //Set recording button to stop
     SDpresent = false;
   }
   else
   {
-    strlcpy(myfile.fName_char,"SD CARD READY",myfile.fN_len);
+    strlcpy(myfile.fName_char,"READY",myfile.fN_len);
     myscreen.updateFILE(myfile.fName_char);
-    // Check if card is actually working
-    
     SDpresent = true;
+    
+#if defined(_MAGOD2)
+    // Check if card is actually working
+    File dataFile = SD.open("/test.txt", FILE_WRITE);
+    if(!dataFile){
+        Serial.println("Failed to open file for writing");
+        return;
+    }
+    if(dataFile.print("Hello world")){
+        Serial.println("test.txt written");
+	SDpresent = true;
+    } else {
+        Serial.println("Write test.txt failed");
+	strlcpy(myfile.fName_char,"FILE ERROR",myfile.fN_len);
+	SDpresent = false;
+	myscreen.setRecButton(false); //Set recording button to stop
+    }
+    dataFile.close();
+#endif
   }
 
   //only starts the program when an SD card is present
@@ -226,7 +228,7 @@ void startRec()
     delay(1000);
     Exit_program_1 = LOW;
     Serial.print("program, ");
-    myrecipes.program_init();
+    myrecipes.program_init(recipesArray,program_cnt);
     Serial.print("datafile and ");
     myfile.file_init(Vrefs, ref_all_wavelength,
 		     save_extra_parameter, extra_par, program_cnt,
@@ -236,14 +238,9 @@ void startRec()
     Serial.println("Done");
 
     //start coil actuation
-    Serial.println("Setting magnetic field");
-    myfield.SetBfieldFast(B_arrayfield_x[Looppar_1],
-			  B_arrayfield_y[Looppar_1],
-			  B_arrayfield_z[Looppar_1],
-			  Gradient_x[Looppar_1],
-			  Gradient_y[Looppar_1],
-			  Gradient_z[Looppar_1]);
-    
+    Serial.println("Setting magnetic field and LEDs at step 0");
+    Looppar_1=0;
+    SetBfield_array(Looppar_1);
   
     //Update display
     Serial.println("Updating display");
@@ -266,7 +263,7 @@ void stopRec()
 {
   Exit_program_1 = HIGH;
   myscreen.setRecButton(false);
-  strlcpy(myfile.fName_char,"Rec finished",myfile.fN_len);
+  strlcpy(myfile.fName_char,"DONE",myfile.fN_len);
   myscreen.updateFILE(myfile.fName_char);
   // reset globals
   Looppar_2 = 0;
@@ -303,12 +300,10 @@ void processButtonPress()
       if (buttonPress==BUTTON_LEFT ){
 	if (!isRecording){
 	  myadc.set_vrefs(Vrefs,ref_all_wavelength,myled);
-	  // ToDo: Perhaps not here, Why don't we give set_Vref the current led color?
-	  myrecipes.LED_init();
 #if defined(_MAGOD1)
           myled.Set_LED_color(LED_type);
 #elif defined(_MAGOD2)
-	  myled.Set_LED_color(LED_type,LED_intensity);
+	  myled.Set_LED_color(LED_type,LED_intensity[LED_type]);
 #endif
         }
         //Update screen
@@ -323,19 +318,20 @@ void processButtonPress()
 #endif
       }
     }
-  
-  // change between the programs
+
+#if defined(_MAGOD1)  
+  // change between the programs, MAGOD1 Version
   if (buttonPress==BUTTON_RIGHT ){
     if (!isRecording){
       if (!SD.begin(SD_CS)) {
 	//If card not present, continue without using
-	strlcpy(myfile.fName_char,"NO SD CARD",myfile.fN_len);
+	strlcpy(myfile.fName_char,"NO SD",myfile.fN_len);
 	myscreen.updateFILE(myfile.fName_char);
 	SDpresent = false;
       }
       else
         {
-	strlcpy(myfile.fName_char,"SD CARD READY",myfile.fN_len);
+	strlcpy(myfile.fName_char,"READY",myfile.fN_len);
 	myscreen.updateFILE(myfile.fName_char);
 	SDpresent = true;
         }
@@ -344,12 +340,7 @@ void processButtonPress()
       if (program_cnt>program_nmb){
 	program_cnt=1;
       }
-      myrecipes.LED_init();  //immediatelty change the LED color to led it stabilize
-#if defined(_MAGOD1)
       myled.Set_LED_color(LED_type);
-#elif defined(_MAGOD2)
-      myled.Set_LED_color(LED_type,LED_intensity);
-#endif      
       //Update display
       myscreen.updateInfo(Looppar_1, Looppar_2, program_cnt,
 			  myfile.fName_char);
@@ -357,6 +348,54 @@ void processButtonPress()
     prevButton = buttonPress;
   } //end if buttonPress!=prevButton
 }
+
+#elif defined(_MAGOD2)
+  // change between the programs, MAGOD2 Version
+  if (buttonPress==BUTTON_NEXTRECIPE || buttonPress==BUTTON_PREVRECIPE){
+    if (!isRecording){
+      if (!SD.begin(SD_CS)) {
+	//If card not present, continue without using
+	strlcpy(myfile.fName_char,"NO SD",myfile.fN_len);
+	myscreen.updateFILE(myfile.fName_char);
+	SDpresent = false;
+      }
+      else
+        {
+	strlcpy(myfile.fName_char,"READY",myfile.fN_len);
+	myscreen.updateFILE(myfile.fName_char);
+	SDpresent = true;
+        }
+      // By pressing next, prev, you rotate through the list of programs
+      if (buttonPress==BUTTON_NEXTRECIPE) {
+	// Increment recipe number, and reset color of the > button to red
+	program_cnt=program_cnt + 1;
+	Serial.print("program_cnt : ");Serial.println(program_cnt);
+	mybuttons.showButtonArea(BUTTON_NEXTRECIPE, (char *)">",
+			     TFTCOLOR_RED, TFTCOLOR_BLACK);
+      };
+      if (program_cnt>program_nmb){program_cnt=0;}
+      if (buttonPress==BUTTON_PREVRECIPE) {
+	program_cnt=program_cnt - 1;;
+	Serial.print("program_cnt : ");Serial.println(program_cnt);
+      	mybuttons.showButtonArea(BUTTON_PREVRECIPE, (char *)"<",
+			     TFTCOLOR_RED, TFTCOLOR_BLACK);
+      };
+      if (program_cnt<0){program_cnt=program_nmb;}
+      // Highlight the correct recipe on the screen
+      Serial.print("program_nmb: ");Serial.println(program_nmb);
+      Serial.print("program_cnt corr: ");Serial.println(program_cnt);
+      myscreen.showRecipes(program_cnt);
+      
+      myled.Set_LED_color(LED_type,LED_intensity[LED_type]);
+      //Update display
+      myscreen.updateInfo(Looppar_1, Looppar_2, program_cnt,
+			  myfile.fName_char);
+    }
+    prevButton = buttonPress;
+  } //end if buttonPress!=prevButton
+}
+#endif      
+
 
 
 //calculate the optical density value, whenever using three wavelengths, the right reference has to be chosen
@@ -517,11 +556,10 @@ void setup()
  
   // Init led
   Serial.println("Init led");
-  myrecipes.LED_init();
 #if defined(_MAGOD1)
   myled.Set_LED_color(LED_type);
 #elif defined(_MAGOD2)
-  myled.Set_LED_color(LED_type,LED_intensity);
+  myled.Set_LED_color(LED_type,LED_intensity[LED_type]);
 #endif
   
   //Initialize ADC(s)
@@ -541,7 +579,7 @@ void setup()
   // see if the card is present and can be initialized
   if (!SD.begin(SD_CS)) {
     Serial.println("SD Card not found");
-    strlcpy(myfile.fName_char,"NO SD CARD",myfile.fN_len);
+    strlcpy(myfile.fName_char,"NO SD",myfile.fN_len);
     myscreen.updateFILE(myfile.fName_char);
     delay(1000);
 #if defined(_MAGOD1)
@@ -550,7 +588,7 @@ void setup()
     if (!myfile.card.init(SPI_HALF_SPEED, SD_CS)) {
 	Serial.println("card initialization failed");
 	//If card not present, continue without using 
-	strlcpy(myfile.fName_char,"NO SD CARD",myfile.fN_len);
+	strlcpy(myfile.fName_char,"NO SD",myfile.fN_len);
 	myscreen.updateFILE(myfile.fName_char);
 	SDpresent = false;
       }
@@ -558,13 +596,13 @@ void setup()
       if (!SD.begin(SD_CS)) {
 	  Serial.println("card still not working");
 	  //If card not present, continue without using 
-	  strlcpy(myfile.fName_char,"NO SD CARD",myfile.fN_len);
+	  strlcpy(myfile.fName_char,"NO SD",myfile.fN_len);
 	  myscreen.updateFILE(myfile.fName_char);
 	  SDpresent = false;
 	}
       else {
 	Serial.println("ok!");
-	strlcpy(myfile.fName_char,"SD CARD READY",myfile.fN_len);
+	strlcpy(myfile.fName_char,"READY",myfile.fN_len);
 	myscreen.updateFILE(myfile.fName_char);
 	SDpresent = true;
       }
@@ -572,14 +610,14 @@ void setup()
 #endif //defined(MAGOD1)
 #if defined(_MAGOD2) // Card is not defined for EPS32
     Serial.println("card initialization failed");
-    strlcpy(myfile.fName_char,"NO SD CARD",myfile.fN_len);
+    strlcpy(myfile.fName_char,"NO SD",myfile.fN_len);
     myscreen.updateFILE(myfile.fName_char);
 #endif
   }
   else
   {
     Serial.println("SD Card Ready");
-    strlcpy(myfile.fName_char,"NO SD CARD",myfile.fN_len);
+    strlcpy(myfile.fName_char,"NO SD",myfile.fN_len);
     myscreen.updateFILE(myfile.fName_char);
     SDpresent = true;
 
@@ -588,7 +626,7 @@ void setup()
 
     if(cardType == CARD_NONE){
         Serial.println("Card Type not recognized");
-	strlcpy(myfile.fName_char,"NO SD CARD",myfile.fN_len);
+	strlcpy(myfile.fName_char,"NO SD",myfile.fN_len);
 	myscreen.updateFILE(myfile.fName_char);
         return;
     }
@@ -607,7 +645,7 @@ void setup()
     uint64_t cardSize = SD.cardSize() / (1024 * 1024);
     Serial.printf("SD %lluMB\n", cardSize);
     /* It would be nice to print the filesize on the screen. LEON */
-    strlcpy(myfile.fName_char,"SD CARD READY",myfile.fN_len);
+    strlcpy(myfile.fName_char,"READY",myfile.fN_len);
     myscreen.updateFILE(myfile.fName_char);
 
     /* Test if file can actually be opened for writing */
@@ -637,11 +675,31 @@ void setup()
   Looppar_1 = 0;
   Looppar_2 = 0;
   //sets the initial field to start the measurement, depending on the program used
+  
+  // Load recipes from RECIPES.CSV file on the Flash card
+  if (SDpresent) {
+    File recipeFile = SD.open("/RECIPES.CSV");
+    if (recipeFile){
+      program_nmb = myrecipes.LoadRecipes(recipeFile, recipesArray);
+      if (program_nmb < 0) {
+	Serial.println("Loading recipe file failed");
+      }
+    }
+    else {
+	Serial.println("RECIPES.CSV not found");
+    }
+  }
 }
+
 
 /* Main loop */
 void loop()
 {
+  /* Which measurement program to run. Temporary fix. Should have
+     button. LEON */
+
+  program_cnt=1;
+  
   delay(1);
   /* Check for button pressed */
   processButtonPress();
@@ -680,25 +738,32 @@ void loop()
     }
   
   /* Check if it is time to go to the next step in the measurement loop */
-  if (((millis() - time_last_field_change) >
-       (Switching_time[Looppar_1]-1))
-      && (Exit_program_1 == LOW))
-    {
-      time_last_field_change = millis();
-      SetBfield_array();
-      
-      //prints for debugging
-      Serial.print("The time of field change is: ");
-      Serial.println(time_last_field_change);
-      Serial.print("B_nr_set = ");Serial.println(B_nr_set);
-      Serial.print("Looppar = ");Serial.println(Looppar_1);
-      Serial.print("The magnetic field in the x-direction = ");
-      Serial.println(B_arrayfield_x[Looppar_1]);
-      Serial.print("The magnetic field in the y-direction = ");
-      Serial.println(B_arrayfield_y[Looppar_1]);
-      Serial.print("The magnetic field in the z-direction = ");
-      Serial.println(B_arrayfield_z[Looppar_1]);
+  int currenttime = millis();
+  int meastime = currenttime - time_last_field_change;
+  if ((meastime >= Switching_time[Looppar_1]) && (Exit_program_1 == LOW)) {
+    Looppar_1 = Looppar_1+1;
+    if (Looppar_1 > B_nr_set){ /* when larger than total number of values in
+			   the array, gos back to first value */
+      Looppar_1 = 0; // If we go back to 1 here, we have our initialization cycle! LEON
+      Looppar_2++; // Counts number of times a cycle has completed
+      //check whether the program should end if Nr_cylces is set:
+      if (Nr_cycles != 0) {
+	if (Looppar_2 >= Nr_cycles) {      
+	  stopRec();
+	}
+      }
     }
+
+    // For debugging:
+    Serial.println("-------------------------------------------------");
+    Serial.print("Looppar 1: ");Serial.println(Looppar_1);
+    Serial.print("The time of field change is: ");
+    Serial.print(time_last_field_change);
+    Serial.print(" (");Serial.print(meastime);Serial.println(" ms)");
+    // Go to next step in field sequence:
+    SetBfield_array(Looppar_1);
+    time_last_field_change = millis();
+  }
 }
 //end of program
 

@@ -36,53 +36,59 @@ led::led(){
 void led::Set_LED_color(int color)
 {
   switch (color){
-  case 1:
+  case RED:
     digitalWrite(LED_red, HIGH);
     digitalWrite(LED_green, LOW);
     digitalWrite(LED_blue, LOW);
     Serial.println("Red");
     break;
-  case 2:
+  case GREEN:
     digitalWrite(LED_red, LOW);
     digitalWrite(LED_green, HIGH);
     digitalWrite(LED_blue, LOW);
     Serial.println("Green ");
     break;
-  default:
+  case BLUE:
     digitalWrite(LED_red, LOW);
     digitalWrite(LED_green, LOW);
     digitalWrite(LED_blue, HIGH);
-    Serial.println("Blue ");
+    Serial.println("BLUE ");
+    break;
+  default:
+    digitalWrite(LED_red, LOW);
+    digitalWrite(LED_green, HIGH);
+    digitalWrite(LED_blue, LOW);
+    Serial.println("Default ");
     break;
   }
 }
 #elif defined(_MAGOD2)
-void led::Set_LED_color(int color, int intensity[])
+void led::Set_LED_color(int color, int intensity)
 {
   switch (color){
   case RED: 
-    ledcWrite(LEDChannelRed, intensity[RED]);
+    ledcWrite(LEDChannelRed, intensity);
       ledcWrite(LEDChannelGreen, 0);
       ledcWrite(LEDChannelBlue, 0);
       Vrefs.Vref=Vrefs.Vred;//Not elegant, update. We don't need Vref.Vref. LEON
       Serial.print("Switched to Red, intensity: ");
-      Serial.println(intensity[RED]);
+      Serial.println(intensity);
       break;
   case GREEN: 
       ledcWrite(LEDChannelRed, 0);
-      ledcWrite(LEDChannelGreen, intensity[GREEN]);
+      ledcWrite(LEDChannelGreen, intensity);
       ledcWrite(LEDChannelBlue, 0);
       Vrefs.Vref=Vrefs.Vgreen;
       Serial.print("Switched to Green, intensity: ");
-      Serial.println(intensity[GREEN]);
+      Serial.println(intensity);
       break;
   case BLUE: 
       ledcWrite(LEDChannelRed, 0);
       ledcWrite(LEDChannelGreen, 0);
-      ledcWrite(LEDChannelBlue, intensity[BLUE]);
+      ledcWrite(LEDChannelBlue, intensity);
       Vrefs.Vref=Vrefs.Vblue;
       Serial.print("Switched to Blue, intensity: ");
-      Serial.println(intensity[BLUE]);      
+      Serial.println(intensity);      
       break;
   }
 }

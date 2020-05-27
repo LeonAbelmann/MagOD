@@ -7,7 +7,7 @@
 #ifndef adc_h
 #define adc_h
 
-#include <Adafruit_ADS1015.h>  // ADC library
+//#include <Adafruit_ADS1015.h>  // ADC library, now included in standard libraries
 
 #include "../../MagOD.h"
 #include "../led/led.h" // Needed for set_vrefs. adc and led are interdepenent. Perhaps solve in MagOD itself. TODO. LEON
