@@ -10,20 +10,25 @@
 #include <WiFiClient.h>
 #include <WebServer.h>
 #include <ESPmDNS.h>
-#include "SD.h"
-#include "SPI.h"
+#include <SD.h>
+#include <SPI.h>
 
+/* User settings : */
+#define chipSelect 15 //SDcard CS port.
 #define measurementFrequency 8 // In hertz
+/* To connect to your wifi network, we expect file a 'password.txt' in
+local directory with contents: 
+const char* ssid = "MyWifiNetwork"; //WiFi SSID 
+const char* password = "PasswordForThatNetwork"; //WiFi Password
+*/
+#include "password.h" //expected in local directory
+
+/* hostname that may appear on your network */
+const char* host = "esp32sd";
+
+/* Nothing to set after here: */
 
 bool doMeasurementFlag = false;
-
-/*
-    SD webserver
-*/
-
-const char* ssid = "****";                  //WiFi SSID
-const char* password = "****";              //WiFi Password
-const char* host = "esp32sd";
 
 WebServer server(80);
 
@@ -381,17 +386,43 @@ void IRAM_ATTR measEvent() {
 void setup() {      //Runs on core 1
     Serial.begin(115200);
     Serial.setDebugOutput(true);
-    Serial.print("\n");
-    
+    Serial.println("test_SD_HTTP_Server.ino");
+
+    Serial.println("Initializing Wifi ..");
     WiFi.mode(WIFI_STA);
 
-    while(!SD.begin(SS, SPI, 4000000, "/sd", 5)) {
-        Serial.println("[SD] No SD card found");
-        delay(3000);
-    }
-    
-    Serial.println("[SD] SD Card initialized");
+    /* Initialize SD card */
+    Serial.println("Initializing card ..");
+    if (!SD.begin(chipSelect))
+      {
+	Serial.println("SD Card not found");
+      }
+    else
+      {
+	uint8_t cardType = SD.cardType();
+	
+	if(cardType == CARD_NONE){
+	  Serial.println("Card Type not recognized");
+	  return;
+	}
+	
+	Serial.print("SD Card Type: ");
+	if(cardType == CARD_MMC){
+	  Serial.println("MMC");
+	} else if(cardType == CARD_SD){
+	  Serial.println("SDSC");
+	} else if(cardType == CARD_SDHC){
+	  Serial.println("SDHC");
+	} else {
+	  Serial.println("UNKNOWN");
+	}
+	
+	uint64_t cardSize = SD.cardSize() / (1024 * 1024);
+	Serial.printf("SD Card Size: %lluMB\n", cardSize);
+	
+      }
 
+    /* prepare sd card to receive data */
     deleteRecursive("/measurementData");    //Delete old data on the SD card
     createDir("/measurementData");          //Create folder for new data to be stored in
 
