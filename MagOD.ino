@@ -195,7 +195,8 @@ void startRec()
   }
   else
   {
-    strlcpy(myfile.fName_char,"READY",myfile.fN_len);
+    // Something wrong with string length on display. Added spaces. LEON
+    strlcpy(myfile.fName_char,"READY     ",myfile.fN_len);
     myscreen.updateFILE(myfile.fName_char);
     SDpresent = true;
     
@@ -263,7 +264,8 @@ void stopRec()
 {
   Exit_program_1 = HIGH;
   myscreen.setRecButton(false);
-  strlcpy(myfile.fName_char,"DONE",myfile.fN_len);
+  //Something wrong with string lenght. For now added spaces
+  strlcpy(myfile.fName_char,"DONE      ",myfile.fN_len);
   myscreen.updateFILE(myfile.fName_char);
   // reset globals
   Looppar_2 = 0;
@@ -761,7 +763,7 @@ void loop()
     Serial.print("Looppar 1: ");Serial.println(Looppar_1);
     Serial.print("Total measurement time: ");
     Serial.println(currenttime - time_of_start);
-    Serial.print("Time of this step     :");Serial.print(meastime);
+    Serial.print("Time of this step     :");Serial.println(meastime);
     // Go to next step in field sequence:
     SetBfield_array(Looppar_1);
   }

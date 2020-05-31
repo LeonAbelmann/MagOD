@@ -191,42 +191,37 @@ void screen::setupScreen()
   
   //Calculated OD
   tft.textSetCursor(locText_x, locText_y+3*locText_vSpace);	
-  tft.textWrite("OD:");
+  tft.textWrite("OD  :");
 
   //Current X
   tft.textSetCursor(locText_x, locText_y+4*locText_vSpace);	
-  tft.textWrite("I_x:");
+  tft.textWrite("I_x :");
 
   //Current Y
   tft.textSetCursor(locText_x, locText_y+5*locText_vSpace);	
-  tft.textWrite("I_y:");
+  tft.textWrite("I_y :");
 
   //Current Z
   tft.textSetCursor(locText_x, locText_y+6*locText_vSpace);	
-  tft.textWrite("I_z:");
+  tft.textWrite("I_z :");
 
   
   /* Right Column */
+
+  //Position 1 is used for filename
+  //Position 2 - 4 are still free
   
   //Voltage reference photodiode
-  tft.textSetCursor(column_space, locText_y+0*locText_vSpace);
+  tft.textSetCursor(column_space, locText_y+4*locText_vSpace);
     tft.textWrite("Vref:");
   
-  //Filename:
-  tft.textSetCursor(column_space, locText_y+1*locText_vSpace);
-  tft.textWrite("FILE:");
-  
-  //Program:
-  tft.textSetCursor(column_space, locText_y+2*locText_vSpace);
-  tft.textWrite("PRG:");
-  
   //Which run in the program:
-  tft.textSetCursor(column_space, locText_y+3*locText_vSpace);
-  tft.textWrite("RUN:");
+  tft.textSetCursor(column_space, locText_y+5*locText_vSpace);
+  tft.textWrite("Run :");
   
   //Which step in the program:
-  tft.textSetCursor(column_space, locText_y+4*locText_vSpace);
-  tft.textWrite("STP:");
+  tft.textSetCursor(column_space, locText_y+6*locText_vSpace);
+  tft.textWrite("Stp :");
 
   this->updateV(Vdiodes,Vrefs,0,Vfb);
   this->updateInfo(0,0,0,"MAGOD2");
@@ -323,10 +318,10 @@ void screen::showRecipes(recipe recipe_arr[], int N, int cnt){
     //Serial.println(recipe_arr[i].name);
     tft.textSetCursor(text_x,i*locText_vSpace);
     if (i==cnt) {
-      tft.textTransparent(TFTCOLOR_YELLOW); // Highlight color
+      tft.textTransparent(TFTCOLOR_RED); // Highlight color
     }
     else {
-      tft.textTransparent(TFTCOLOR_RED); // Default color
+      tft.textTransparent(TFTCOLOR_YELLOW); // Default color
     }
     tft.textWrite(recipe_arr[i].name,10); // Write title
   }
@@ -335,12 +330,24 @@ void screen::showRecipes(recipe recipe_arr[], int N, int cnt){
 //update program settings whenever requested
 void screen::updateInfo(unsigned int Looppar_1, unsigned int Looppar_2, int16_t program_cnt, const char *filename)
 {
+  // First element is filename
+  // Clear existing file field
+  tft.fillRect(locText_x+column_space,
+	       locText_y,
+	       column_space,
+	       locText_vSpace+2, TFTCOLOR_BLACK);
+  tft.textSetCursor(column_space,
+		    locText_y);
+  //strcpy(filestring, filename); /* truncate to length of filestring */
+  //tft.textWrite(filestring);
+  tft.textTransparent(TFTCOLOR_RED);
+  tft.textWrite(filename,10);
+
   //Clear existing data
   tft.fillRect(locText_x+column_space+locText_hSpace,
-	       locText_y,
+	       locText_y+locText_vSpace+2,
 	       column_space-locText_hSpace,
-	       7*locText_vSpace+2, TFTCOLOR_BLACK);
-  
+	       6*locText_vSpace+2, TFTCOLOR_BLACK);
   tft.textTransparent(TFTCOLOR_RED);
 
   char string[5];
@@ -348,32 +355,19 @@ void screen::updateInfo(unsigned int Looppar_1, unsigned int Looppar_2, int16_t 
 
   //Reference signal
   tft.textSetCursor(column_space+locText_hSpace,
-		    locText_y+0*locText_vSpace);
+		    locText_y+4*locText_vSpace);
   dtostrf(Vrefs.Vref, 5, 3, string); 
   tft.textWrite(string,5);
 
-  //FILE
-  tft.textSetCursor(column_space+locText_hSpace,
-		    locText_y+1*locText_vSpace);
-  //strcpy(filestring, filename); /* truncate to length of filestring */
-  //tft.textWrite(filestring);
-  tft.textWrite(filename,5);
-  
-  //program number
-  tft.textSetCursor(column_space+locText_hSpace,
-		    locText_y+2*locText_vSpace);
-  dtostrf(program_cnt, 2, 0, string); 
-  tft.textWrite(string);
-  
   //Run: Looppar_2, number of cycles
   tft.textSetCursor(column_space+locText_hSpace,
-		    locText_y+3*locText_vSpace);
+		    locText_y+5*locText_vSpace);
   dtostrf(Looppar_2, 2, 0, string); 
   tft.textWrite(string);
   
   //Step: Looppar_1, which step in the cycle
   tft.textSetCursor(column_space+locText_hSpace,
-		    locText_y+4*locText_vSpace);
+		    locText_y+6*locText_vSpace);
   dtostrf(Looppar_1, 2, 0, string); 
   tft.textWrite(string);
 }
