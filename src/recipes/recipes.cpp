@@ -18,44 +18,44 @@ bool error_flag = false;
 
 /* Read one line from file, return store into line. Return true if end of line
 was found */
-bool readOneLine(char* line){
-	char ch; //single characters read from file
-	bool endofline = false; //did we run into a \n character?
-	bool linefound = false;
-	int idx = 0;
-	// Read file until you find a non-comment line or run into the end of file
-	while (myIO->recipeFileavailable() && not linefound){
-		memset(line,'\0', MAX_LENGTH); // clear line contents
-		while (myIO->recipeFileavailable() && !endofline) { 
-			ch = myIO->recipeFileread();
-			if(ch !='\n'){
-				line[idx] = ch;
-				idx++;
-			}
-			
-			else{
-				endofline = true;
-			}
-		
-		}
-		// Comment line starts with #, ignore it:
-		//  Ruthvik check
-		if(endofline && not linefound) {
-			//myIO->serialPrint((char*)"Ignoring comment line:");
-			if(line[0]=='#') {
-				line += strlen(line);
-			}
-			if(line[0]==',' && line[1]==',' && strlen(line)<15);
-			else linefound = true;
-		}
+bool readOneLine(char* line, File recipeFile){
+  char ch; //single characters read from file
+  bool endofline = false; //did we run into a \n character?
+  bool linefound = false;
+  int idx = 0;
+  // Read file until you find a non-comment line or run into the end of file
+  while (myIO->recipeFileavailable(recipeFile) && not linefound) {
+    memset(line,'\0', MAX_LENGTH); // clear line contents
+    // Read characters until you find end of line
+    while (myIO->recipeFileavailable(recipeFile) && !endofline) {
+      ch = myIO->recipeFileread(recipeFile);
+      if(ch !='\n'){
+	line[idx] = ch;
+	idx++;
+      }			
+      else{
+	endofline = true;
+      }
+    }
+    // Comment line starts with #, ignore it:
+    if(line[0]=='#') {
+      //myIO->serialPrint((char*)"Ignoring comment line:");
+      //myIO->serialPrintln(line);
+     }
+    else { // Ignore line with only comma:
+      if(line[0]==',' && line[1]==',' && strlen(line)<15){
+	//myIO->serialPrint((char*)"Ignoring line:");
 	//myIO->serialPrintln(line);
-	}
-	// myIO->serialPrint((char*)"Line length: ");
-	// myIO->serialPrint(strlen(line));
-	// myIO->serialPrint((char*)"  Line found: ");
-	// myIO->serialPrintln(line);
-	ln_count++;
-	return linefound;
+      }
+      else linefound = true; // We are happy we found a line
+    }
+  }
+  //myIO->serialPrint((char*)"Line length: ");
+  //myIO->serialPrint(strlen(line));
+  //myIO->serialPrint((char*)"  Line found: ");
+  //myIO->serialPrintln(line);
+  ln_count++;
+  return linefound; // Returns only false if end of file is reached
 }
 
 /* Search for delimiters in the line, and store the strings between
@@ -149,96 +149,106 @@ int getLEDColor(char* str){
 
 /* Read one line of the sequence and store the field and led parameter at location 'num'*/
 bool readSequenceStep(char* line, sequence& seq, int num, char* recipe_name){
-	bool stepFound=false;
-	int N=10;
-	char * col[N]; //We need to read 7 columns (0:6)
-	int numCol; //Number of columns read
-	//myIO->serialPrintln(strlen(line));
-	for (int i = 0; i < N; i++){
-		col[i] = new char[MAX_LENGTH];
-	}
-	numCol = readColumns(line, ',', col, N);
-	// Throws error message when negative value(s) detected and corrects to zero
-	for(int j = 1; j < N; j++){
-		if(atof(col[j]) < 0 && j!= 5){
-			col[j] = (char*)"0";
-			myIO->serialPrintln((char*)"");
-			myIO->serialPrint((char*)"Negative value(s) detected on line number: ");
-			myIO->serialPrint(ln_count);
-			myIO->serialPrintln((char*)" and corrected to ZERO.");
-		}
-	}
+  bool stepFound=false;
+  int N=10;
+  char * col[N]; //We need to read 7 columns (0:6)
+  int numCol; //Number of columns read
+  //myIO->serialPrintln(strlen(line));
+  //myIO->serialPrintln(line);
+  for (int i = 0; i < N; i++){
+    col[i] = new char[MAX_LENGTH];
+  }
+  numCol = readColumns(line, ',', col, N);
+  // Throws error message when negative value(s) detected and corrects to zero
+  for(int j = 1; j < N; j++){
+    if(atof(col[j]) < 0 && j!= 5){
+      col[j] = (char*)"0";
+      myIO->serialPrintln((char*)"");
+      myIO->serialPrint((char*)"Negative value(s) detected on line number: ");
+      myIO->serialPrint(ln_count);
+      myIO->serialPrintln((char*)" and corrected to ZERO.");
+    }
+  }
 	
-	if(line[0]!='#' && getLEDColor(col[5]) < 0){
-		myIO->serialPrint((char*)"Line: ");
-		myIO->serialPrint(ln_count);
-		myIO->serialPrint((char*)"\tError, ");
-		myIO->serialPrint((char*)"' ");
-		myIO->serialPrint(col[5]);
-		myIO->serialPrint((char*)" '");
-		myIO->serialPrintln((char*)" LED color unrecognized");
-		error_flag = true;
-	}
+  if(line[0]!='#' && getLEDColor(col[5]) < 0){
+    myIO->serialPrint((char*)"Line: ");
+    myIO->serialPrint(ln_count);
+    myIO->serialPrint((char*)"\tError, ");
+    myIO->serialPrint((char*)"' ");
+    myIO->serialPrint(col[5]);
+    myIO->serialPrint((char*)" '");
+    myIO->serialPrintln((char*)" LED color unrecognized");
+    error_flag = true;
+  }
 	
-	//	 We expect nine columns  (col[0] is empty):
-	if (numCol>5){
-		seq.Bx[num]            = atof(col[1]);//B_x[mT]
-		seq.By[num]            = atof(col[2]);//B_y[mT]
-		seq.Bz[num]            = atof(col[3]);//B_z[mT]
-		seq.time[num]          = atof(col[4])*1000;//T_switch[ms]
-		seq.led[num].color     = getLEDColor(col[5]);//LED Color (RED, GREEN, BLUE)
-		seq.led[num].intensity = atoi(col[6]);//LED Intensity
-		seq.grad[num].grad_x = atof(col[7]);
-		seq.grad[num].grad_y = atof(col[8]);
-		seq.grad[num].grad_z = atof(col[9]);
-		//Check if all values make sense:
-		stepFound=(seq.Bx[num]>=0 && seq.By[num]>=0 && seq.Bz[num]>=0 &&
-	       seq.time[num]>=0 && seq.led[num].color>=0 && seq.led[num].intensity >=0 &&
-		   seq.grad[num].grad_x>=0 && seq.grad[num].grad_y>=0 && seq.grad[num].grad_z>=0);
-	}
-	return stepFound;
+  //	 We expect nine columns  (col[0] is empty):
+  if (numCol>5){
+    seq.Bx[num]            = atof(col[1]);//B_x[mT]
+    seq.By[num]            = atof(col[2]);//B_y[mT]
+    seq.Bz[num]            = atof(col[3]);//B_z[mT]
+    seq.time[num]          = atof(col[4])*1000;//T_switch[ms]
+    seq.led[num].color     = getLEDColor(col[5]);//LED Color (RED, GREEN, BLUE)
+    seq.led[num].intensity = atoi(col[6]);//LED Intensity
+    seq.grad[num].grad_x = atof(col[7]);
+    seq.grad[num].grad_y = atof(col[8]);
+    seq.grad[num].grad_z = atof(col[9]);
+
+    //Check if all values make sense:
+    stepFound=(seq.Bx[num]>=0 &&
+	       seq.By[num]>=0 && seq.Bz[num]>=0 &&
+	       seq.time[num]>=0 &&
+	       seq.led[num].color>=0 &&
+	       seq.led[num].intensity >=0 &&
+	       seq.grad[num].grad_x>=0 &&
+	       seq.grad[num].grad_y>=0 &&
+	       seq.grad[num].grad_z>=0);
+  }
+  return stepFound;
 }
 
 /* Read sequence of steps from file, until @ endSequence is found */
-bool readSequence(char* line, sequence& seq, char* recipe_name){
-	bool endSequence=false;
-	int N=2;
-	char * col[N]; //We need to read only 2 columns to find endSequence
-	int numCol; // number of columns read
-	int sequenceNumber=0;
-	for (int i = 0; i < N; i++){
-		col[i] = new char[MAX_LENGTH];
-	}
-	// myIO->serialPrintln(line);
-	/* Read until you find EndSequence. The order of checking is
+bool readSequence(char* line, sequence& seq, char* recipe_name,
+		  File recipeFile){
+  bool endSequence=false;
+  int N=2;
+  char * col[N]; //We need to read only 2 columns to find endSequence
+  int numCol; // number of columns read
+  int sequenceNumber=0;
+  for (int i = 0; i < N; i++){
+    col[i] = new char[MAX_LENGTH];
+  }
+  // myIO->serialPrintln(line);
+  /* Read until you find EndSequence. The order of checking is
      important, first check endSequence, so that you don't read one
      line too many */
-	while(not endSequence && readOneLine(line)){
-		//myIO->serialPrintch(line[0]);
-		if (line[0] == '@'){
-			numCol = readColumns(line, ',', col, N);
-			endSequence=comparestring(col[1],"EndSequence");
-			if (!endSequence){
-				myIO->serialPrint((char*)"Line: ");
-				myIO->serialPrint(ln_count);
-				myIO->serialPrintln((char*)"\tEndsequence not found");
-				error_flag = true;
-				break;
-			}
-		}
-		else{ // We assume every line has a sequence step. Can be broken! LEON
-			//if(line[0]=='#') continue;
-			//else if(line=="\0") line+=strlen(line);
-			if(line[0]!='\0'){
-				readSequenceStep(line, seq, sequenceNumber, recipe_name);
-				sequenceNumber=sequenceNumber+1;
-				//myIO->serialPrintln((char*)"sequenceNumber: ");myIO->serialPrint(sequenceNumber);
-			}
-		}
-	}
-	seq.length=sequenceNumber-1; //Number of steps in this sequence
-	//myIO->serialPrintln((char*)"Readsequence: Found number of steps: ");myIO->serialPrint(seq.length);
-	return endSequence; //If all went well, endSequence is true
+  while(not endSequence && readOneLine(line,recipeFile)){
+    //myIO->serialPrintch(line[0]);
+    if (line[0] == '@'){
+      numCol = readColumns(line, ',', col, N);
+      endSequence=comparestring(col[1],"EndSequence");
+      if (!endSequence){
+	myIO->serialPrint((char*)"Line: ");
+	myIO->serialPrint(ln_count);
+	myIO->serialPrintln((char*)"\tEndsequence not found");
+	error_flag = true;
+	break;
+      }
+    }
+    else{ // We assume every line has a sequence step. Can be broken! LEON
+      //if(line[0]=='#') continue;
+      //else if(line=="\0") line+=strlen(line);
+      if(line[0]!='\0'){
+	//myIO->serialPrint((char*)"sequenceNumber: ");
+	//myIO->serialPrintln(sequenceNumber);
+	readSequenceStep(line, seq, sequenceNumber, recipe_name);
+	sequenceNumber=sequenceNumber+1;
+      }
+    }
+  }
+  seq.length=sequenceNumber-1; //Number of steps in this sequence
+  //myIO->serialPrintln((char*)"Readsequence: Found number of steps: ");
+  //myIO->serialPrint(seq.length);
+  return endSequence; //If all went well, endSequence is true
 }
 
 /* For debugging, print the loaded recipes */
@@ -246,10 +256,10 @@ void recipes::serialRecipesPrint(recipe* recipe, int numRecipes){
   for (int i=0;i<=numRecipes;i++){
     myIO->serialPrintln((char*)"");
     myIO->serialPrint(recipe[i].name); myIO->serialPrint((char*)"  ");
-    myIO->serialPrint((char*)" Number of steps : " );
+    myIO->serialPrint((char*)" Number of steps [0.. N] :" );
     myIO->serialPrint(recipe[i].recipe_sequence.length);
     myIO->serialPrintln((char*)"");
-    for (int j=1;j<=recipe[i].recipe_sequence.length;j++){
+    for (int j=0;j<=recipe[i].recipe_sequence.length;j++){
       myIO->serialPrint((char*)"[ ");
       myIO->serialPrint(recipe[i].recipe_sequence.Bx[j]);
       myIO->serialPrint((char*)", ");
@@ -277,125 +287,134 @@ void recipes::serialRecipesPrint(recipe* recipe, int numRecipes){
 /* Load recipes from recipes file and store into array. Returns the
    number of recipes found */
 int recipes::LoadRecipes(File recipeFile, recipe recipes_array[]){
-	char*    line = new char[MAX_LENGTH]; //Line read from file
-	int      N = 10; // Maximum number of columns we expect to read
-	char*    col[N]; // Array with column values
-	int      numCol; // Number of columns found on line
-	bool     error = false;
-	int      version = 0 ;
-	int 	 read_parms; // Read the parameters
-	int 	 num_parms; // Number of parameters found
-	//int recipeNumber; // We can load several recipes, numbered [0..MaxRecipes]
-	//int linecount = 0; //For debug only
-	//recipeNumber=-1;
-  
-	// Initialize 
-	recipes_array = new recipe[MaxRecipes]; // Initialize
-	for (int i = 0; i < N; i++){
-		col[i] = new char[MAX_LENGTH];
+  char*    line = new char[MAX_LENGTH]; //Line read from file
+  int      N = 10; // Maximum number of columns we expect to read
+  char*    col[N]; // Array with column values
+  int      numCol; // Number of columns found on line
+  bool     error = false;
+  int      version = 0 ;
+  int 	 read_parms; // Read the parameters
+  int 	 num_parms; // Number of parameters found
+  //int recipeNumber; // We can load several recipes, numbered [0..MaxRecipes]
+  //int linecount = 0; //For debug only
+  //recipeNumber=-1;
+
+  //myIO->serialPrintln((char*)"LoadRecipes:");
+  // Initialize 
+  for (int i = 0; i < N; i++){
+    col[i] = new char[MAX_LENGTH];
+  }
+  while(myIO->recipeFileavailable(recipeFile) && not error){
+    // Read one line from the recipe file, ignore comment lines
+    if (readOneLine(line,recipeFile)) {
+      //linecount++;
+      //myIO->serialPrintln(ln_count);
+      if(line[0] == '@'){
+	// Split line into column fields at comma's
+	numCol = readColumns(line, ',', col, N);
+	// Version number
+	if (comparestring(col[1],"Version")) {
+	  version=getversion(col[2]);
+	  if (version==0) error=true;
+	};
+	// Parameter list
+	if (comparestring(col[1],"Parameters")) {
+	  /* To be done. It is good to check if the order is what we
+	     expect. LEON */
+	  if(readOneLine(line,recipeFile)){
+	    // myIO->serialPrintln(line);
+	    num_parms = readColumns(line, ',', col, N);
+	    read_parms = getparameters(param, col, num_parms);
+	    int a=0;
+	    while(a!=read_parms){
+	      //myIO->serialPrintln(param[a]);
+	      //myIO->serialPrintln(strlen(param[a]));
+	      if(strlen(param[a])==1){
+		myIO->serialPrint((char*)"In RECIPE:");
+		myIO->serialPrintln((char*)"\tEmpty column detected");
+		error = true;
+		error_flag = true;
+		break;
+	      }
+	      else if(!comparestring(param[a],data[a])){
+		myIO->serialPrint((char*)"In RECIPE:\t");
+		myIO->serialPrint((char*)"'");
+		myIO->serialPrint((char*)data[a]);
+		myIO->serialPrint((char*)"'");
+		myIO->serialPrintln((char*)" values not found");
+		error = true;
+		error_flag = true;
+		break;
+	      }
+	      a++;
+	    }
+	  }
 	}
 
-	while(myIO->recipeFileavailable() && not error){
-		// Read one line from the recipe file, ignore comment lines
-		if (readOneLine(line)) {
-			//linecount++;
-			// myIO->serialPrintln(ln_count);
-			if(line[0] == '@'){
-			// Split line into column fields at comma's
-				numCol = readColumns(line, ',', col, N);
-				// Version number
-				if (comparestring(col[1],"Version")) {
-					version=getversion(col[2]);
-					if (version==0) error=true;
-				};
-				// Parameter list
-				if (comparestring(col[1],"Parameters")) {
-					// To be done. It is good to check if the order is what we expect. LEON
-					if(readOneLine(line)){
-						// myIO->serialPrintln(line);
-						num_parms = readColumns(line, ',', col, N);
-						read_parms = getparameters(param, col, num_parms);
-						int a=0;
-						while(a!=read_parms){
-							//myIO->serialPrintln(param[a]);
-							//myIO->serialPrintln(strlen(param[a]));
-							if(strlen(param[a])==1){
-								myIO->serialPrint((char*)"In RECIPE:");
-								myIO->serialPrintln((char*)"\tEmpty column detected");
-								error = true;
-								error_flag = true;
-								break;
-							}
-							else if(!comparestring(param[a],data[a])){
-								myIO->serialPrint((char*)"In RECIPE:\t");
-								myIO->serialPrint((char*)"'");
-								myIO->serialPrint((char*)data[a]);
-								myIO->serialPrint((char*)"'");
-								myIO->serialPrintln((char*)" values not found");
-								error = true;
-								error_flag = true;
-								break;
-							}
-							a++;
-						}
-					}
-				}
-				// Recipe
-				if (comparestring(col[1],"Recipe") && recipe::count < MaxRecipes && not error){
-					// The recipe description is on the same line in col[2]:
-					recipe::count++;//recipeNumber initialized at -1.
-					strncpy(recipes_array[recipe::count].name,stripQuotes(col[2]),strlen(col[2])+1);
-					strcat(recipes_array[recipe::count].name, stripQuotes(col[3]));
-					//myIO->serialPrintln(recipes_array[recipe::count].name);
-					bool recipeEnd=false;
-					//Keep reading until you find EndRecipe
-					while (readOneLine(line) && not recipeEnd && not error){
-						//myIO->serialPrintln(line);
-						if (line[0] == '@') {
-							// Split lines into columns
-							numCol = readColumns(line, ',', col, N);
-							// Number of cycles
-							if (comparestring(col[1],"N_cycles")){
-								recipes_array[recipe::count].N_cycles = atoi(col[2]);
-							}	
-							// Sequence
-							else if (comparestring(col[1],"Sequence")){
-								//myIO->serialPrintln(linecount);
-								if (not readSequence(line, recipes_array[recipe::count].recipe_sequence, recipes_array[recipe::count].name)){
-									// myIO->serialPrint((char*)"Line: ");
-									// myIO->serialPrint(ln_count);
-									// myIO->serialPrintln((char*)"\tError, unable to read sequence");
-									error=true;
-								}
-							}
-							else{
+	// Recipe
+	if (comparestring(col[1],"Recipe")
+	    && recipe::count < (MaxRecipes-1) && not error){
+	  // The recipe description is on the same line in col[2]:
+	  recipe::count++;//recipeNumber initialized at -1.
+	  strncpy(recipes_array[recipe::count].name,
+		  stripQuotes(col[2]),strlen(col[2])+1);
+	  strcat(recipes_array[recipe::count].name, stripQuotes(col[3]));
+	  //myIO->serialPrintln(recipes_array[recipe::count].name);
+	  bool recipeEnd=false;
+	  //Keep reading until you find EndRecipe
+	  while (readOneLine(line,recipeFile) && not recipeEnd && not error){
+	    //myIO->serialPrintln(line);
+	    if (line[0] == '@') {
+	      // Split lines into columns
+	      numCol = readColumns(line, ',', col, N);
+	      // Number of cycles
+	      if (comparestring(col[1],"N_cycles")){
+		recipes_array[recipe::count].N_cycles = atoi(col[2]);
+	      }	
+	      // Sequence
+	      else if (comparestring(col[1],"Sequence")){
+		//myIO->serialPrintln(linecount);
+		if (not readSequence(line,
+	       		     recipes_array[recipe::count].recipe_sequence,
+			     recipes_array[recipe::count].name,
+			     recipeFile)){
+		  // myIO->serialPrint((char*)"Line: ");
+		  // myIO->serialPrint(ln_count);
+		  // myIO->serialPrintln((char*)"\tError, unable to read sequence");
+		  error=true;
+		}
+	      }
+	      else{
 								
-								if(not(comparestring(col[1],"EndSequence")) && not(comparestring(col[1],"EndRecipe"))){
-									myIO->serialPrint((char*)"Line: ");
-									myIO->serialPrint(ln_count);
-									myIO->serialPrint((char*)"\tError, ");
-									myIO->serialPrint((char*)"'");
-									myIO->serialPrint(col[1]);
-									myIO->serialPrint((char*)"'");
-									myIO->serialPrintln((char*)" unrecognized");
-									error = true;
-									error_flag = true;
-								}
-							}
-							// End Recipe
-							recipeEnd=comparestring(col[1],"EndRecipe");
-						};//End if line starts with @
-					};//End while readOneLine
-				};//end if col[1]=Recipe
-			};// end if "@"
-		};//End if readOneLine for entire recipe
-	}
-	if(!error_flag){ myIO->serialPrint(myIO->my_file);myIO->serialPrintln((char*)" OK");}
-	/* For debug, send recipe to serial port for monitoring */
-	serialRecipesPrint(recipes_array,recipe::count);
-	return recipe::count; /* If succesfull recipeNumber >=0 */
+		if(not(comparestring(col[1],"EndSequence")) &&
+		   not(comparestring(col[1],"EndRecipe"))){
+		  myIO->serialPrint((char*)"Line: ");
+		  myIO->serialPrint(ln_count);
+		  myIO->serialPrint((char*)"\tError, ");
+		  myIO->serialPrint((char*)"'");
+		  myIO->serialPrint(col[1]);
+		  myIO->serialPrint((char*)"'");
+		  myIO->serialPrintln((char*)" unrecognized");
+		  error = true;
+		  error_flag = true;
+		}
+	      }
+	      // End Recipe
+	      recipeEnd=comparestring(col[1],"EndRecipe");
+	    };//End if line starts with @
+	  };//End while readOneLine
+	};//end if col[1]=Recipe
+      };// end if "@"
+    };//End if readOneLine for entire recipe
+  }
+  if(!error_flag){
+    myIO->serialPrint(myIO->my_file);
+    myIO->serialPrintln((char*)" OK");
+  }
+  /* For debug, send recipe to serial port for monitoring */
+  serialRecipesPrint(recipes_array,recipe::count);
+  return recipe::count; /* If succesfull recipeNumber >=0 */
 }//End of LoadRecipes
-
 
 /* Program_init()
 This is the main function to change when altering the programs. This defines what each individual program can do. In an older version, the programs were hard coded. Later we defined a RECIPES.CSV that is read from flash, which is easier for the user. The code was tweaked, so it has a lot of remnants of the hard coded period. Needs major rehaul. LEON

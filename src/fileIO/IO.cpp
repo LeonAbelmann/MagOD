@@ -6,13 +6,15 @@
 
 //Constructor
 IO::IO(char * fname){
-	strcpy(my_file, fname);
-	#if defined(stdioVersion)
-		recipeFile_.open(fname, ios::in);
-	#elif defined (ESP_PLATFORM)
-	//Nothing to do
-	recipeFile = SD.open(fname, FILE_READ);
-	#endif
+  /* MagOD loads the recipe file in the setup, which makes perfect
+     sense. To be consisten. We no longer need this. TestRecipes will
+     need to be adapted */
+	// strcpy(my_file, fname);
+	// #if defined(stdioVersion)
+	// 	recipeFile_.open(fname, ios::in);
+	// #elif defined (ESP_PLATFORM)
+	// //recipeFile is loaded in MagOD
+	// #endif
 }
 
 void IO::initSerial(){
@@ -122,73 +124,69 @@ void IO::serialPrintln(char * message) {
 }
 
 /* Test if recipes file is present */
-bool IO::checkFile() {
-  // recipeFile is global to IO.h
-	bool  check_flag = false;
-	#if defined(stdioVersion)
-		//#warning "stdioVersion checkFile"
-		//recipeFile_.open("RECIPES1.CSV", ios::in);
-		if (recipeFile_.good()) {
-			//serialPrintln((char*)"****File found****"); 
-			check_flag = true;
-		}
-		else {
-			//serialPrintln((char*)"****File not found****");
-			check_flag = false;
-		}
-	#elif defined(ESP_PLATFORM)
-		//#warning "SD version checkFile"
-		//recipeFile = SD.open("/RECIPES.CSV", FILE_READ); 
-		if (recipeFile) {
-			//serialPrintln((char*)"****File checked****"); 
-			check_flag = true;
-		}
-		else {
-			//serialPrintln((char*)"****File not found****");
-			check_flag = false;
-		}
-	#endif
-	return check_flag;
+bool IO::checkFile(File recipeFile) {
+  bool  check_flag = false;
+#if defined(stdioVersion)
+  //#warning "stdioVersion checkFile"
+  //recipeFile_.open("RECIPES1.CSV", ios::in);
+  if (recipeFile_.good()) {
+    //serialPrintln((char*)"****File found****"); 
+    check_flag = true;
+  }
+  else {
+    //serialPrintln((char*)"****File not found****");
+    check_flag = false;
+  }
+#elif defined(ESP_PLATFORM)
+  //#warning "SD version checkFile"
+  //recipeFile = SD.open("/RECIPES.CSV", FILE_READ); 
+  if (recipeFile) {
+    //serialPrintln((char*)"****File checked****"); 
+    check_flag = true;
+  }
+  else {
+    //serialPrintln((char*)"****File not found****");
+    check_flag = false;
+  }
+#endif
+  return check_flag;
 }
 
 
 /* Check if recipefile still has on more character */
-bool IO::recipeFileavailable() {
-	bool recipe_flag = false;
-	#if defined(stdioVersion)
-		//#warning "stdioVersion recipeFileavailable"
-		recipe_flag = recipeFile_.is_open() && !recipeFile_.eof();
-	#elif defined(ESP_PLATFORM)
-		//#warning "SD version recipeFileavailable"
-		recipe_flag = recipeFile.available();
-	#endif
-	return recipe_flag;
+bool IO::recipeFileavailable(File recipeFile) {
+  bool recipe_flag = false;
+#if defined(stdioVersion)
+  recipe_flag = recipeFile_.is_open() && !recipeFile_.eof();
+#elif defined(ESP_PLATFORM)
+  recipe_flag = recipeFile.available();
+#endif
+  return recipe_flag;
 }
 
-
 /* Read next character from recipe file */
-char IO::recipeFileread(){
-	char c;
-	#if defined(stdioVersion)
-		//#warning "stdioVersion recipeFileread"
-		recipeFile_.get(c);
-	#elif defined(ESP_PLATFORM)
-		//#warning "SD version recipeFileread"
-		c = recipeFile.read();
-	#endif
-	return c;
+char IO::recipeFileread(File recipeFile){
+  char c;
+#if defined(stdioVersion)
+  //#warning "stdioVersion recipeFileread"
+  recipeFile_.get(c);
+#elif defined(ESP_PLATFORM)
+  //#warning "SD version recipeFileread"
+  c = recipeFile.read();
+#endif
+  return c;
 }
 
 /* Close the recipefile */
-void IO::recipeFileclose(){
+void IO::recipeFileclose(File recipeFile){
   // THIS NEED TO BE DONE:
-	#if defined(stdioVersion)
-		//#warning "stdioVersion recipeFileclose"
-		recipeFile_.close();
-	#elif defined(ESP_PLATFORM)
-		//#warning "SD version recipeFileclose"
-		recipeFile.close();
-	#endif	
+#if defined(stdioVersion)
+  //#warning "stdioVersion recipeFileclose"
+  recipeFile_.close();
+#elif defined(ESP_PLATFORM)
+  //#warning "SD version recipeFileclose"
+  recipeFile.close();
+#endif	
 }
 
 

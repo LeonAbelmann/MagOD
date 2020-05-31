@@ -247,7 +247,7 @@ void buttons::initButton(){
   /* Button BUTTON_NEXTRECIPE: Toggle to next recipe in list */
   showButtonArea(BUTTON_NEXTRECIPE, (char *)">", TFTCOLOR_RED, TFTCOLOR_BLACK);
 
-  /* Button BUTTON_PREVRECIPE: Toggle to next recipe in list */
+  /* Button BUTTON_PREVRECIPE: Toggle to previous recipe in list */
   showButtonArea(BUTTON_PREVRECIPE, (char *)"<", TFTCOLOR_RED, TFTCOLOR_BLACK);
 #endif
 }
@@ -284,7 +284,7 @@ uint8_t buttons::readButton() {
 	{
 	  Serial.print("Touchscreen coordinates: ");
 	  Serial.print(x);Serial.print(", ");Serial.println(y);
-	  delay(500);
+	  delay(300);
 	  // Determine which button was pressed:
 	  Serial.print(" Button detected: ");
 	  switch (whichButton(x,y))

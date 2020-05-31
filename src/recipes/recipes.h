@@ -12,7 +12,7 @@ May 2020. Leon, Ruthvik
 
 /*Not too long because we need to display it on the screen and it will consume memory*/
 #define MaxNameLength       20 // Length of recipe name
-#define MaxRecipes          5  // Maximum number of recipes MagOD can load
+#define MaxRecipes          10  // Maximum number of recipes MagOD can load +1
 #define MaxSequenceLength   20 // Maximum number of steps per recipes (not too big, consumes memory
 
 
@@ -66,9 +66,6 @@ class recipes
 
   // perhaps Parameters should go here, LEON
   
-  /* Definition of recipes themselves*/
-  recipe recipes_array; // [0..] The number of recipes is limited,
-			// should fit on the screen.
 
   /* Function to dump the recipe to serial port or command line */
   void serialRecipesPrint(recipe* recipe, int numRecipes);
@@ -76,7 +73,7 @@ class recipes
   /* Functions to manupulate class */
   /* Load the recipe from file and stores them in the recipes_array.
      return the number of recipes found*/
-  int LoadRecipes(File file,recipe recipes_array[]);
+  int LoadRecipes(File file, recipe recipes_array[]);
   
   /* Initialize the measurement arrays to those defined in recipe
      'recipe_num' */

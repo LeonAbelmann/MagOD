@@ -22,12 +22,12 @@ using namespace std;
 
 class IO {
  private:
-  // Quick fix, REMOVE LATER!!! LEON
-#if defined(stdioVersion)
-  ifstream recipeFile_; // Global variable to remember the file handle
-#elif defined(ESP_PLATFORM)
-  File recipeFile;
-#endif
+/*   // Quick fix, REMOVE LATER!!! LEON */
+/* #if defined(stdioVersion) */
+/*   ifstream recipeFile_; // Global variable to remember the file handle */
+/* #elif defined(ESP_PLATFORM) */
+/*   File recipeFile; */
+/* #endif */
   
  public:
   IO(); //constructor
@@ -42,13 +42,13 @@ class IO {
   void serialPrint(char* message);
   void serialPrintln(char* message);
   /* Check for presence of file */
-  bool checkFile();
+  bool checkFile(File recipeFile);
   /* Check if recipefile still has on more character */
-  bool recipeFileavailable();
+  bool recipeFileavailable(File recipeFile);
   /* Read next character from recipe file */
-  char recipeFileread();
+  char recipeFileread(File recipeFile);
   /* Close the recipefile */
-  void recipeFileclose();
+  void recipeFileclose(File recipeFile);
 };
 
 #endif

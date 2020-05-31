@@ -17,6 +17,7 @@
 #include <SPI.h>
 #include "screen_RA8875.h"
 
+
 screen::screen(void)
 {
 }
@@ -301,18 +302,34 @@ void screen::updateV(diodes Vdiodes, references Vref, double OD, feedbacks curre
   tft.textWrite(string,5);
 }
 
-//update list of recipe, highight the currently selected recipe
-void screen::showRecipes(int16_t program_cnt){
+/* update list of recipe, highight the currently selected recipe */
+/* names : array of recipe titles
+   N     : total number of recipes
+   cnt   : the recipe that should be highlighted
+*/
+void screen::showRecipes(recipe recipe_arr[], int N, int cnt){
   // OTTO
-  Serial.print("Changing recipe to: ");Serial.println(program_cnt);
-
+  Serial.print("Changing highlighted recipe to: ");
+  Serial.print(cnt);Serial.print(" : ");
+  Serial.println(recipe_arr[cnt].name);
   //Clear existing data
-  tft.fillRect(locText_x+2*column_space+locText_hSpace,
+  tft.fillRect(locText_x+2*column_space,
 	       locText_y,
-	       column_space+locText_hSpace,
-	       7*locText_vSpace+2, TFTCOLOR_WHITE);
-  
-  
+	       column_space,
+	       7*locText_vSpace+2, TFTCOLOR_BLACK);
+  // Write the recipe names
+  int text_x=locText_x+2*column_space; // left position of texts
+  for (int i=0;i<=N;i++){
+    //Serial.println(recipe_arr[i].name);
+    tft.textSetCursor(text_x,i*locText_vSpace);
+    if (i==cnt) {
+      tft.textTransparent(TFTCOLOR_YELLOW); // Highlight color
+    }
+    else {
+      tft.textTransparent(TFTCOLOR_RED); // Default color
+    }
+    tft.textWrite(recipe_arr[i].name,10); // Write title
+  }
 };
 
 //update program settings whenever requested

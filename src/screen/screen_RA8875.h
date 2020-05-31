@@ -14,6 +14,8 @@
 
 #include <Adafruit_GFX.h>
 #include "Adafruit_RA8875.h"
+#include "../recipes/recipes.h"
+
 #define TFT_INT 16
 #define TFT_CS 5
 #define TFT_RST 17
@@ -42,7 +44,8 @@ class screen{
   screen(); //Constructor
   Adafruit_RA8875 tft = Adafruit_RA8875(TFT_CS, TFT_RST);
   void setupScreen();
-  void showRecipes(int16_t program_cnt);
+  // https://forum.arduino.cc/index.php?topic=203124.0, answer #1:
+  void showRecipes(struct recipe recipe_arr[], int N, int cnt);
   void updateInfo(unsigned int Looppar_1, unsigned int Looppar_2, int16_t program_cnt, const char *filename);
   void updateGraph(double value, int led);
   //void setScreenLimit(uint16_t val1, uint16_t val2);

@@ -106,8 +106,10 @@ extern int Counter_cycles_led; //counter used to store the amount of complete cy
 extern bool ref_all_wavelength; //Set this to 1 for specific programs where you work with multiple wavelengths in a single measurement (such that it stores the reference value of all 3 wavelengths)
 
 /* Parameters to control the menu */
+extern recipe recipes_array[]; //List of recipes. 
 extern uint16_t program_nmb; //Total number of recipes.
-extern uint16_t program_cnt; //Current program menu
+extern uint16_t program_cnt; //Current recipe
+
 
 /* Declare variables to define the field sequence */
 #define B_NR_MAX 12 //Max number of elements

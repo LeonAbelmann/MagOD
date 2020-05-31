@@ -28,8 +28,9 @@ float freq_meas = 7; //Measurement frequency in Hz
 float freq_screen = 2; //Screen update frequency in Hz
 
 /* Program menu settings */
-uint16_t program_cnt = 0; //Current program menu, default 0
-uint16_t program_nmb = 0; //1 -total number of recipes in recipe_array [0..program_nmb]. IS THIS CORRECT? LEON
+recipe recipes_array[MaxRecipes]; // Array of recipes
+uint16_t program_cnt = 0; // Current recipe selected, default 0
+uint16_t program_nmb = 0; // Total number of recipes in recipes_array [0..program_nmb]. IS THIS CORRECT? LEON
 
 /* State variables (global) used in this program */
 bool doMeasurementFlag = false; //Read the ADC inputs
@@ -64,9 +65,9 @@ led myled;
 buttons mybuttons;
 field myfield;
 fileandserial myfile;
+recipes myrecipes;
 IO *  myIO; /* Wraps IO for recipes, used by TestRecipes. Perhaps
 	       merge with fileandserial. LEON */
-recipes myrecipes;
 
 /* Should this be here? LEON*/
 #if defined(_MAGOD2)
@@ -124,9 +125,7 @@ int LEDInt_array[B_NR_MAX] = {0}; // Default intensity is off
 bool Gradient_x[B_NR_MAX]={1};  //determines whether both coils must be on or just one of them for the x-direction, 0 is both on, 1 is only one. When the set of coils is connected, set to 1. Note that MagOD2 no longer has relays to do this automatically, you need to manually route the currents through one coil only.
 bool Gradient_y[B_NR_MAX] = {1};  //same for y
 bool Gradient_z[B_NR_MAX] = {1};  //same for z
-
-/* Recipes array, will be read from Flash card */
-recipe recipesArray[MaxRecipes];
+int i=0;
 
 /*** Top level functions ***/
 
@@ -165,6 +164,7 @@ void SetBfield_array(int step) {
 			  Gradient_z[step]);
     myled.Set_LED_color(LEDColor_array[step],
 			LEDInt_array[step]);
+    time_last_field_change = millis();
     //prints for debugging
     Serial.print("step = ");Serial.print(step);
     Serial.print(" out of [0..");Serial.print(B_nr_set);Serial.println("]");
@@ -225,10 +225,9 @@ void startRec()
   {
     //Initialize program
     Serial.println("Initializing ");
-    delay(1000);
     Exit_program_1 = LOW;
     Serial.print("program, ");
-    myrecipes.program_init(recipesArray,program_cnt);
+    myrecipes.program_init(recipes_array,program_cnt);
     Serial.print("datafile and ");
     myfile.file_init(Vrefs, ref_all_wavelength,
 		     save_extra_parameter, extra_par, program_cnt,
@@ -237,20 +236,21 @@ void startRec()
     myfield.Init_current_feedback();
     Serial.println("Done");
 
-    //start coil actuation
-    Serial.println("Setting magnetic field and LEDs at step 0");
-    Looppar_1=0;
-    SetBfield_array(Looppar_1);
-  
-    //Update display
-    Serial.println("Updating display");
-    myscreen.updateFILE(myfile.fName_char);
-    myscreen.setRecButton(true);
-  
     //Note starting time
     time_of_start = millis();
     Serial.print("Started measurement at:  ");
     Serial.println(time_of_start);
+    
+    //start coil actuation
+    Serial.println("Setting magnetic field and LEDs at step 0");
+    Looppar_1=0;
+    SetBfield_array(Looppar_1);
+
+    //Update display
+    Serial.println("Updating display");
+    myscreen.updateFILE(myfile.fName_char);
+    myscreen.setRecButton(true);
+
     
     //Activate recording mode
     isRecording = true;
@@ -338,7 +338,7 @@ void processButtonPress()
       
       program_cnt++;
       if (program_cnt>program_nmb){
-	program_cnt=1;
+	program_cnt=0;
       }
       myled.Set_LED_color(LED_type);
       //Update display
@@ -382,11 +382,8 @@ void processButtonPress()
       };
       if (program_cnt<0){program_cnt=program_nmb;}
       // Highlight the correct recipe on the screen
-      Serial.print("program_nmb: ");Serial.println(program_nmb);
-      Serial.print("program_cnt corr: ");Serial.println(program_cnt);
-      myscreen.showRecipes(program_cnt);
-      
-      myled.Set_LED_color(LED_type,LED_intensity[LED_type]);
+      myscreen.showRecipes(recipes_array,program_nmb,program_cnt);
+      //myled.Set_LED_color(LED_type,LED_intensity[LED_type]);
       //Update display
       myscreen.updateInfo(Looppar_1, Looppar_2, program_cnt,
 			  myfile.fName_char);
@@ -538,8 +535,10 @@ void Init_timers()
 }
 
 void setup()
-{ delay(1000);//Give serial monitor time
-/* ######################### Initialize boards ########################### */
+{
+  delay(1000);//Give serial monitor time
+
+  /* ######################### Initialize boards ########################### */
   // A lot of this should be done in the libraries. LEON. TODO.
   //starts the serial connection for debugging and file transfer
   Serial.begin(115200);
@@ -569,7 +568,7 @@ void setup()
   //setup the screen
   Serial.println("Initializing screen...");
   myscreen.setupScreen();
-  delay(1000);
+  delay(100);
 
   //Setup the buttons or touchscreen
   mybuttons.initButton();
@@ -581,7 +580,7 @@ void setup()
     Serial.println("SD Card not found");
     strlcpy(myfile.fName_char,"NO SD",myfile.fN_len);
     myscreen.updateFILE(myfile.fName_char);
-    delay(1000);
+    delay(100);
 #if defined(_MAGOD1)
     // More testing, works only for MagOD1 because card is defined.
     Serial.println("Retrying");
@@ -677,32 +676,34 @@ void setup()
   //sets the initial field to start the measurement, depending on the program used
   
   // Load recipes from RECIPES.CSV file on the Flash card
+  Serial.println("Setup: load recipes");
   if (SDpresent) {
     File recipeFile = SD.open("/RECIPES.CSV");
     if (recipeFile){
-      program_nmb = myrecipes.LoadRecipes(recipeFile, recipesArray);
-      if (program_nmb < 0) {
+      program_nmb = myrecipes.LoadRecipes(recipeFile, recipes_array);
+      Serial.print("Number of Recipes loaded: ");
+      Serial.println(program_nmb+1);
+      if (program_nmb < 1) {
 	Serial.println("Loading recipe file failed");
+      }
+      else {
+	myscreen.showRecipes(recipes_array,program_nmb,program_cnt);
       }
     }
     else {
-	Serial.println("RECIPES.CSV not found");
+      Serial.println("RECIPES.CSV not found");
     }
   }
+  Serial.println("Initialization finished");
 }
 
 
 /* Main loop */
 void loop()
 {
-  /* Which measurement program to run. Temporary fix. Should have
-     button. LEON */
-
-  program_cnt=1;
-  
-  delay(1);
   /* Check for button pressed */
   processButtonPress();
+
   
   /* Perform measurement if timer1 has triggered flag */
   if(doMeasurementFlag)
@@ -716,7 +717,7 @@ void loop()
   
   /* Update screen if timer4 has triggered flag */
   if(screenUpdateFlag)
-    {
+    { //Serial.println("Updating screen");
       screenUpdateFlag=false; // reset flag for next time
       myscreen.updateV(Vdiodes, Vrefs, OD, Vfb); //Update values
       myscreen.updateGraph(Vdiodes.Vdiode,LED_type); //Update graph
@@ -730,7 +731,8 @@ void loop()
       //Reset flag
       Updatecurrentflag = false;
       //Perform current recalibration procedure. But only if the program has not exit yet and when the PWM value has not too recently changed
-      if ((Exit_program_1 == LOW) && ((millis() - time_last_field_change) > myfield.Current_wait_time))
+      if ((Exit_program_1 == LOW) &&
+	  ((millis() - time_last_field_change) > myfield.Current_wait_time))
 	{
 	  myfield.Current_feedback();
 	  Serial.println("Perform feedback on current");
@@ -757,12 +759,11 @@ void loop()
     // For debugging:
     Serial.println("-------------------------------------------------");
     Serial.print("Looppar 1: ");Serial.println(Looppar_1);
-    Serial.print("The time of field change is: ");
-    Serial.print(time_last_field_change);
-    Serial.print(" (");Serial.print(meastime);Serial.println(" ms)");
+    Serial.print("Total measurement time: ");
+    Serial.println(currenttime - time_of_start);
+    Serial.print("Time of this step     :");Serial.print(meastime);
     // Go to next step in field sequence:
     SetBfield_array(Looppar_1);
-    time_last_field_change = millis();
   }
 }
 //end of program
