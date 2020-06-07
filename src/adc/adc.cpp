@@ -244,8 +244,8 @@ feedbacks adc::readFeedbacks()//Read the currents to the coils
 
   /* We assume calibration is done at GAIN_ONE. Use the testprogram
      TestCurrentCalibration.ino and a multimeter to get the relation
-     between ADC bits and currents.*/
-  /* These should go into adc.h */
+     between ADC bits and currents. See CurrentCalibration.ods*/
+  /* These should go into a instrument settings file! LEON */
   /* ADC 4 measures current in X-direction */
   int    adc4Offset   = 13006;
   double adc4SlopePos = 0.00018374;

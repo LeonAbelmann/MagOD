@@ -107,8 +107,8 @@ extern bool ref_all_wavelength; //Set this to 1 for specific programs where you 
 
 /* Parameters to control the menu */
 extern recipe recipes_array[]; //List of recipes. 
-extern uint16_t program_nmb; //Total number of recipes.
-extern uint16_t program_cnt; //Current recipe
+extern int program_nmb; //Length of recipes array [0..program_nmb].
+extern int program_cnt; //Current recipe
 
 
 /* Declare variables to define the field sequence */

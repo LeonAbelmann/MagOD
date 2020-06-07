@@ -116,40 +116,47 @@ class field
   const double Bz_pos_TPWM = -0.4293; //same but for z
 
 #elif defined(_MAGOD2)
+  /* See above for explanation numbers */
   // PWM_value=abs(Ax_neg_TPWM * Val_Bmag_x + Bx_neg_TPWM)
-  /* In first order 3.1V gives 1A gives 5 mT. 12/3.1 V is PWM of 25%.
-     So 0.25/5*2^resolution PWM/mT = 13 bits/mT
+  /* In first order 3.1V gives 1A gives 1.5 mT. 12/3.1 V is PWM of
+     25%.  So 0.25/1.5*2^resolution PWM/mT = 42 bits/mT (resolution 8
+     bit). 42 is always a good number :) */ 
+  /* In CurrentCalibration.ods you will find the current as
+     function of PWM, in terms of A/bit. To get Ax_neg_TPMW in bits/mT
+     take 1/(slope*mtPerAmp). 0.01356 A/bit and 1.5 mT/A gives
+     Ax_neg_TPWM=-49.1584 bit/mT
    */
-  const double Ax_neg_TPWM = 22.37; 
+  
+  const double Ax_neg_TPWM = 49.16; 
   const double Bx_neg_TPWM = 0; 
-  const double Ax_pos_TPWM = 22.37; 
+  const double Ax_pos_TPWM = 49.21; 
   const double Bx_pos_TPWM = 0; 
 
-  const double Ay_neg_TPWM = 22.35; 
+  const double Ay_neg_TPWM = 49.19; 
   const double By_neg_TPWM = 0; 
-  const double Ay_pos_TPWM = 22.35; 
+  const double Ay_pos_TPWM = 49.34; 
   const double By_pos_TPWM = 0; 
 
-  const double Az_neg_TPWM = 22.03; 
+  const double Az_neg_TPWM = 49.93; 
   const double Bz_neg_TPWM = 0; 
-  const double Az_pos_TPWM = 22.03; 
+  const double Az_pos_TPWM = 49.73; 
   const double Bz_pos_TPWM = 0;
 
-  const double Ax_neg_VT = 0.015689;
-  const double Bx_neg_VT = 0.15482; 
-  const double Ax_pos_VT = 0.0144144;
-  const double Bx_pos_VT = -0.013692;
+  // Only used for current feedback. This has been moved to adc.cpp.
+  const double Ax_neg_VT = 0;
+  const double Bx_neg_VT = 0;
+  const double Ax_pos_VT = 0;
+  const double Bx_pos_VT = 0;
 
-  const double Ay_neg_VT = 0.015689; 
-  const double By_neg_VT = 0.15482; 
-  const double Ay_pos_VT = 0.0144144;
-  const double By_pos_VT = -0.013692;
+  const double Ay_neg_VT = 0;
+  const double By_neg_VT = 0;
+  const double Ay_pos_VT = 0;
+  const double By_pos_VT = 0;
   
-  const double Az_neg_VT = 0.015689; 
-  const double Bz_neg_VT = 0.15482; 
-  const double Az_pos_VT = 0.0144144;
-  const double Bz_pos_VT = -0.013692;
-
+  const double Az_neg_VT = 0;
+  const double Bz_neg_VT = 0;
+  const double Az_pos_VT = 0;
+  const double Bz_pos_VT = 0;
   
 #endif
 

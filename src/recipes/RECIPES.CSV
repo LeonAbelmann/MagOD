@@ -47,7 +47,7 @@
 @,EndSequence,,,,,,,,
 @,EndRecipe,,,,,,,,
 ,,,,,,,,,
-@,Recipe,MRT green,,,,,,,
+@,Recipe,MRT  Green,,,,,,,
 @,N_cycles,0,,,,,,,
 @,Sequence,,,,,,,,
 #,B_x[mT],B_y[mT],B_z[mT],T_switch[s],LED Color,LED Intensity [0-255],Grad_x,Grad_y,Grad_z
@@ -56,7 +56,7 @@
 @,EndSequence,,,,,,,,
 @,EndRecipe,,,,,,,,
 ,,,,,,,,,
-@,Recipe,MRT red,,,,,,,
+@,Recipe,MRT  Red,,,,,,,
 @,N_cycles,0,,,,,,,
 @,Sequence,,,,,,,,
 #,B_x[mT],B_y[mT],B_z[mT],T_switch[s],LED Color,LED Intensity [0-255],Grad_x,Grad_y,Grad_z
@@ -65,7 +65,7 @@
 @,EndSequence,,,,,,,,
 @,EndRecipe,,,,,,,,
 ,,,,,,,,,
-@,Recipe,MRT blue,,,,,,,
+@,Recipe,MRT  Blue,,,,,,,
 @,N_cycles,0,,,,,,,
 @,Sequence,,,,,,,,
 #,B_x[mT],B_y[mT],B_z[mT],T_switch[s],LED Color,LED Intensity [0-255],Grad_x,Grad_y,Grad_z

@@ -104,13 +104,13 @@ void drawButton(int off_x, int off_y, int size_x, int size_y,
 		int bgcolor, int fgcolor){
   /* (off_x, off_y)  : Upper left corner
      (size_x,size_y) : Size of button
-     str             : Text in center of button (assume character is 12x20)
+     str             : Text in center of button (assume character is 8x10)
      bgcolor         : Color of button
      fgcolor         : Textcolor
   */
   /* Text halfway button with center. Substract half the length of
        the string */
-  int text_x = off_x + round(size_x/2) - 6*strlen(str);
+  int text_x = off_x + round(size_x/2) - 4*strlen(str);
   int text_y = off_y + round(size_y/2) -10;
   //Draw rectangle
   myscreen.tft.fillRect(off_x,off_y,size_x,size_y, bgcolor);
@@ -245,10 +245,10 @@ void buttons::initButton(){
   showButtonArea(2, (char *)"Set Vref", TFTCOLOR_DARKGRAY, TFTCOLOR_YELLOW);
 
   /* Button BUTTON_NEXTRECIPE: Toggle to next recipe in list */
-  showButtonArea(BUTTON_NEXTRECIPE, (char *)">", TFTCOLOR_RED, TFTCOLOR_BLACK);
+  showButtonArea(BUTTON_NEXTRECIPE, (char *)"Next recipe", TFTCOLOR_RED, TFTCOLOR_BLACK);
 
   /* Button BUTTON_PREVRECIPE: Toggle to previous recipe in list */
-  showButtonArea(BUTTON_PREVRECIPE, (char *)"<", TFTCOLOR_RED, TFTCOLOR_BLACK);
+  showButtonArea(BUTTON_PREVRECIPE, (char *)"Prev recipe", TFTCOLOR_RED, TFTCOLOR_BLACK);
 #endif
 }
 
@@ -284,7 +284,7 @@ uint8_t buttons::readButton() {
 	{
 	  Serial.print("Touchscreen coordinates: ");
 	  Serial.print(x);Serial.print(", ");Serial.println(y);
-	  delay(300);
+	  delay(100);
 	  // Determine which button was pressed:
 	  Serial.print(" Button detected: ");
 	  switch (whichButton(x,y))
@@ -303,14 +303,14 @@ uint8_t buttons::readButton() {
 	      // BUTTON_NEXTRECIPE is for next menu item
 	    case BUTTON_NEXTRECIPE :
 	      Serial. println("Button: BUTTON_NEXTRECIPE");
-	      showButtonArea(BUTTON_NEXTRECIPE, (char *)">",
+	      showButtonArea(BUTTON_NEXTRECIPE, (char *)"Next recipe",
 			     TFTCOLOR_WHITE, TFTCOLOR_BLACK);
 	      return BUTTON_NEXTRECIPE;
 
 	      // BUTTON_UP is for previous item
 	    case BUTTON_PREVRECIPE :
 	      Serial. println("Button: BUTTON_PREVRECIPE");
-	      showButtonArea(BUTTON_PREVRECIPE, (char *)"<",
+	      showButtonArea(BUTTON_PREVRECIPE, (char *)"Prev recipe",
 			     TFTCOLOR_WHITE, TFTCOLOR_BLACK);
 	      return BUTTON_PREVRECIPE;
 
@@ -321,7 +321,7 @@ uint8_t buttons::readButton() {
 	}
       else
 	{
-	  delay(500);
+	  delay(100);
 	  return BUTTON_NONE;
 	} //If acceptable touch
     }

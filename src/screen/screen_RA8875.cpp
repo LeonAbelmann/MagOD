@@ -32,6 +32,7 @@ void screen::updateGraph(double value, int led)
   val_conv = round(g_y+g_h-val_conv-2);//plot it upside down???LEON
   int pixelcolor = TFTCOLOR_GRAY; /* init to grey, to indicate error */
   // Pixel color is determined by led color
+  //Serial.print("Screen: LED type: ");Serial.println(led);
   switch (led) {
   case RED:
     pixelcolor = TFTCOLOR_RED;
@@ -99,26 +100,25 @@ void screen::setRecButton(bool active)
 {
 #if defined(_MAGOD1)
   uint8_t buttonSize = 5;
-  if(active)
-    {
-      tft.fillCircle(screenSiz_x-buttonSize-1, buttonSize, buttonSize, TFTCOLOR_RED);
-    }
-  else
-    {
-      tft.fillCircle(screenSiz_x-buttonSize-1, buttonSize, buttonSize, TFTCOLOR_GRAY);
-    }
+  if(active){
+    tft.fillCircle(screenSiz_x-buttonSize-1, buttonSize, buttonSize,
+		   TFTCOLOR_RED);
+  }
+  else {
+    tft.fillCircle(screenSiz_x-buttonSize-1, buttonSize, buttonSize,
+		   TFTCOLOR_GRAY);
+  }
 #elif defined(_MAGOD2)
-  if(active)
-    {
-      /* Change color and label on start/stop button */
-      mybuttons.showButtonArea(1, (char *)"Stop", TFTCOLOR_RED, TFTCOLOR_BLACK);
-    }
-  else
-    {
-      /* Change color and label on start/stop button */
-      mybuttons.showButtonArea(1, (char *)"Start", TFTCOLOR_GREEN, TFTCOLOR_BLACK);
-
-    }
+  if(active) {
+    /* Change color and label on start/stop button */
+    mybuttons.showButtonArea(1, (char *)"Stop",
+			     TFTCOLOR_RED, TFTCOLOR_BLACK);
+  }
+  else {
+    /* Change color and label on start/stop button */
+    mybuttons.showButtonArea(1, (char *)"Start",
+			     TFTCOLOR_GREEN, TFTCOLOR_BLACK);
+  }
 #endif
 }
 
@@ -167,7 +167,9 @@ void screen::setupScreen()
   tft.textSetCursor(100, 124);
   tft.textWrite("Tijmen Hageman, Jordi Hendrix, Hans Keizer");
   tft.textSetCursor(100, 148);
-  tft.textWrite("Marcel Welleweerd, Dave van As, Leon Abelmann");
+  tft.textWrite("Marcel Welleweerd, Dave van As, Ruthvik Bandaru");
+  tft.textSetCursor(100, 172);
+  tft.textWrite("Leon Abelmann");
   delay(2000);
   tft.fillScreen(RA8875_BLACK);
 
@@ -251,14 +253,14 @@ void screen::updateV(diodes Vdiodes, references Vref, double OD, feedbacks curre
   tft.fillRect(locText_x+locText_hSpace,
 	       locText_y,
 	       column_space-locText_hSpace,
-	       7*locText_vSpace+1, TFTCOLOR_BLACK);
+	       7*locText_vSpace+2, TFTCOLOR_BLACK);
   //Right column
   // tft.fillRect(column_space+locText_hSpace,
   // 	       locText_y,
   // 	       column_space-locText_hSpace,
   // 	       5*locText_vSpace+1, TFTCOLOR_BLACK);
   // Write measured voltages
-  tft.textTransparent(TFTCOLOR_RED);
+  tft.textTransparent(TFTCOLOR_WHITE);
   char string[15];
   
   //Signal photodiode
@@ -303,7 +305,6 @@ void screen::updateV(diodes Vdiodes, references Vref, double OD, feedbacks curre
    cnt   : the recipe that should be highlighted
 */
 void screen::showRecipes(recipe recipe_arr[], int N, int cnt){
-  // OTTO
   Serial.print("Changing highlighted recipe to: ");
   Serial.print(cnt);Serial.print(" : ");
   Serial.println(recipe_arr[cnt].name);
@@ -362,14 +363,14 @@ void screen::updateInfo(unsigned int Looppar_1, unsigned int Looppar_2, int16_t 
   //Run: Looppar_2, number of cycles
   tft.textSetCursor(column_space+locText_hSpace,
 		    locText_y+5*locText_vSpace);
-  dtostrf(Looppar_2, 2, 0, string); 
-  tft.textWrite(string);
+  dtostrf(Looppar_2, 5, 0, string); 
+  tft.textWrite(string,5);
   
   //Step: Looppar_1, which step in the cycle
   tft.textSetCursor(column_space+locText_hSpace,
 		    locText_y+6*locText_vSpace);
-  dtostrf(Looppar_1, 2, 0, string); 
-  tft.textWrite(string);
+  dtostrf(Looppar_1, 5, 0, string); 
+  tft.textWrite(string,5);
 }
 
 // Update the filename field in the info column

@@ -29,8 +29,9 @@ float freq_screen = 2; //Screen update frequency in Hz
 
 /* Program menu settings */
 recipe recipes_array[MaxRecipes]; // Array of recipes
-uint16_t program_cnt = 0; // Current recipe selected, default 0
-uint16_t program_nmb = 0; // Total number of recipes in recipes_array [0..program_nmb]. IS THIS CORRECT? LEON
+int    program_cnt = 0; // Current recipe selected, default 0
+int    program_nmb = 0; /*Total number of recipes in recipes_array
+			  [0..program_nmb] */
 
 /* State variables (global) used in this program */
 bool doMeasurementFlag = false; //Read the ADC inputs
@@ -99,11 +100,12 @@ unsigned long time_last_field_change = 0; /*Time since the
 					    last field step */
 
 /* LED parameters */
-int LED_type = GREEN; //The color of the LED
+//int LED_type = GREEN; //The color of the LED
 int LEDs[3] = {RED, GREEN, BLUE};
 #if defined(_MAGOD2)
 int LED_intensity[3] = {15,65,95};//Values that don't saturate the photodiode
 #endif
+// OBSOLETE? LEON
 int LED_switch_cycles = 0; //The number of cycles after which the LED changes the frequency, when a 0 is entered, the LED keeps the beginning frequency during the complete measurement 
 int Counter_cycles_led = 1; //counter used to store the amount of complete cycles the LED has had the same colour, to check when the colour has to change (after LED_switch_cycles)
 bool ref_all_wavelength = 0; //Set this to 1 for specific programs where you work with multiple wavelengths in a single measurement (such that it stores the reference value of all 3 wavelengths
@@ -303,9 +305,10 @@ void processButtonPress()
 	if (!isRecording){
 	  myadc.set_vrefs(Vrefs,ref_all_wavelength,myled);
 #if defined(_MAGOD1)
-          myled.Set_LED_color(LED_type);
+          myled.Set_LED_color(LEDColor_array[Looppar_1]);
 #elif defined(_MAGOD2)
-	  myled.Set_LED_color(LED_type,LED_intensity[LED_type]);
+	  myled.Set_LED_color(LEDColor_array[Looppar_1],
+			      LEDInt_array[Looppar_1]);
 #endif
         }
         //Update screen
@@ -342,7 +345,7 @@ void processButtonPress()
       if (program_cnt>program_nmb){
 	program_cnt=0;
       }
-      myled.Set_LED_color(LED_type);
+      myled.Set_LED_color(LEDColor_array[Looppar_1]);
       //Update display
       myscreen.updateInfo(Looppar_1, Looppar_2, program_cnt,
 			  myfile.fName_char);
@@ -372,20 +375,21 @@ void processButtonPress()
 	// Increment recipe number, and reset color of the > button to red
 	program_cnt=program_cnt + 1;
 	Serial.print("program_cnt : ");Serial.println(program_cnt);
-	mybuttons.showButtonArea(BUTTON_NEXTRECIPE, (char *)">",
+	mybuttons.showButtonArea(BUTTON_NEXTRECIPE, (char *)"Next recipe",
 			     TFTCOLOR_RED, TFTCOLOR_BLACK);
       };
-      if (program_cnt>program_nmb){program_cnt=0;}
       if (buttonPress==BUTTON_PREVRECIPE) {
-	program_cnt=program_cnt - 1;;
+	program_cnt=program_cnt - 1;
 	Serial.print("program_cnt : ");Serial.println(program_cnt);
-      	mybuttons.showButtonArea(BUTTON_PREVRECIPE, (char *)"<",
+      	mybuttons.showButtonArea(BUTTON_PREVRECIPE, (char *)"Prev recipe",
 			     TFTCOLOR_RED, TFTCOLOR_BLACK);
       };
+      
+      if (program_cnt>program_nmb){program_cnt=0;}
       if (program_cnt<0){program_cnt=program_nmb;}
       // Highlight the correct recipe on the screen
       myscreen.showRecipes(recipes_array,program_nmb,program_cnt);
-      //myled.Set_LED_color(LED_type,LED_intensity[LED_type]);
+      myled.Set_LED_color(LEDColor_array[Looppar_1],LEDInt_array[Looppar_1]);
       //Update display
       myscreen.updateInfo(Looppar_1, Looppar_2, program_cnt,
 			  myfile.fName_char);
@@ -409,7 +413,7 @@ double calcOD(struct references Vrefs, double Vdiode)
   if(Vdiode<=0){return 0;}    //Vdiode has to be positive
 
   
-  /* I don't understand why we simply do not calculate OD for LED_type. Why the if statement? TODO Leon */
+  /* I don't understand why we simply do not calculate OD for LED_type. Why the if statement? Also, with the new recipe, we can have multiple LED colors in one recipe. This needs to be reworked. TODO Leon */
   if (ref_all_wavelength == 0)
   {
     if(Vrefs.Vref<=0)
@@ -422,7 +426,7 @@ double calcOD(struct references Vrefs, double Vdiode)
   }
   else
   {
-    switch (LED_type){
+    switch (LEDColor_array[Looppar_1]){
     case RED:
       if (Vrefs.Vred <= 0)
 	{
@@ -490,7 +494,7 @@ void doMeasurement()
       /* Write measurements to datafile*/
       myfile.saveToFile(myfile.fName_char,time_of_data_point,
 			Vdiodes,Temperature_degrees,OD,
-			LED_type,Looppar_1,Vfb);
+			LEDColor_array[Looppar_1],Looppar_1,Vfb);
       /* update file length */
       myfile.SD_file_length_count = myfile.SD_file_length_count + 1;
 
@@ -558,9 +562,9 @@ void setup()
   // Init led
   Serial.println("Init led");
 #if defined(_MAGOD1)
-  myled.Set_LED_color(LED_type);
+  myled.Set_LED_color(LEDColor_array[Looppar_1]);
 #elif defined(_MAGOD2)
-  myled.Set_LED_color(LED_type,LED_intensity[LED_type]);
+  myled.Set_LED_color(LEDColor_array[Looppar_1],LEDInt_array[Looppar_1]);
 #endif
   
   //Initialize ADC(s)
@@ -722,7 +726,7 @@ void loop()
     { //Serial.println("Updating screen");
       screenUpdateFlag=false; // reset flag for next time
       myscreen.updateV(Vdiodes, Vrefs, OD, Vfb); //Update values
-      myscreen.updateGraph(Vdiodes.Vdiode,LED_type); //Update graph
+      myscreen.updateGraph(Vdiodes.Vdiode,LEDColor_array[Looppar_1]); //Update graph
       myscreen.updateInfo(Looppar_1, Looppar_2, program_cnt,
       			  myfile.fName_char); //Update program status
     }
