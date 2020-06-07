@@ -1,7 +1,7 @@
 # MagOD
 Magnetic Optical Density meter
 Tijmen Hageman, Jordi Hendrix, Hans Keizer, Marcel Welleweerd, Dave
-van As, Leon Abelmann.
+van As, Ruthvik Bandaru, Leon Abelmann.
 
 
 KIST Europe, University of Twente
