@@ -160,7 +160,7 @@ bool readSequenceStep(char* line, sequence& seq, int num, char* recipe_name){
   }
   numCol = readColumns(line, ',', col, N);
   // Throws error message when negative value(s) detected and corrects to zero
-  for(int j = 1; j < N; j++){
+  /*for(int j = 1; j < N; j++){
     if(atof(col[j]) < 0 && j!= 5){
       col[j] = (char*)"0";
       myIO->serialPrintln((char*)"");
@@ -168,7 +168,7 @@ bool readSequenceStep(char* line, sequence& seq, int num, char* recipe_name){
       myIO->serialPrint(ln_count);
       myIO->serialPrintln((char*)" and corrected to ZERO.");
     }
-  }
+  }*/
 	
   if(line[0]!='#' && getLEDColor(col[5]) < 0){
     myIO->serialPrint((char*)"Line: ");
