@@ -31,8 +31,8 @@ void field::Init_field() /*Sets the pins in the correct status*/
   SetPinFrequencySafe(Coil_x, Frequency_PWM);
   SetPinFrequencySafe(Coil_y, Frequency_PWM);
   SetPinFrequencySafe(Coil_z, Frequency_PWM);
-#elif defined(_MAGOD2)
-  
+
+#elif defined(_MAGOD2)  
   // Initialize channels 
   /*  channels 0-15, resolution 1-16 bits, freq limits depend on resolution
       ledcSetup(uint8_t channel, uint32_t freq, uint8_t resolution_bits); https://github.com/espressif/esp-idf/blob/master/docs/en/api-reference/peripherals/ledc.rst
@@ -48,14 +48,13 @@ void field::Init_field() /*Sets the pins in the correct status*/
   ledcAttachPin(CoilPinX, Coil_x);
   ledcAttachPin(CoilPinY, Coil_y);
   ledcAttachPin(CoilPinZ, Coil_z);
-
+  
   /* Set outputs to zero */
   coilPwmWrite(Coil_x, 0);
   coilPwmWrite(Coil_y, 0);
   coilPwmWrite(Coil_z, 0);
    
-#endif
-  
+#endif  
   //sets the direction pin as output
   pinMode(Dir_x, OUTPUT);
   pinMode(Dir_y, OUTPUT);
@@ -69,6 +68,11 @@ void field::SetBfieldFast(double Val_Bmag_x, double Val_Bmag_y, double Val_Bmag_
   double fact_x = 1;
   double fact_y = 1;
   double fact_z = 1;
+
+  /* Somehow the connection to CoilPinZ gets lost during operation,
+     reset every time you need to set the field: */
+  ledcAttachPin(CoilPinZ, Coil_z);
+
   
   //first checks whether the field is positive, negative or 0 (is required because otherwise the offset (B-term) in linearization of relation between Field and PWM is non-zero)
   //whether the B-field is negative or positive determines the direction of the motor driver (Dir_i)
@@ -120,27 +124,25 @@ void field::SetBfieldFast(double Val_Bmag_x, double Val_Bmag_y, double Val_Bmag_
       coilPwmWrite(Coil_y, Current_PWM_value_y);
       digitalWrite(Dir_y, LOW);
    }
+   
    if (Val_Bmag_z < -0.0001)
     {
-       
-       
-       Current_PWM_value_z = round(abs(fact_z * Comp_fact_z*Az_neg_TPWM * Val_Bmag_z + Bz_neg_TPWM));
-       coilPwmWrite(Coil_z, Current_PWM_value_z);
-       digitalWrite(Dir_z, HIGH);
+      Current_PWM_value_z = round(abs(fact_z * Comp_fact_z*Az_neg_TPWM * Val_Bmag_z + Bz_neg_TPWM));
+      coilPwmWrite(Coil_z, Current_PWM_value_z);
+      digitalWrite(Dir_z, HIGH);
     }
    else if (Val_Bmag_z > 0.0001)
-   {
-      
-      Current_PWM_value_z = round(abs(fact_z * Comp_fact_z*Az_pos_TPWM * Val_Bmag_z + Bz_pos_TPWM));
-      coilPwmWrite(Coil_z, Current_PWM_value_z);
-      digitalWrite(Dir_z, LOW);
+     {
+       Current_PWM_value_z = round(abs(fact_z * Comp_fact_z*Az_pos_TPWM * Val_Bmag_z + Bz_pos_TPWM));
+       coilPwmWrite(Coil_z, Current_PWM_value_z);
+       digitalWrite(Dir_z, LOW);
     }
-    else
-    {
-      Current_PWM_value_z = 0;
-      coilPwmWrite(Coil_z, Current_PWM_value_z);
-      digitalWrite(Dir_z, LOW);
-    }
+   else
+     {
+       Current_PWM_value_z = 0;
+       coilPwmWrite(Coil_z, Current_PWM_value_z);
+       digitalWrite(Dir_z, LOW);
+     }
 
     //print the PWM values for debugging
     Serial.print("PWM_x: ");
@@ -336,10 +338,10 @@ void field::coilPwmWrite(int Coil, int PWM_value)
 	  PWM_value=maxPWM;
 	}
       ledcWrite(Coil, PWM_value);
-      // Serial.print("Setting PWM of coil ");
-      // Serial.print(Coil);
-      // Serial.print(" to ");
-      // Serial.println(PWM_value);
+      Serial.print("Setting PWM of coil ");
+      Serial.print(Coil);
+      Serial.print(" to ");
+      Serial.println(PWM_value);
 #endif
 }
       

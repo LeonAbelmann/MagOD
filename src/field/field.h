@@ -26,7 +26,7 @@
 #define CoilPinY 26 //Physical pin to which the PWM is sent for coil y
 #define CoilPinZ 14 //Physical pin to which the PWM is sent for coil z
 #define Dir_x 25  
-#define Dir_y 26
+#define Dir_y 27
 #define Dir_z 12
 
 /* Note that we share the channels with LED driver
@@ -39,7 +39,7 @@
 //pins for the analog signals from the current sensing system and the temperature sensing
 #if defined(_MAGOD1)
 #define Current_read_x 15
-#define Current_read_y 14
+#define Current_read_y //14
 #define Current_read_z 13
 #endif
 /* MagOD2 uses adc1,inputs 0-3 for that */

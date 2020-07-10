@@ -3,8 +3,8 @@
 #include <Adafruit_RA8875.h> // TFTM50 screen
 #include "src/MagOD_ADS1115/MagOD_ADS1115.h" // Modified Adafruit_ADS1015 lib
 
-const int N          = 10; // Averaging
-uint8_t   sampleRate = 3;  /* Sample rates: 0: 8SPS, 1: 16 SPS, 2: 32
+const int N          = 2; // Averaging
+uint8_t   sampleRate = 0;  /* Sample rates: 0: 8SPS, 1: 16 SPS, 2: 32
 			   SPS, 3: 64 SPS, 4: 128 SPS, 5: 250 SPS 6:
 			   475 SPS 7: 860 SPS */
 int channel[] = {1,3}; // Which channels to sample (only ads0) {0,1,2,3} 
@@ -77,6 +77,7 @@ const int RED=1;
 const int GREEN=2;
 const int BLUE=3;
 int colors[]={RED,GREEN,BLUE}; //or {GREEN,BLUE}, or {RED, GREEN, BLUE} :)
+//int colors[]={BLUE}; 
 int size_colors = sizeof(colors)/sizeof(colors[0]);
 
 adc analyze(uint16_t adcin[], int N) {
@@ -221,27 +222,31 @@ void  adcISR()
 void loop()
 {
   char string[15]; //Buffer holding string for dtostrf
-  int Colour_i = LEDChannelRed;
+  int LEDChannel = LEDChannelRed;
+  Serial.print("Number of colors :");
+  Serial.println(size_colors);
+  Serial.print("colors[0] : ");
+  Serial.println(colors[0]);
 
-  for(int color = colors[0]; color <= size_colors; color = color + 1 )
+  for(int i = 0; i <= size_colors; i = i+1 )
     { 
       Serial.println();Serial.println();
-      switch(color) {
+      switch(colors[i]) {
       case RED:
 	Serial.println("# RED");
-	Colour_i = LEDChannelRed;
+	LEDChannel = LEDChannelRed;
 	break;
       case GREEN:
 	Serial.println("# GREEN");
-	Colour_i = LEDChannelGreen;
+	LEDChannel = LEDChannelGreen;
 	break;
       case BLUE:
 	Serial.println("# BLUE");
-	Colour_i = LEDChannelBlue;
+	LEDChannel = LEDChannelBlue;
 	break;
       default:
-	Serial.print("Color is :");
-	Serial.println(color);
+	Serial.print("LEDChannel is :");
+	Serial.println(LEDChannel);
       }
 
       // For csv output
@@ -250,8 +255,8 @@ void loop()
       for(int intensity = 0;
 	  intensity <= pow(2,LEDresolution);
 	  intensity = intensity + 5 )
-	{ ledcWrite(Colour_i,intensity);
-	  delay(1000);//wait for the led to stabilize
+	{ ledcWrite(LEDChannel,intensity);
+	  delay(100);//wait for the led to stabilize
 	  iChan=0;
 	  ads0.startReadADC(channel[iChan],sampleRate);
 	  adcReady=false;
@@ -312,6 +317,6 @@ void loop()
 	  Serial.print(adc3r.average,4);Serial.print(", ");
 	  Serial.print(adc3r.stdev,4);Serial.println();
 	} // for (intensity)
-      ledcWrite(Colour_i, 0); //Stop current
+      ledcWrite(LEDChannel, 0); //Stop current
     }      
 }

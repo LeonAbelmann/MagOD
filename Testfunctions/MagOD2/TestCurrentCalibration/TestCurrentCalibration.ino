@@ -16,13 +16,13 @@
 Adafruit_ADS1115 ads0(ADS1015_ADDRESS_0); //adc0-3;
 Adafruit_ADS1115 ads1(ADS1015_ADDRESS_1); //adc4-7;
 
-uint8_t Coil_x = 33; // output of the coils in the x direction
-uint8_t Coil_y = 26; // output of the coils in the y direction
-uint8_t Coil_z = 14; // output of the coils in the z direction
+uint8_t Coil_x = 33; // pwm_x: output of the coils in the x direction
+uint8_t Coil_y = 26; // pwm_y: output of the coils in the y direction
+uint8_t Coil_z = 14; // pwm_z: output of the coils in the z direction
 const uint32_t Frequency_PWM = 20000;    //set the pwm frequency of the coil-drivers
-const int ledChannel_x = 0; /*0-15*/
-const int ledChannel_y = 1; /*0-15*/
-const int ledChannel_z = 2; /*0-15*/
+const int ledChannel_x = 3; /*0-15*/
+const int ledChannel_y = 4; /*0-15*/
+const int ledChannel_z = 5; /*0-15*/
 const int resolution = 8; /* no bits resolution, 1-16 bit */
 int Dir_x = 25;                // direction of the coils in the x direction     low: output A of motor driver is then high and B is low (positive direction),     high: output A of motor driver is then low and B is high (negative direction)
 int Dir_y = 27;                // direction of the coils in the y direction
@@ -75,7 +75,8 @@ void setup () {
 const int X=1;
 const int Y=2;
 const int Z=3;
-int directions[]={Z}; //or {Y}, or {X,Y,Z} :)
+int directions[]={X,Y,Z}; //or {Y}, or {X,Y,Z} :)
+int num_dir=3;
 
 void loop()
 {
@@ -86,9 +87,9 @@ void loop()
 
   Serial.println(directions[0]);
   
-  for(int dir = directions[0]; dir <= sizeof(directions); dir = dir + 1 )
+  for(int i = 0; i < num_dir; i = i + 1 )
     { 
-      switch(dir) {
+      switch(directions[i]) {
       case X:
 	Serial.println("X");
 	Dir_i  = Dir_x;
@@ -105,7 +106,7 @@ void loop()
 	Chan_i = ledChannel_z;
 	break;
       default:
-	Serial.print("Dir is :");
+	Serial.print("value not expected:");
 	Serial.println(Dir_i);
       }
       
@@ -120,7 +121,7 @@ void loop()
 
 	  /* Read ADC1115 ports */
 	  adc4 = 0, adc5 = 0, adc6 = 0;
-	  int N = 200;
+	  int N = 20;
 	  for (int i = 0; i < N; i++)
 	    {
 	      adc4 = adc4 + ads1.readADC_SingleEnded(0);

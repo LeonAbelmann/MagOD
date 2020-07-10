@@ -566,15 +566,18 @@ void setup()
 #elif defined(_MAGOD2)
   myled.Set_LED_color(LEDColor_array[Looppar_1],LEDInt_array[Looppar_1]);
 #endif
+
   
   //Initialize ADC(s)
   Serial.println("Init ADC");
   myadc.initADC();
 
+
   //setup the screen
   Serial.println("Initializing screen...");
   myscreen.setupScreen();
   delay(100);
+
 
   //Setup the buttons or touchscreen
   mybuttons.initButton();
@@ -666,6 +669,7 @@ void setup()
 	strlcpy(myfile.fName_char,"FILE ERROR",myfile.fN_len);
     }
     dataFile.close();
+
     
 #endif //Defined MAGOD2
   }
@@ -673,14 +677,17 @@ void setup()
   
   Serial.println("Updating screen.");
   myscreen.updateInfo(Looppar_1, Looppar_2, program_cnt," ");
-  
+
+
   Serial.println("Intializing current feedback");
   myfield.Init_current_feedback();
   Init_timers();
   Looppar_1 = 0;
   Looppar_2 = 0;
   //sets the initial field to start the measurement, depending on the program used
-  
+
+
+
   // Load recipes from RECIPES.CSV file on the Flash card
   Serial.println("Setup: load recipes");
   if (SDpresent) {
@@ -700,6 +707,7 @@ void setup()
       Serial.println("RECIPES.CSV not found");
     }
   }
+
   Serial.println("Initialization finished");
 }
 

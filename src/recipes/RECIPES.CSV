@@ -52,7 +52,7 @@
 @,Sequence,,,,,,,,
 #,B_x[mT],B_y[mT],B_z[mT],T_switch[s],LED Color,LED Intensity [0-255],Grad_x,Grad_y,Grad_z
 ,0,0,1,800,GREEN,60,1,1,1
-,0,0,1,100,GREEN,60,1,1,1
+,0,0,-1,100,GREEN,60,1,1,1
 @,EndSequence,,,,,,,,
 @,EndRecipe,,,,,,,,
 ,,,,,,,,,
@@ -61,7 +61,7 @@
 @,Sequence,,,,,,,,
 #,B_x[mT],B_y[mT],B_z[mT],T_switch[s],LED Color,LED Intensity [0-255],Grad_x,Grad_y,Grad_z
 ,0,0,1,800,RED,60,1,1,1
-,0,0,1,100,RED,60,1,1,1
+,0,0,-1,100,RED,60,1,1,1
 @,EndSequence,,,,,,,,
 @,EndRecipe,,,,,,,,
 ,,,,,,,,,
@@ -70,6 +70,6 @@
 @,Sequence,,,,,,,,
 #,B_x[mT],B_y[mT],B_z[mT],T_switch[s],LED Color,LED Intensity [0-255],Grad_x,Grad_y,Grad_z
 ,0,0,1,800,BLUE,60,1,1,1
-,0,0,1,100,BLUE,60,1,1,1
+,0,0,-1,100,BLUE,60,1,1,1
 @,EndSequence,,,,,,,,
 @,EndRecipe,,,,,,,,
