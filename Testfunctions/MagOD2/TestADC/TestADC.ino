@@ -155,9 +155,9 @@ void setup () {
         and read the register once. At the lowest sample rate (8SPS), we
         need to wait 130 ms for the conversion to finish. All other rates
         are faster.  */
-    adcReady = true;
+//    adcReady = true;
     ads0.startReadADC(channel[0], sampleRate);
-    delay(130);//
+//    delay(130);//
 
     // Initiliaze display
     tft.displayOn(true);
