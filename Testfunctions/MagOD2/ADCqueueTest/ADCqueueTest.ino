@@ -1,0 +1,221 @@
+#include <SPI.h> // Communication
+#include <Adafruit_GFX.h>    // Core graphics library
+#include <Adafruit_RA8875.h> // TFTM50 screen
+#include "src/MagOD_ADS1115/MagOD_ADS1115.h" // Modified Adafruit_ADS1015 lib
+
+
+// Define the data structure to be used in the buffer
+typedef struct
+{
+    uint8_t ch;
+    uint16_t val;
+    unsigned long time;        // the millis function returns a 32bit value meaning it will overflow after 49 days
+} bufferData_t;
+
+
+// Create a handle for the buffer
+QueueHandle_t dataQueueHandle;
+BaseType_t xHigherPriorityTaskWokenADC0;
+bufferData_t readData;
+#define bufferSize 1000
+uint16_t bufferRem;
+
+
+// Initialize the ADCs
+#define ADS1015_ADDRESS_0 (0x48)    // 1001 000 (ADDR -> GND)
+#define ADS1015_ADDRESS_1 (0x49)    // 1001 001 (ADDR -> VDD)
+#define ADS1115_RDY 13
+Adafruit_ADS1115 ads0(ADS1015_ADDRESS_0); //adc0-3;
+Adafruit_ADS1115 ads1(ADS1015_ADDRESS_1); //adc4-7;
+#define sampleRateADC0 7        // Sample rates: 0: 8 SPS, 1: 16 SPS, 2: 32 SPS, 3: 64 SPS, 4: 128 SPS, 5: 250 SPS, 6: 475 SPS 7: 860 SPS
+TaskHandle_t readADC0Handle;
+
+
+
+// Coil variables that define off
+uint8_t Coil_x = 33; // output of the coils in the x direction
+uint8_t Coil_y = 26; // output of the coils in the y direction
+uint8_t Coil_z = 14; // output of the coils in the z direction
+const int ledChannel_x = 3; /*0-15*/
+const int ledChannel_y = 4; /*0-15*/
+const int ledChannel_z = 5; /*0-15*/
+
+
+// Initialize the display
+#define RA8875_INT 16
+#define RA8875_CS 5
+#define RA8875_RESET 17
+Adafruit_RA8875 tft = Adafruit_RA8875(RA8875_CS, RA8875_RESET);
+char stringBuffer[15];
+
+
+// ADC 0 interrupt routine
+void IRAM_ATTR adc0ISR() {
+    // Notify the ADC0 task that it can run again
+    xTaskNotifyFromISR(readADC0Handle, 0, eNoAction, &xHigherPriorityTaskWokenADC0);
+
+    //Handle possible task exception due to the nature of an ISR
+    if ( xHigherPriorityTaskWokenADC0 ) {
+        portYIELD_FROM_ISR ();
+    }
+}
+
+
+// ADC 0 readTask
+void readADC0( void * parameter ) {
+    int iChan = 0;
+    bufferData_t writeData;
+    BaseType_t queueStatus;
+    
+    for (;;) {
+        if (xTaskNotifyWait(0, 0, 0, pdMS_TO_TICKS(5000)) == pdPASS) {  //Wait for a notification to continue
+            //Add data to temp
+            writeData.val = ads0.getADC();
+            writeData.time = millis();
+            writeData.ch = iChan;
+
+            //Push data to buffer
+            queueStatus = xQueueSendToBack(dataQueueHandle, &writeData, pdMS_TO_TICKS(1000));
+            
+            //Check if succesfull
+            if ( queueStatus != pdTRUE ) {
+                Serial.println("Buffer is full!");
+            }
+
+            //Increase channel counter and handle overflow
+            iChan++;
+            if (iChan >= 4) {
+                iChan = 0;
+            }
+
+            //Start next measurement
+            ads0.startReadADC(iChan, sampleRateADC0);
+        }
+    }
+}
+
+
+void tftWriteStatic(){
+    tft.fillScreen(RA8875_BLACK);
+    tft.textMode();
+    tft.textTransparent(RA8875_WHITE);
+    tft.textSetCursor(190, 1);
+    tft.textWrite("ADCqueueTest.ino");
+    tft.textSetCursor(40, 1);
+    tft.textWrite("Value");
+    tft.textSetCursor(100, 1);
+    tft.textWrite("Time (ms)");
+    tft.textSetCursor(360, 1);
+    tft.textWrite("Buffer:");
+    
+    for (int i = 0; i < 8 ;i++){
+        tft.textSetCursor(1, 20 + i * 15);
+        tft.textWrite("ADC");
+        tft.textSetCursor(24, 20 + i * 15);
+        tft.textWrite(dtostrf(i, 1, 0, stringBuffer), 2);
+    }
+}
+
+void tftWriteBuffer(uint16_t bufferRemainder){
+    tft.fillRect(420, 1, 30, 15, RA8875_BLUE);
+    tft.textTransparent(RA8875_WHITE);
+    tft.textSetCursor(420, 1);
+    tft.textWrite(dtostrf(bufferRemainder, 3, 1, stringBuffer), 3);
+}
+
+void tftWriteADC(bufferData_t bufferTftData){
+    tft.fillRect(40, 20 + bufferTftData.ch * 15, 160, 15, RA8875_BLUE);
+    tft.textTransparent(RA8875_WHITE);
+
+    tft.textSetCursor(40, 20 + bufferTftData.ch * 15);
+    tft.textWrite(dtostrf(bufferTftData.val, 5, 0, stringBuffer), 6);
+    tft.textSetCursor(100, 20 + bufferTftData.ch * 15);
+    tft.textWrite(dtostrf(bufferTftData.time, 11, 0, stringBuffer), 12);
+}
+
+void setup() {
+    // Open the serial interface
+    Serial.begin(115200);
+
+    //Switch off the magnets:
+    ledcSetup(ledChannel_x, 1000, 8);
+    ledcSetup(ledChannel_y, 1000, 8);
+    ledcSetup(ledChannel_z, 1000, 8);
+    ledcAttachPin(Coil_x, ledChannel_x);
+    ledcAttachPin(Coil_y, ledChannel_y);
+    ledcAttachPin(Coil_z, ledChannel_z);
+    ledcWrite(ledChannel_x, 0);
+    ledcWrite(ledChannel_y, 0);
+    ledcWrite(ledChannel_z, 0);
+
+    //Setup the display
+    Serial.println("Trying to find RA8875 screen...");
+    if (!tft.begin(RA8875_480x272)) {           // using 'RA8875_480x272' or 'RA8875_800x480'
+        Serial.println("RA8875 Not Found!");
+        while (1);
+    }
+    Serial.println("RA8875 Found");
+    tft.displayOn(true);
+    tft.GPIOX(true);      // Enable TFT - display enable tied to GPIOX
+    tft.PWM1config(true, RA8875_PWM_CLK_DIV1024); // PWM output for backlight
+    tft.PWM1out(255);
+    tftWriteStatic();
+
+    //Create the buffer
+    dataQueueHandle = xQueueCreate(bufferSize, sizeof(bufferData_t));
+
+    //Setup the ADCs
+    ads0.setGain(GAIN_ONE);
+    ads0.begin();
+    ads1.setGain(GAIN_ONE);
+    ads1.begin();
+    pinMode(ADS1115_RDY, INPUT_PULLUP);                 // ads0 is interupt based. Pin 13 is connect to ALERT/RDY pin of ads0
+    attachInterrupt(ADS1115_RDY, adc0ISR, FALLING);     // Interupt when RDY goes down
+
+    //Setup ADC0 Task
+    xTaskCreatePinnedToCore(
+        readADC0
+        ,  "readADC0"     // A name just for humans
+        ,  4096             // This stack size can be checked & adjusted by reading the uxTaskGetStackHighWaterMark();
+        ,  NULL
+        ,  2                // Priority, with 3 (configMAX_PRIORITIES - 1) being the highest, and 0 being the lowest.
+        ,  &readADC0Handle
+        ,  1);              // Core
+
+    delay(1000);
+        
+    //Start measurement
+    ads0.startReadADC(0, sampleRateADC0);
+
+    //Add delay to force the buffer to fill up initially
+    delay(2000);
+}
+
+
+int slowOutput = 0;
+
+void loop() {
+
+    bufferRem = uxQueueSpacesAvailable(dataQueueHandle);
+    if (bufferRem < bufferSize) {
+        xQueueReceive(dataQueueHandle, &readData, 0);
+
+        tftWriteBuffer(bufferRem);
+        
+        if (slowOutput % 41 == 0) {
+            Serial.print("Buf: ");
+            Serial.print(bufferRem);
+            Serial.print("\tCh: ");
+            Serial.print(readData.ch);
+            Serial.print("\tVal: ");
+            Serial.print(readData.val);
+            Serial.print("\tTime: ");
+            Serial.println(readData.time);
+
+            tftWriteADC(readData);
+        }
+        slowOutput++;
+    } else {    // Buffer is empty
+
+    }
+}
