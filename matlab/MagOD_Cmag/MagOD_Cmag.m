@@ -759,7 +759,7 @@ end
 function OD_push_plot_Callback(hObject, eventdata, handles)
 % hObject    handle to OD_push_plot (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+% handles    structure with hbac_dataFandles and user data (see GUIDATA)
 
 message_new(handles, 'Creating new figure raw data.');
 update_plot_OD(handles, 1);

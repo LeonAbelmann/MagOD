@@ -28,8 +28,7 @@ int numChan   = 4;         // Number of channels in above channel array (max 4)
 Adafruit_ADS1115 ads0(ADS1015_ADDRESS_0); //adc0-3;
 Adafruit_ADS1115 ads1(ADS1015_ADDRESS_1); //adc4-7;
 
-/* Intialize screen */
-#define RA8875_INT 16
+/* Intialize screen */#define RA8875_INT 16
 #define RA8875_CS 5 
 #define RA8875_RESET 17
 Adafruit_RA8875 tft = Adafruit_RA8875(RA8875_CS,RA8875_RESET);
@@ -139,11 +138,13 @@ void setup () {
   Serial.println("RA8875 Found");
 
   /* Initialize ADC */
+  Serial.println("Initializing ADC0");
   ads0.setGain(GAIN_ONE);
   ads0.begin();
+  Serial.println("Initializing ADC1");
   ads1.setGain(GAIN_ONE);
   ads1.begin();
-  // ads0 is interupt based. Pin 13 is connect to ALERT/RDY pin of ads0 
+  // ads0 is interupt based. Pin 13 is connect to ALERT/RDY pin of ads0
   pinMode(ADS1115_RDY,INPUT_PULLUP);
   // Interupt when RDY goes down
   attachInterrupt(ADS1115_RDY, adcISR, FALLING);
@@ -152,6 +153,7 @@ void setup () {
      need to wait 130 ms for the conversion to finish. All other rates
      are faster.  */
   adcReady = true;
+  Serial.println("Start read on ADC0");
   ads0.startReadADC(channel[0],sampleRate);
   delay(130);//
   

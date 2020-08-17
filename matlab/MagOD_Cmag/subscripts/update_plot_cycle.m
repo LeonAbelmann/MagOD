@@ -58,7 +58,7 @@ xlabel('Time [sec]');
 ylabel('OD');
 title(['OD cycle filtered / \tau=' num2str(handles.dataF.cycle.tau) ' / \gamma=' num2str(handles.dataF.cycle.gamma)]);
 legend('Data', 'Fitted function');
-ylim([ylimits(1)  ylimits(2)]);% force both plot to have the same y-axis
+%ylim([ylimits(1)  ylimits(2)]);% force both plot to have the same y-axis
 xlim([min(handles.dataF.cycle.time_sec-TOF), max(handles.dataF.cycle.time_sec-TOF)])
 
 message_append(handles, 'Updated figure cycle.')
