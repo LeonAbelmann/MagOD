@@ -4,6 +4,8 @@
 
 /* Help program that scans the PWM of the motordrivers and measures the current sensors adc4-6. If you connect a multimeter at the same time to the coils, you can make a graph of measured current versus real current */
 
+/* TODO: There is a strange bug. Every time you change the channel, the adc outputs 19 or 20 for the first iteration. Only happens when the 12V is on and the coils are actuated.*/
+
 #define RA8875_INT 16
 #define RA8875_CS 5 
 #define RA8875_RESET 17
@@ -16,17 +18,22 @@
 Adafruit_ADS1115 ads0(ADS1015_ADDRESS_0); //adc0-3;
 Adafruit_ADS1115 ads1(ADS1015_ADDRESS_1); //adc4-7;
 
-uint8_t Coil_x = 33; // pwm_x: output of the coils in the x direction
-uint8_t Coil_y = 26; // pwm_y: output of the coils in the y direction
-uint8_t Coil_z = 14; // pwm_z: output of the coils in the z direction
+uint8_t Coil_x = 33; // pwm_x: output pin of the coils in the x direction
+uint8_t Coil_y = 26; // pwm_y: output pin of the coils in the y direction
+uint8_t Coil_z = 14; // pwm_z: output pin of the coils in the z direction
 const uint32_t Frequency_PWM = 20000;    //set the pwm frequency of the coil-drivers
 const int ledChannel_x = 3; /*0-15*/
 const int ledChannel_y = 4; /*0-15*/
 const int ledChannel_z = 5; /*0-15*/
 const int resolution = 8; /* no bits resolution, 1-16 bit */
-int Dir_x = 25;                // direction of the coils in the x direction     low: output A of motor driver is then high and B is low (positive direction),     high: output A of motor driver is then low and B is high (negative direction)
-int Dir_y = 27;                // direction of the coils in the y direction
-int Dir_z = 12;                // direction of the coils in the z direction
+int Dir_x = 25;                /* direction pin of the coils in the x
+				  direction low: output A of motor
+				  driver is high and B is low
+				  (positive direction), high: output A
+				  of motor driver is low and B is
+				  high (negative direction)*/
+int Dir_y = 27;                // direction pin of the coils in the y direction
+int Dir_z = 12;                // direction pin of the coils in the z direction
 
 /* help variable */
 
@@ -75,12 +82,15 @@ void setup () {
 const int X=1;
 const int Y=2;
 const int Z=3;
+// int directions[]={Z}; //or {Y}, or {X,Y,Z} :)
+// int num_dir=1;
 int directions[]={X,Y,Z}; //or {Y}, or {X,Y,Z} :)
 int num_dir=3;
 
 void loop()
 {
-  int adc0, adc1, adc2, adc3, adc4, adc5, adc6, adc7; //Bit values of adc
+  int adc4, adc5, adc6, adc7; //Summed bit values of adc
+  int ad4, ad5, ad6;//help variables for output adc
 
   int Dir_i = Dir_x;
   int Chan_i = ledChannel_x;
@@ -110,23 +120,33 @@ void loop()
 	Serial.println(Dir_i);
       }
       
-      for (double step = -1; step <= 1; step = step+0.1)
+      for (double step = -1; step <= 1; step = step+0.5)
 	{
 	  /* Set the current direction */
-	  if (step < 0) {digitalWrite(Dir_i, LOW);};
-	  if (step >= 0) {digitalWrite(Dir_i, HIGH);};
+	  if (step <  0) {digitalWrite(Dir_i, HIGH);};
+	  if (step >= 0) {digitalWrite(Dir_i, LOW);};
 	  /* Set the PWM, second value is relative to 2^resolution */
-	  int PWM = fabs(step)*0.3*pow(2,resolution);//fabs is for doubles
+	  int PWM = fabs(step)*pow(2,resolution);//fabs is for doubles
 	  ledcWrite(Chan_i, PWM);
+	  delay(500);//wait for the system to settle
 
 	  /* Read ADC1115 ports */
-	  adc4 = 0, adc5 = 0, adc6 = 0;
-	  int N = 20;
-	  for (int i = 0; i < N; i++)
-	    {
-	      adc4 = adc4 + ads1.readADC_SingleEnded(0);
-	      adc5 = adc5 + ads1.readADC_SingleEnded(1);
-	      adc6 = adc6 + ads1.readADC_SingleEnded(2);
+	  adc4 = 0;
+	  adc5 = 0;
+	  adc6 = 0;
+	  int N = 100;
+	  for (int j = 0; j < N; j++)
+	    { ad4 = ads1.readADC_SingleEnded(0);
+	      ad5 = ads1.readADC_SingleEnded(1);
+	      ad6 = ads1.readADC_SingleEnded(2);
+	      adc4 = adc4 + ad4;
+	      adc5 = adc5 + ad5;
+	      adc6 = adc6 + ad6;
+	      // Serial.print(ad4);
+	      // Serial.print(" ");
+	      // Serial.print(ad5);
+	      // Serial.print(" ");
+	      // Serial.println(ad6);
 	    }
 
 	  if (step < 0)  {Serial.print("-");};

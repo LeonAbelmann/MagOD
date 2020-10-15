@@ -6,8 +6,6 @@
  Tijmen Hageman, Jordi Hendrix, Hans Keizer, Leon Abelmann 
 */
 
-
-
 #include "Arduino.h"
 
 //Avoid that Arduino IDE compiles this file when not MagOD2
@@ -16,7 +14,6 @@
 
 #include <SPI.h>
 #include "screen_RA8875.h"
-
 
 screen::screen(void)
 {
@@ -164,6 +161,19 @@ void screen::setupScreen()
   tft.textSetCursor(100, 100);
   tft.textTransparent(RA8875_BLACK);
   tft.textWrite("MagOD 2.2");
+  tft.textSetCursor(200, 100);
+#if defined(_KIST)
+  tft.textWrite("KIST MagOD2");
+#endif  
+#if defined(_CEA)
+  tft.textWrite("CEA MagOD2");
+#endif  
+#if defined(_BAYREUTH)
+  tft.textWrite("Bayreuth MagOD2");
+#endif  
+#if defined(_ASTON)
+  tft.textWrite("ASTON MagOD2");
+#endif  
   tft.textSetCursor(100, 124);
   tft.textWrite("Tijmen Hageman, Jordi Hendrix, Hans Keizer");
   tft.textSetCursor(100, 148);

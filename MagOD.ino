@@ -1,5 +1,5 @@
 /* MagOD version 2.3 */
-/* Feb 2020 */
+/* Oct 2020 */
 /* Tijmen Hageman, Jordi Hendrix, Hans Keizer, Leon Abelmann */
 /* Based on original code, modified by Leon for readablity and ease of recipe change */
 
@@ -7,12 +7,18 @@
 #include "MagOD.h"
 
 /* Version of electronics is defined in MagOD.h */
-#if defined(_MAGOD1)
-#warning "MAGOD1"
-#elif defined(_MAGOD2)
-#warning "MAGOD2"
+#if defined(_KIST_1)
+#warning "Compiling for KIST MagOD1.Change in MagOD.h"
+#elif defined(_KIST)
+#warning "Compiling for KIST MAGOD2. Change in MagOD.h"
+#elif defined(_CEA)
+#warning "Compiling for CEA MAGOD2. Change in MagOD.h"
+#elif defined(_BAYREUTH)
+#warning "Compiling for BAYREUTH MAGOD2. Change in MagOD.h"
+#elif defined(_ASTON)
+#warning "Compiling for ASTON MAGOD2. Change in MagOD.h"
 #else
-#error "No version defined"
+#error "No hardware version defined in MagOD.h"
 #endif
 
 #if (defined(_MAGOD1) && defined(ARDUINO_AVR_MEGA2560)) || \
@@ -303,10 +309,11 @@ void processButtonPress()
     //Set reference voltage
       if (buttonPress==BUTTON_LEFT ){
 	if (!isRecording){
-	  myadc.set_vrefs(Vrefs,ref_all_wavelength,myled);
 #if defined(_MAGOD1)
+	  myadc.set_vrefs(Vrefs,ref_all_wavelength,myled);
           myled.Set_LED_color(LEDColor_array[Looppar_1]);
 #elif defined(_MAGOD2)
+	  myadc.set_vrefs(Vrefs,false,myled);
 	  myled.Set_LED_color(LEDColor_array[Looppar_1],
 			      LEDInt_array[Looppar_1]);
 #endif
@@ -389,7 +396,11 @@ void processButtonPress()
       if (program_cnt<0){program_cnt=program_nmb;}
       // Highlight the correct recipe on the screen
       myscreen.showRecipes(recipes_array,program_nmb,program_cnt);
-      myled.Set_LED_color(LEDColor_array[Looppar_1],LEDInt_array[Looppar_1]);
+      // Load the parameters for that recipe
+      myrecipes.program_init(recipes_array,program_cnt);
+      // Switch on the LED
+      myled.Set_LED_color(LEDColor_array[Looppar_1],
+			  LEDInt_array[Looppar_1]);
       //Update display
       myscreen.updateInfo(Looppar_1, Looppar_2, program_cnt,
 			  myfile.fName_char);
@@ -686,8 +697,6 @@ void setup()
   Looppar_2 = 0;
   //sets the initial field to start the measurement, depending on the program used
 
-
-
   // Load recipes from RECIPES.CSV file on the Flash card
   Serial.println("Setup: load recipes");
   if (SDpresent) {
@@ -701,13 +710,17 @@ void setup()
       }
       else {
 	myscreen.showRecipes(recipes_array,program_nmb,program_cnt);
+	Serial.println("Loading first program");
+	myrecipes.program_init(recipes_array,program_cnt);
+	Serial.println("Switching on LED");
+	myled.Set_LED_color(LEDColor_array[Looppar_1],
+			    LEDInt_array[Looppar_1]);
       }
     }
     else {
       Serial.println("RECIPES.CSV not found");
     }
   }
-
   Serial.println("Initialization finished");
 }
 

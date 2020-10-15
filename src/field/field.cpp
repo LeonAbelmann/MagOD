@@ -89,12 +89,13 @@ void field::SetBfieldFast(double Val_Bmag_x, double Val_Bmag_y, double Val_Bmag_
     }
    else if (Val_Bmag_x > 0.0001)
    {
+      digitalWrite(Dir_x, LOW);
+      Serial.println("Otto: dir_X set to low");
       Current_PWM_value_x =
 	round(
 	   abs(fact_x * Comp_fact_x*Ax_pos_TPWM * Val_Bmag_x + Bx_pos_TPWM)
 	     );
       coilPwmWrite(Coil_x, Current_PWM_value_x);
-      digitalWrite(Dir_x, LOW);
     }
     else
     {
@@ -330,8 +331,8 @@ void field::coilPwmWrite(int Coil, int PWM_value)
 #elif defined(_MAGOD2)
       // If ESP32, use ledcWrite(channel, pwm). PMW_value 0:2^(resolution)
       // Resolution is set in ledcSetup
-      double maxPWM = round(0.5*pow(2,resolution)); //Limit to 6V/3Ohm=2 A
-      //double maxPWM = round(1*pow(2,resolution)); //Don't limit
+      //double maxPWM = round(0.5*pow(2,resolution)); //Limit to 6V/3Ohm=2 A
+      double maxPWM = round(1*pow(2,resolution)); //Don't limit
       if (PWM_value > maxPWM)
 	{ Serial.print("PWM limited to");
 	  Serial.println(maxPWM);

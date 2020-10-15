@@ -129,9 +129,9 @@ void loop()
 	  digitalWrite(Dir_y, LOW);
 	  digitalWrite(Dir_z, LOW);
 	  /* Set the PWM, second value is relative to 2^resolution */
-	  ledcWrite(ledChannel_x, 50);
+	  ledcWrite(ledChannel_x, 0);
 	  ledcWrite(ledChannel_y, 0);
-	  ledcWrite(ledChannel_z, 0);
+	  ledcWrite(ledChannel_z, 50);
 	}
       else
 	{
@@ -140,9 +140,9 @@ void loop()
 	  digitalWrite(Dir_z, HIGH);
 	  
 	  /* Set the PWM, second value is relative to 2^resolution */
-	  ledcWrite(ledChannel_x, 50);
+	  ledcWrite(ledChannel_x, 0);
 	  ledcWrite(ledChannel_y, 0);
-	  ledcWrite(ledChannel_z, 0);
+	  ledcWrite(ledChannel_z, 50);
 	}
       time0=millis();
     }

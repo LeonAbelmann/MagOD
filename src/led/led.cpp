@@ -65,6 +65,11 @@ void led::Set_LED_color(int color)
 #elif defined(_MAGOD2)
 void led::Set_LED_color(int color, int intensity)
 {
+  /* Debug: */
+  Serial.print("Set_LED_color, color: ");
+  Serial.println(color);
+  Serial.print("Set_LED_color, inten: ");
+  Serial.println(intensity);
   switch (color){
   case RED: 
     ledcWrite(LEDChannelRed, intensity);

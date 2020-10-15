@@ -7,11 +7,22 @@
 #ifndef _MagOD_h
 #define _MagOD_h
 
-/* Define for which version of MagOD meter you are compiling 
-_MAGOD1: Version with Arduino MEGA and ST7735 1.8" 128x160 screen with joystick button
-/_MAGOD2: Version with ESP32 Devkit and TFTM050 5" 480x272 screen and
-capacitive touch */
-#define _MAGOD2
+/* Define which system you compile for, outcomment only one */
+#define _CEA
+//#define _BAYREUTH
+//#define _ASTON
+//#define _KIST_1
+//#define _KIST
+#include "calibration/calibration.h"
+
+/* Define for which processor/screen we are compling */
+#if defined(_KIST_1)
+#define _MAGOD1 // Version with Arduino MEGA and ST7735 1.8" 128x160 screen with joystick button
+#endif
+#if (defined(_KIST) || defined(_CEA) || defined(_BAYREUTH) || defined(_ASTON))
+#define _MAGOD2 /*Version with ESP32 Devkit and TFTM050 5" 480x272
+screen and capacitive touch */
+#endif
 
 /* Declaration of stuctures */
 

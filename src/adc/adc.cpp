@@ -150,37 +150,41 @@ void adc::set_vrefs(references &Vrefs, bool ref_all_wavelength, led theled)
       Vrefs.Vblue = _Vref;
     }
 #elif defined(_MAGOD2)
-  /* Iterate over all colors in the LEDs list
-     note that there might be only one color :) */
-  for(auto iter = 0; iter<LEDnumber; iter++)
-    {
-      theled.Set_LED_color(LEDs[iter],LED_intensity[LEDs[iter]]);
-      delay(3000);//Wait for the LED to stabilize
-      /* Read out diodes 10 times and average*/
-      double Vdiode;  
-      Vdiode=0;
-      for (int i=0; i<10; i++){
-	  Vdiodes= myadc.readDiodes();
-	  Vdiode+= Vdiodes.Vdiode;
-      }
-      Serial.print("Vref for ");
-      Vdiode=Vdiode/10;
-      /* Assign to the correct reference */
-      switch(LEDs[iter]) {
-      case RED   : Vrefs.Vred   =Vdiode;
-	Serial.print("Red :");
-	break;
-      case GREEN : Vrefs.Vgreen =Vdiode;
-	Serial.print("Green :");
-	break;
-      case BLUE  : Vrefs.Vblue  =Vdiode;
-	Serial.print("Blue :");
-	break;
-      }
-      Serial.println(Vdiode);
-      /* And remember the last one */
-      Vrefs.Vref=Vdiode;
-    }
+  /* The LED color and intensity is set by taking the
+     first step in the recipe. So we can only calculate Vref for the
+     first setting in the recipe file. TODO? */
+  /* Debug: */
+  Serial.println("Set_vrefs : LEDColor, LED Int : ");
+  Serial.print(LEDColor_array[0]);Serial.print(" ");
+  Serial.println(LEDInt_array[0]);
+
+  theled.Set_LED_color(LEDColor_array[0],
+		      LEDInt_array[0]);
+  delay(3000);//Wait for the LED to stabilize
+  /* Read out diodes 10 times and average*/
+  double Vdiode;  
+  Vdiode=0;
+  for (int i=0; i<10; i++){
+    Vdiodes= myadc.readDiodes();
+    Vdiode+= Vdiodes.Vdiode;
+  }
+  Serial.print("Vref for ");
+  Vdiode=Vdiode/10;
+  /* Assign to the correct reference */
+  switch(LEDColor_array[0]) {
+  case RED   : Vrefs.Vred   =Vdiode;
+    Serial.print("Red :");
+    break;
+  case GREEN : Vrefs.Vgreen =Vdiode;
+    Serial.print("Green :");
+    break;
+  case BLUE  : Vrefs.Vblue  =Vdiode;
+    Serial.print("Blue :");
+    break;
+  }
+  Serial.println(Vdiode);
+  /* And remember the last one */
+  Vrefs.Vref=Vdiode;
 #endif 
 }
 
@@ -232,47 +236,33 @@ feedbacks adc::readFeedbacks()//Read the currents to the coils
   adc5=ads1.readADC_SingleEnded(1);//Z-voltage !!!!!
   adc6=ads1.readADC_SingleEnded(2);//Y-voltage !!!!!
   adc7=ads1.readADC_SingleEnded(3);//NTC
-  /* debug: 
-  Serial.print("FB: adc4 = ");Serial.println(adc4);
-  Serial.print("FB: adc5 = ");Serial.println(adc5);
-  Serial.print("FB: adc6 = ");Serial.println(adc6);
-  Serial.print("FB: adc7 = ");Serial.println(adc7);
+  /* debug: */ 
+  /*
+    Serial.print("FB: adc4 = ");Serial.println(adc4);
+    Serial.print("FB: adc5 = ");Serial.println(adc5);
+    Serial.print("FB: adc6 = ");Serial.println(adc6);
+    Serial.print("FB: adc7 = ");Serial.println(adc7);
   */
   double Vx=double(adc4)/32768*adsMaxV1;
   double Vy=double(adc6)/32768*adsMaxV1; //A6 on print!
   double Vz=double(adc5)/32768*adsMaxV1; //A5 on print!
 
-  /* We assume calibration is done at GAIN_ONE. Use the testprogram
-     TestCurrentCalibration.ino and a multimeter to get the relation
-     between ADC bits and currents. See CurrentCalibration.ods*/
-  /* These should go into a instrument settings file! LEON */
+  /* adc4Offset, adc4SlopePos and adc4SlopeNeg are defined in calibration.h */
+  
   /* ADC 4 measures current in X-direction */
-  int    adc4Offset   = 13006;
-  double adc4SlopePos = 0.00018374;
-  double adc4SlopeNeg = 0.00024586;
-  /* ADC 5 measures current in Z-direction !!!*/
-  int    adc5Offset   = 13043;
-  double adc5SlopePos = 0.00019299;
-  double adc5SlopeNeg = 0.00024766;
-  /* ADC 6 measures current in Y-direction !!!*/
-  int    adc6Offset   = 12960;
-  double adc6SlopePos = 0.00027076;
-  double adc6SlopeNeg = 0.00024817;
-
-  /* ADC 4 measures current in X-direction */
-  if (adc4-adc4Offset > 0)
+  if (adc4-adc4Offset < 0)
     { currents.x=(adc4-adc4Offset)*adc4SlopePos;}
   else
     { currents.x=(adc4-adc4Offset)*adc4SlopeNeg;}
 
   /* ADC 5 measures current in Z-direction !!!*/
-  if (adc5-adc5Offset > 0)
+  if (adc5-adc5Offset < 0)
     { currents.z=(adc5-adc5Offset)*adc5SlopePos;}
   else
     { currents.z=(adc5-adc5Offset)*adc5SlopeNeg;}
 
   /* ADC 6 measures current in Y-direction !!!*/
-  if (adc6-adc6Offset > 0)
+  if (adc6-adc6Offset < 0)
     { currents.y=(adc6-adc6Offset)*adc6SlopePos;}
   else
     { currents.y=(adc6-adc6Offset)*adc6SlopeNeg;}

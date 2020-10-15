@@ -278,8 +278,7 @@ void recipes::serialRecipesPrint(recipe* recipe, int numRecipes){
       myIO->serialPrint(recipe[i].recipe_sequence.grad[j].grad_y);
       myIO->serialPrint((char*)", ");
       myIO->serialPrint(recipe[i].recipe_sequence.grad[j].grad_z);
-      myIO->serialPrint((char*)"] ");
-      myIO->serialPrintln((char*)"");
+      myIO->serialPrintln((char*)"] ");
     }
   }
 }
@@ -408,8 +407,8 @@ int recipes::LoadRecipes(File recipeFile, recipe recipes_array[]){
     };//End if readOneLine for entire recipe
   }
   if(!error_flag){
-    myIO->serialPrint(myIO->my_file);
-    myIO->serialPrintln((char*)" OK");
+    //myIO->serialPrint(myIO->my_file);
+    myIO->serialPrintln((char*)"Recipes loaded");
   }
   /* For debug, send recipe to serial port for monitoring */
   serialRecipesPrint(recipes_array,recipe::count);
@@ -450,7 +449,7 @@ recipe_num: which recipe the user selected
 void recipes::program_init(recipe recipes_array[],int recipe_num)
 {   
   myIO->serialPrintln((char*)"Starting program_init");
-  myIO->initSerial();
+  //myIO->initSerial(); /* Why reset the IO ? LEON*/
   
   /* Reset all arrays,default to do nothing for 1 second */
   B_nr_set = 1; // [0..1]

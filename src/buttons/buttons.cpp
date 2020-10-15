@@ -9,7 +9,6 @@
 #include "../../MagOD.h"
 #include "buttons.h"
 #include "../screen/screen_RA8875.h" //Definition of pins
-#include "touch_calibrate.h" // Calibration file for touchscreen
 
 //Constructor
 buttons::buttons(){
