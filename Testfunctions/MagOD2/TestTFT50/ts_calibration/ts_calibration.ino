@@ -282,6 +282,7 @@ void setup()
 
   /* Enables the display and sets up the backlight */
   Serial.println("Found RA8875");
+
   tft.displayOn(true);
   tft.GPIOX(true); // Enable TFT - display enable tied to GPIOX
   tft.PWM1config(true, RA8875_PWM_CLK_DIV1024); // PWM output for backlight
@@ -304,18 +305,21 @@ void setup()
   
   tft.fillScreen(RA8875_WHITE);
   delay(100);
-    
+
+  
+
+  
   /* Start the calibration process */
   tsCalibrate();  
-
+  
   Serial.println("Calibration matrix");
-  Serial.print("Divider: ");Serial.println( _tsMatrix.Divider);
-  Serial.print("An     : ");Serial.println( _tsMatrix.An);
-  Serial.print("Bn     : ");Serial.println( _tsMatrix.Bn);
-  Serial.print("Cn     : ");Serial.println( _tsMatrix.Cn);
-  Serial.print("Dn     : ");Serial.println( _tsMatrix.Dn);
-  Serial.print("En     : ");Serial.println( _tsMatrix.En);
-  Serial.print("Fn     : ");Serial.println( _tsMatrix.Fn);
+  Serial.print("# define TOUCH_DIVIDER ");Serial.println( _tsMatrix.Divider);
+  Serial.print("# define TOUCH_An      ");Serial.println( _tsMatrix.An);
+  Serial.print("# define TOUCH_Bn      ");Serial.println( _tsMatrix.Bn);
+  Serial.print("# define TOUCH_Cn      ");Serial.println( _tsMatrix.Cn);
+  Serial.print("# define TOUCH_Dn      ");Serial.println( _tsMatrix.Dn);
+  Serial.print("# define TOUCH_En      ");Serial.println( _tsMatrix.En);
+  Serial.print("# define TOUCH_Fn      ");Serial.println( _tsMatrix.Fn);
 
   /* Check if display has flash memory. If so, that this should
      work. In may case it didn't. I think the Flash Memory is chip U4,

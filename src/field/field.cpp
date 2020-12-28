@@ -75,7 +75,13 @@ void field::SetBfieldFast(double Val_Bmag_x, double Val_Bmag_y, double Val_Bmag_
 
   
   //first checks whether the field is positive, negative or 0 (is required because otherwise the offset (B-term) in linearization of relation between Field and PWM is non-zero)
-  //whether the B-field is negative or positive determines the direction of the motor driver (Dir_i)
+  /* whether the B-field is negative or positive determines the
+     direction of the motor driver (Dir_i).  Dir is low low: output A
+     of motor driver is high and B is low, high: output A of motor
+     driver is low and B is high. We define MB as positive lead, so
+     positive fields are for dir_i HIGH. See manual MD13S page 6*/
+
+  
   //the PWM value is calculated from the wanted B-field (using the characterization measurements giving the parameters A and B) teh compensationfactors for a gradient (use 1 coil) and for heating (current sense) are then used to calculate the PWM value required
   //compensation factors do not influence the offset of the sensor and thus not affect B
   if (Val_Bmag_x < -0.0001)

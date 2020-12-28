@@ -7,7 +7,8 @@
 #ifndef buttons_h
 #define buttons_h
 
-#include <Adafruit_ADS1015.h>  // ADC library
+//THIS SHOULD NOT BE HERE: LEON
+//#include "../MagOD_ADS1115/MagOD_ADS1115.h" // Modified Adafruit_ADS1015 lib
 #include "../../MagOD.h"
 
 #define BUTTON_NONE 0
@@ -25,7 +26,7 @@ class buttons
  public:
   buttons();//Constructor
   void initButton();//Setup buttons 
-  uint8_t readButton();//Read button status, any of defined stati above
+  int readButton();//Read button status, any of defined stati above
   #if defined(_MAGOD2)
   void showButtonArea(int i, const char* str, int bgcolor, int fgcolor);//Draw button i
   int buttonOffset_x, buttonOffset_y; // Upper left corner of button area

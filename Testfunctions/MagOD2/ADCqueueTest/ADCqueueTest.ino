@@ -27,7 +27,7 @@ uint16_t bufferRemaining;                   // Variable to store the remaining b
 #define ADS1115_RDY 13                      // ESP32 pin that the ready pin of the ADC is attached to
 Adafruit_ADS1115 ads0(ADS1015_ADDRESS_0);   // Initialize adc0-3;
 Adafruit_ADS1115 ads1(ADS1015_ADDRESS_1);   // Initialize adc4-7;
-#define sampleRateADC0 7                    // Sample rates: 0: 8 SPS, 1: 16 SPS, 2: 32 SPS, 3: 64 SPS, 4: 128 SPS, 5: 250 SPS, 6: 475 SPS 7: 860 SPS
+#define sampleRateADC0 2                    // Sample rates: 0: 8 SPS, 1: 16 SPS, 2: 32 SPS, 3: 64 SPS, 4: 128 SPS, 5: 250 SPS, 6: 475 SPS 7: 860 SPS
 TaskHandle_t readADC0Handle;                // Handle to refer to the task that does the ADC measurement
 
 
@@ -178,7 +178,7 @@ void setup() {
     ads0.begin();
     ads1.setGain(GAIN_ONE);
     ads1.begin();
-    pinMode(ADS1115_RDY, INPUT_PULLUP);                 // ads0 is interupt based. Pin 13 is connect to ALERT/RDY pin of ads0
+    pinMode(ADS1115_RDY, INPUT_PULLUP);                 // ads0 is interupt based. Pin 13 is connect to ALERT/RDY pin of ad0
     attachInterrupt(ADS1115_RDY, adc0ISR, FALLING);     // Interupt when RDY goes down
 
     // Setup ADC0 Task
@@ -211,14 +211,14 @@ void loop() {
         // Print the latest data to the Serial monitor, the reason this is commented out is that 
         //   at 860Hz serial printing takes too long causing the buffer to slowly fill up
 
-//        Serial.print("Buf: ");
-//        Serial.print(bufferRemaining);
-//        Serial.print("\tCh: ");
-//        Serial.print(readData.ch);
-//        Serial.print("\tVal: ");
-//        Serial.print(readData.val);
-//        Serial.print("\tTime: ");
-//        Serial.println(readData.time);
+       Serial.print("Buf: ");
+       Serial.print(bufferRemaining);
+       Serial.print("\tCh: ");
+       Serial.print(readData.ch);
+       Serial.print("\tVal: ");
+       Serial.print(readData.val);
+       Serial.print("\tTime: ");
+       Serial.println(readData.time);
 
         tftWriteADC(readData);                                      // Write the ADC data to the display
 

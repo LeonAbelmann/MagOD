@@ -48,7 +48,13 @@ void setup()
   tft.PWM1out(255);
   tft.fillScreen(RA8875_BLACK);
 
-  /* Switch to text mode */  
+  /* Mirror */
+  /* https://cdn-shop.adafruit.com/datasheets/RA8875_DS_V12_Eng.pdf
+     table 5.3 reg[20 h]. Bit 3 (0x08): mirror HDIR, Bit 2 (0x04): mirror
+     VDIR. Both is sum: 0x0C */
+  tft.writeReg(0x20, 0x0C); 
+  
+  /* Switch to text mode */
   tft.textMode();
   
  }

@@ -19,7 +19,6 @@ class fileandserial
   static const int fN_len = 17; //Max filename length
   char fName_char[fN_len]; //Array to keep filename
   //String fName_str; //Filename
-  File dataFile;
   int file_number;
   int SD_file_length_count = 0;
   int SD_file_number_count = 1;
@@ -45,19 +44,16 @@ class fileandserial
   void setFileName(char fName_char[]);
 
   /* increase the file number f42_1, f42_2 etc.*/
-  void updateFileName(char fName_char[]);
+  void updateFileName(File datfile);
   
   //Saves a settings file with the settings of the current program
-  void saveSettingsFile(char fName_char[]);
-
-  //Write header to datafile
-  void writeHeader(char fName_char[]);
+  //void saveSettingsFile(char fName_char[]);
   
-  //Send file over serial port
+  //Send file over serial port. KAN WEG LEON
   void sendFileToSerial(char fName_char[]);
 
   //Init the data file (write header)
-  void file_init(struct references Vref,
+  File file_init(struct references Vref,
 		 bool ref_all_wavelength,
 		 bool save_extra_parameter,
 		 double extra_par, uint16_t program_cnt,
@@ -66,14 +62,17 @@ class fileandserial
   void file_reset(); //Reset counters
 
   /* Save line of data to file */
-  void saveToFile(char fName_char[],
+  /* void saveToFile(char fName_char[],
 		  unsigned long time_of_data_point,
 		  diodes Vdiodes,
 		  double Temperature,
 		  double OD,
 		  int LED_type,
 		  int Looppar_1,
-		  feedbacks Vfb);
+		  feedbacks Vfb); */
+  /* Save line of data to file */
+  void saveLine(File datfile,dataPoint data,
+		int LED_type,int Looppar_1);
    
  private:
   

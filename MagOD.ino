@@ -1,5 +1,5 @@
-/* MagOD version 2.3 */
-/* Oct 2020 */
+/* MagOD version 2.4 */
+/* Dec 2020 */
 /* Tijmen Hageman, Jordi Hendrix, Hans Keizer, Leon Abelmann */
 /* Based on original code, modified by Leon for readablity and ease of recipe change */
 
@@ -28,10 +28,18 @@
 /* ############## Global variables ########### */
 
 /* Update frequencies */
+#if defined(_MAGOD1)
 float freq_meas = 7; //Measurement frequency in Hz
-// For Arduion: tested up to 7 Hz. Can be 20 Hz without saving data. Can be 30 Hz if we optimize doMeasurement. Can be 100 Hz if we only read one adc. Can be 700 Hz theoretically...
-
+// For Arduio in MagOD1: tested up to 7 Hz. Can be 20 Hz without saving data. Can be 30 Hz if we optimize doMeasurement. Can be 100 Hz if we only read one adc. Can be 700 Hz theoretically...
+#elif defined(_MAGOD2)
+// MagOD2 measures on interupt basis on ADC0
+float freq_meas = 1; /* Measurement frequency for ADC1 (currents,
+			temperature) in Hz */
+#endif
 float freq_screen = 2; //Screen update frequency in Hz
+
+/* Do you want Wifi */
+bool wifi = true;
 
 /* Program menu settings */
 recipe recipes_array[MaxRecipes]; // Array of recipes
@@ -39,8 +47,21 @@ int    program_cnt = 0; // Current recipe selected, default 0
 int    program_nmb = 0; /*Total number of recipes in recipes_array
 			  [0..program_nmb] */
 
+/* ADCO works on interupt. Data is stored in buffer. See adc.cpp */
+// Handle to refer to the task that does the ADC measurement
+TaskHandle_t readADC0Handle; 
+// Handle for the buffer
+QueueHandle_t dataQueueHandle;
+
+/* ADC settings */
+#if defined(_MAGOD1)
+double adsMaxV0;  //max voltage that can be measured by the ADC
+#elif defined(_MAGOD2)
+double adsMaxV0,adsMaxV1;  //max voltages, for two ADCs
+#endif
+
 /* State variables (global) used in this program */
-bool doMeasurementFlag = false; //Read the ADC inputs
+bool doMeasurementFlag = false; //Read the ADC inputs. Only ADC1 for MagOD2
 bool screenUpdateFlag  = false; //Update the screen
 bool Updatecurrentflag = false; //Do a current calibration
 bool Exit_program_1    = HIGH;  //The program should end
@@ -75,6 +96,22 @@ fileandserial myfile;
 recipes myrecipes;
 IO *  myIO; /* Wraps IO for recipes, used by TestRecipes. Perhaps
 	       merge with fileandserial. LEON */
+File dataFile; /* file handle for output file */
+
+
+/* FTP server */
+/* To connect to your wifi network, we expect file a 'password.h' in
+local directory with contents: 
+const char* ssid = "MyWifiNetwork"; //WiFi SSID 
+const char* password = "PasswordForThatNetwork"; //WiFi Password
+*/
+#include "password.h" //expected in local directory
+/* hostname that may appear on your network */
+const char* host = "magod"; //HERE? LEON
+/* FTP server */
+FtpServer ftpSrv;
+bool serverStarted = false;
+
 
 /* Should this be here? LEON*/
 #if defined(_MAGOD2)
@@ -84,14 +121,15 @@ hw_timer_t * timer4 = NULL;
 #endif
 
 /* The measured parameters */
+dataPoint nextData = {0,0,0};   /* Next datapoint from buffer */
 diodes Vdiodes = {0,0,0};       /* Photodetector signals [V] */
-double Temperature_degrees = 0; /*Temperature estimated from
+double Temperature = 0;         /*Temperature estimated from
 				  temperature sensor*/
 references Vrefs = {1,1,1,1};   /* Reference values of photodector
 				  signals. Current value and three
 				  different colors. Initialize to 1 to
 				  get meaningful OD */
-feedbacks Vfb = {0,0,0};        /* Current feedback loop voltages */
+feedbacks Currents = {0,0,0};   /* Current feedback values */
 
 /* Calculated parameters */
 double OD = 0;                 /*Optical Density. Calculated in
@@ -144,6 +182,7 @@ void measEvent()
 {
   doMeasurementFlag=true;
 }
+
 
 /* Timer 3 triggers a field correction event */
 void Updatecurrent()
@@ -210,12 +249,12 @@ void startRec()
     
 #if defined(_MAGOD2)
     // Check if card is actually working
-    File dataFile = SD.open("/test.txt", FILE_WRITE);
-    if(!dataFile){
+    File f = SD.open("/test.txt", FILE_WRITE);
+    if(!f){
         Serial.println("Failed to open file for writing");
         return;
     }
-    if(dataFile.print("Hello world")){
+    if(f.print("Hello world")){
         Serial.println("test.txt written");
 	SDpresent = true;
     } else {
@@ -224,7 +263,7 @@ void startRec()
 	SDpresent = false;
 	myscreen.setRecButton(false); //Set recording button to stop
     }
-    dataFile.close();
+    f.close();
 #endif
   }
 
@@ -238,9 +277,10 @@ void startRec()
     Serial.print("program, ");
     myrecipes.program_init(recipes_array,program_cnt);
     Serial.print("datafile and ");
-    myfile.file_init(Vrefs, ref_all_wavelength,
+    dataFile = myfile.file_init(Vrefs, ref_all_wavelength,
 		     save_extra_parameter, extra_par, program_cnt,
 		     myscreen);
+    if (not dataFile) {Serial.println("StartRec: file is not open!!");};
     Serial.print("current feedback. ");
     myfield.Init_current_feedback();
     Serial.println("Done");
@@ -272,7 +312,7 @@ void stopRec()
 {
   Exit_program_1 = HIGH;
   myscreen.setRecButton(false);
-  //Something wrong with string lenght. For now added spaces
+  //Something wrong with string length. For now added spaces
   strlcpy(myfile.fName_char,"DONE      ",myfile.fN_len);
   myscreen.updateFILE(myfile.fName_char);
   // reset globals
@@ -282,7 +322,9 @@ void stopRec()
   myfile.file_reset();
   // Switch off field
   myfield.Reset_Bfield();
-  Serial.println("Stop rec");  
+  Serial.println("Stop rec");
+  // Close file
+  dataFile.close();
   //De-activate recording mode
   isRecording = false;
 }
@@ -320,7 +362,7 @@ void processButtonPress()
         }
         //Update screen
         //TODO, make a screen where all refs are shown in case of 3 colour
-        myscreen.updateV(Vdiodes, Vrefs, OD, Vfb);
+        myscreen.updateV(Vdiodes, Vrefs, OD, Currents);
 #if defined(_MAGOD2)
 	/* This should be a function in screen.cpp. Every button could
 	   have 2-3 states (Start, Starting..., Stop), (Set Vrefs,
@@ -476,64 +518,27 @@ double calcOD(struct references Vrefs, double Vdiode)
 
 
 
-//measures all the wanted values (photodiode voltage and temperature) and stores them on the SD-card if a measurement is started
-void doMeasurement()
-{
-  /* Read the DACs to get the signals on the fotodiodes */
-  Vdiodes=myadc.readDiodes();
-  /* Calculate OD */
-  OD = calcOD(Vrefs, Vdiodes.Vdiode);
+void writeDataPointToFile(File datfile, dataPoint data){
+  /* Write measurements to datafile. HIERR*/
+  myfile.saveLine(datfile,data,LEDColor_array[Looppar_1],Looppar_1);
+  /* myfile.saveToFile(myfile.fName_char,time_of_data_point,
+		    Vdiodes,Temperature,OD,
+		    LEDColor_array[Looppar_1],Looppar_1,Currents); */
+  /* update file length */
+  myfile.SD_file_length_count = myfile.SD_file_length_count + 1;
 
-  //Read these at lower speed. LEON.
-  Temperature_degrees = myadc.readTemp();
-  Vfb = myadc.readFeedbacks();
-  
-  //Save results, if we are recording
-  if (isRecording)
-  {
-    //Record time
-    time_of_data_point = millis()-time_of_start;
-
-    /* This is all not very elegant. Needs major overhaul
-       Writing to file and writing to serial should be separated
-       The many small files is really akward as well. There must be
-       better ways to avoid lengthly open/close sequences */
-  
-    //Save data to file and serial port, if SD card present
-    if (SDpresent)
-    {
-      /* Write measurements to datafile*/
-      myfile.saveToFile(myfile.fName_char,time_of_data_point,
-			Vdiodes,Temperature_degrees,OD,
-			LEDColor_array[Looppar_1],Looppar_1,Vfb);
-      /* update file length */
-      myfile.SD_file_length_count = myfile.SD_file_length_count + 1;
-
-      // This does not work, why? I think it should be B_nr_set-1
-      //      if ((SD_file_length_count > SD_file_length_count_max) && (Looppar_1 >= (B_nr_set))){
-      if (myfile.SD_file_length_count > myfile.SD_file_length_count_max){
-	/* reset file length counter */
-	myfile.SD_file_length_count = 0;
-	/* Send the file to the serial port */
-	if (sendToSerial)
-	  {
-	    myfile.sendFileToSerial(myfile.fName_char);
-	  }
-	/* Get a new filename */
-	myfile.updateFileName(myfile.fName_char);
-	/* for this new file again all the headers are stored*/
-	myfile.writeHeader(myfile.fName_char);
-
-	//Update display
-	myscreen.updateFILE(myfile.fName_char);
-
-      } //if (SD_file_length_count > SD_file_length_count_max)
-    } //if (SDpresent)
-  } // if (Isrecording)
-  //writeDataLine(Serial); for debug
-}
-
-
+  // This does not work, why? I think it should be B_nr_set-1
+  //      if ((SD_file_length_count > SD_file_length_count_max) && (Looppar_1 >= (B_nr_set))){
+  // if (myfile.SD_file_length_count > myfile.SD_file_length_count_max){
+  //   /* reset file length counter */
+  //   myfile.SD_file_length_count = 0;
+  //   /* Send the file to the serial port */
+  //   if (sendToSerial)
+  //     {
+  // 	myfile.sendFileToSerial(myfile.fName_char);
+  //     }    
+  // } //if (SD_file_length_count > SD_file_length_count_max)
+} 
 
 //Initialization of all the timers used in the program
 void Init_timers()
@@ -551,6 +556,42 @@ void Init_timers()
   mytimer.attachInterrupt(4, screenUpdateEvent);
 }
 
+// Update the values in the datafields from the datapoint in nextData
+void updateValues(dataPoint data, diodes &V, double &OD,
+		  feedbacks &Cur, double &Temp)
+{
+  switch (data.channel) { 
+  case LED:
+    V.Vled = data.val;
+    break;
+  case SPLIT:
+    V.Vsplit = data.val;
+    break;
+  case SCAT:
+    V.Vscat = data.val;
+    break;
+  case DIODE:
+    V.Vdiode = data.val;
+    OD = calcOD(Vrefs, V.Vdiode);// Calculate OD
+    break;
+  case IX:
+    Cur.x = data.val;
+    break;
+  case IY:
+    Cur.y = data.val;
+    break;
+  case IZ:
+    Cur.z = data.val;
+    break;
+  case NTC:
+    Temp = data.val;
+    break;
+  default:
+    Serial.println("UpdateValues: data.channel not recognized");
+    break;
+  }
+}
+
 void setup()
 {
   delay(1000);//Give serial monitor time
@@ -559,6 +600,7 @@ void setup()
   // A lot of this should be done in the libraries. LEON. TODO.
   //starts the serial connection for debugging and file transfer
   Serial.begin(115200);
+  Serial.println("MagOD *************************************************");
   Serial.println("Initializing all");
   //initialize timers 5, to not affect other timers
   #if defined(_MAGOD1)
@@ -578,24 +620,23 @@ void setup()
   myled.Set_LED_color(LEDColor_array[Looppar_1],LEDInt_array[Looppar_1]);
 #endif
 
-  
   //Initialize ADC(s)
   Serial.println("Init ADC");
   myadc.initADC();
-
-
+  
   //setup the screen
   Serial.println("Initializing screen...");
   myscreen.setupScreen();
   delay(100);
 
-
   //Setup the buttons or touchscreen
+  Serial.println("Initializing buttons or touchscreen");
   mybuttons.initButton();
 
 
   // Setup the SD Card
   // see if the card is present and can be initialized
+  Serial.println("Initializing SD Card");
   if (!SD.begin(SD_CS)) {
     Serial.println("SD Card not found");
     strlcpy(myfile.fName_char,"NO SD",myfile.fN_len);
@@ -668,21 +709,50 @@ void setup()
     myscreen.updateFILE(myfile.fName_char);
 
     /* Test if file can actually be opened for writing */
-    File dataFile = SD.open("/test.txt", FILE_WRITE);
-    if(!dataFile){
+    File f = SD.open("/test.txt", FILE_WRITE);
+    if(!f){
         Serial.println("Failed to open file for writing");
         return;
     }
-    if(dataFile.print("Hello world")){
+    if(f.print("Hello world")){
         Serial.println("test.txt written");
     } else {
         Serial.println("Write test.txt failed");
 	strlcpy(myfile.fName_char,"FILE ERROR",myfile.fN_len);
     }
-    dataFile.close();
+    f.close();
 
-    
+    /* Wifi */
+    if (wifi) {
+      Serial.println("Initializing Wifi ..");
+      WiFi.mode(WIFI_STA);
+      Serial.print("Connecting to ");
+      Serial.print(ssid);
+      WiFi.begin(ssid, password);
+      int startTime = millis();
+      while ((WiFi.status() != WL_CONNECTED) &&
+	     (millis() - startTime < 10000) ){
+	delay(500);
+	Serial.print(".");
+      }
+      if (WiFi.status() != WL_CONNECTED) {
+	Serial.println(" Failed on time-out");
+	  }
+      else {
+	Serial.println(" OK");
+	// Print local IP address and start ftp server
+	Serial.println("WiFi connected.");
+	Serial.println("IP address: ");
+	Serial.println(WiFi.localIP());
+	
+	ftpSrv.begin("esp32","esp32"); /* username, password for ftp.
+				       set ports in ESP32FtpServer.h
+				       (default 21, 50009 for PASV) */
+	serverStarted = true;
+      }
+    }
 #endif //Defined MAGOD2
+
   }
 
   
@@ -721,35 +791,50 @@ void setup()
       Serial.println("RECIPES.CSV not found");
     }
   }
+
   Serial.println("Initialization finished");
 }
-
 
 /* Main loop */
 void loop()
 {
-  /* Check for button pressed */
+  /* Check if there are datapoints in the buffer */
+  if (not myadc.bufferEmpty()) {
+    /* get the next datapoint */
+    nextData = myadc.getDataPoint();
+    /* Update values for display */
+    updateValues(nextData, Vdiodes, OD, Currents, Temperature);
+    /* If we are recording, write datapoint to file */
+    if (isRecording){
+      /* Write datapoint to file */
+      if (not dataFile) {Serial.println("loop: file not open!!!");};
+      writeDataPointToFile(dataFile, nextData);
+      /* open file at beginning of recipe step, close it after step or
+	 every minute or so */
+    }
+  }
+
+  /* Perhaps better if we check for recipe next step first and than return. */
+  
+  /* Check for button pressed and act on it */
+  /* This should have a return ! */
   processButtonPress();
 
-  
-  /* Perform measurement if timer1 has triggered flag */
-  if(doMeasurementFlag)
-    {
-      doMeasurementFlag=false; // reset flag for next time
-      doMeasurement();
-    }
-
-  /* For testing, Leon */
-  //doMeasurementFlag=true;
+  /* Handle ftp server requests */
+  /* maybe timer based ??? */
+  if (serverStarted)  {
+    ftpSrv.handleFTP();
+  }
   
   /* Update screen if timer4 has triggered flag */
   if(screenUpdateFlag)
     { //Serial.println("Updating screen");
       screenUpdateFlag=false; // reset flag for next time
-      myscreen.updateV(Vdiodes, Vrefs, OD, Vfb); //Update values
+      myscreen.updateV(Vdiodes, Vrefs, OD, Currents); //Update values
       myscreen.updateGraph(Vdiodes.Vdiode,LEDColor_array[Looppar_1]); //Update graph
       myscreen.updateInfo(Looppar_1, Looppar_2, program_cnt,
       			  myfile.fName_char); //Update program status
+      return;/* Jump to start of loop to make sure we don't miss datapoints */
     }
   
   /* Recalibrate current if timer 3 has set the flag */
@@ -764,6 +849,7 @@ void loop()
 	  myfield.Current_feedback();
 	  Serial.println("Perform feedback on current");
 	}
+      return;/* Jump to start of loop to make sure we don't miss datapoints */
     }
   
   /* Check if it is time to go to the next step in the measurement loop */
@@ -772,8 +858,14 @@ void loop()
   if ((meastime >= Switching_time[Looppar_1]) && (Exit_program_1 == LOW)) {
     Looppar_1 = Looppar_1+1;
     if (Looppar_1 > B_nr_set){ /* when larger than total number of values in
-			   the array, gos back to first value */
-      Looppar_1 = 0; // If we go back to 1 here, we have our initialization cycle! LEON
+				  the array, gos back to first value */
+      Looppar_1 = 0; /* If we go back to 1 here, we have our
+			initialization cycle! LEON */
+      /* create a new data file */
+      myfile.updateFileName(dataFile);
+      /* Update display */
+      myscreen.updateFILE(myfile.fName_char);
+
       Looppar_2++; // Counts number of times a cycle has completed
       //check whether the program should end if Nr_cylces is set:
       if (Nr_cycles != 0) {
@@ -782,7 +874,7 @@ void loop()
 	}
       }
     }
-
+    
     // For debugging:
     Serial.println("-------------------------------------------------");
     Serial.print("Looppar 1: ");Serial.println(Looppar_1);

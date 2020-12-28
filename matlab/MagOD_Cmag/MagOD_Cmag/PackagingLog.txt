@@ -1,0 +1,23 @@
+mcc -o MagOD_Cmag -W main:MagOD_Cmag -T link:exe -d /Users/abn/git/GitHub/MagOD/matlab/MagOD_Cmag/MagOD_Cmag/for_testing -v /Users/abn/git/GitHub/MagOD/matlab/MagOD_Cmag/MagOD_Cmag.m 
+Compiler version: 6.1 (R2015b)
+
+Dependency analysis by REQUIREMENTS.
+
+[Warning: Adding path "/Users/abn/git/GitHub/MagOD/matlab/MagOD_Cmag" to
+Compiler path instance.] 
+[] 
+Parsing file "/Users/abn/git/GitHub/MagOD/matlab/MagOD_Cmag/MagOD_Cmag.m"
+	(Referenced from: "Compiler Command Line").
+Deleting 0 temporary MEX authorization files.
+Generating file "/Users/abn/git/GitHub/MagOD/matlab/MagOD_Cmag/MagOD_Cmag/for_testing/readme.txt".
+Generating file "/Users/abn/git/GitHub/MagOD/matlab/MagOD_Cmag/MagOD_Cmag/for_testing/run_MagOD_Cmag.sh".
+Packaging...
+Adding custom icon /Applications/MATLAB_R2015b.app/toolbox/compiler/Resources/default_icon.icns to /Users/abn/git/GitHub/MagOD/matlab/MagOD_Cmag/MagOD_Cmag/for_testing/MagOD_Cmag.app.
+Creating the bundle...
+Copying /Applications/MATLAB_R2015b.app/toolbox/compiler/maci64/setup.app to /Users/abn/git/GitHub/MagOD/matlab/MagOD_Cmag/MagOD_Cmag/for_redistribution/MyAppInstaller_web.app.
+Copying /Users/abn/git/GitHub/MagOD/matlab/MagOD_Cmag/MagOD_Cmag/for_redistribution/bundle.zip to /Users/abn/git/GitHub/MagOD/matlab/MagOD_Cmag/MagOD_Cmag/for_redistribution/MyAppInstaller_web.app/Contents/Resources/bundle.zip.
+Copying /Applications/MATLAB_R2015b.app/toolbox/compiler/Resources/default_splash.png to /Users/abn/git/GitHub/MagOD/matlab/MagOD_Cmag/MagOD_Cmag/for_redistribution/MyAppInstaller_web.app/Contents/Resources/splash.png.
+Copying /Applications/MATLAB_R2015b.app/toolbox/compiler/Resources/default_icon.icns to /Users/abn/git/GitHub/MagOD/matlab/MagOD_Cmag/MagOD_Cmag/for_redistribution/MyAppInstaller_web.app/Contents/Resources/installer.icns.
+Web based installer created at /Users/abn/git/GitHub/MagOD/matlab/MagOD_Cmag/MagOD_Cmag/for_redistribution/MyAppInstaller_web.app.
+Packaging complete.
+Elapsed packaging time was: 1 minutes and 51 seconds.

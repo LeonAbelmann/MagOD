@@ -1,3 +1,4 @@
+/**************************************************************************/
 /* MagOD_ADS1115.h
    MagOD libary 
    April 2020
@@ -6,8 +7,8 @@
 
 Introduced interupt based single shot readout, startReadADC(channel) and getADC(). Also added correct bit patterns for sampling rate ADS1115
 
+Adapted from:
 
-From:
     @file     Adafruit_ADS1015.h
     @author   K. Townsend (Adafruit Industries)
     @license  BSD (see license.txt)
@@ -135,7 +136,7 @@ typedef enum
   GAIN_SIXTEEN      = ADS1015_REG_CONFIG_PGA_0_256V
 } adsGain_t;
 
-class MagOD_ADS1115
+class Adafruit_ADS1015
 {
 protected:
    // Instance-specific properties
@@ -145,7 +146,7 @@ protected:
    adsGain_t m_gain;
 
  public:
-  MagOD_ADS1115(uint8_t i2cAddress = ADS1015_ADDRESS);
+  Adafruit_ADS1015(uint8_t i2cAddress = ADS1015_ADDRESS);
   void begin(void);
   uint16_t  readADC_SingleEnded(uint8_t channel);
   int16_t   readADC_Differential_0_1(void);
@@ -160,11 +161,11 @@ protected:
  private:
 };
 
-/* // Derive from ADS1105 & override construction to set properties */
-/* class MagOD_ADS1115 : public MagOD_ADS1015 */
-/* { */
-/*  public: */
-/*   MagOD_ADS1115(uint8_t i2cAddress = ADS1015_ADDRESS); */
+// Derive from ADS1105 & override construction to set properties
+class Adafruit_ADS1115 : public Adafruit_ADS1015
+{
+ public:
+  Adafruit_ADS1115(uint8_t i2cAddress = ADS1015_ADDRESS);
 
-/*  private: */
-/* }; */
+ private:
+};

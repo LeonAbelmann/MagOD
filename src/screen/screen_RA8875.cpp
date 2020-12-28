@@ -133,7 +133,7 @@ void screen::setupScreen()
   g_w=SCRN_HOR-g_x-1,g_h=SCRN_VERT-g_y-2;
   g_xCursor=g_x+1;
   g_minVal=0;//Minimum value on the graph (V)
-  g_maxVal=myadc.adsMaxV0;//Maximum value on the graph (V)
+  g_maxVal=adsMaxV0;//Maximum value on the graph (V)
   g_xCursor_prev=g_x+1;
   g_value_prev=g_y+g_h-2;
   value_min = g_maxVal;
@@ -154,6 +154,14 @@ void screen::setupScreen()
   tft.PWM1config(true, RA8875_PWM_CLK_DIV1024); // PWM output for backlight
   tft.PWM1out(255);
   tft.fillScreen(RA8875_WHITE);
+  if (mirror_tft) {
+    /* Mirror, defined in calibration.h */
+    /* https://cdn-shop.adafruit.com/datasheets/RA8875_DS_V12_Eng.pdf
+       table 5.3 reg[20 h]. Bit 3 (0x08): mirror HDIR, Bit 2 (0x04): mirror
+       VDIR. Both is sum: 0x0C */
+    tft.writeReg(0x20, 0x0C);
+  }
+
   delay(100);
   /* Switch to text mode */  
   Serial.println("Screen in Textmode");
@@ -179,6 +187,8 @@ void screen::setupScreen()
   tft.textSetCursor(100, 148);
   tft.textWrite("Marcel Welleweerd, Dave van As, Ruthvik Bandaru");
   tft.textSetCursor(100, 172);
+  tft.textWrite("Rob Krawinkel");
+  tft.textSetCursor(100, 196);
   tft.textWrite("Leon Abelmann");
   delay(2000);
   tft.fillScreen(RA8875_BLACK);
@@ -235,7 +245,7 @@ void screen::setupScreen()
   tft.textSetCursor(column_space, locText_y+6*locText_vSpace);
   tft.textWrite("Stp :");
 
-  this->updateV(Vdiodes,Vrefs,0,Vfb);
+  this->updateV(Vdiodes,Vrefs,0,Currents);
   this->updateInfo(0,0,0,"MAGOD2");
   //Draw rectangle for graph
   tft.drawRect(g_x, g_y, g_w, g_h, TFTCOLOR_WHITE);
@@ -253,7 +263,7 @@ void screen::updateV(diodes Vdiodes, references Vref, double OD, feedbacks curre
   Serial.print("Vled  : ");Serial.println(Vdiodes.Vled);
   Serial.print("Vref  : ");Serial.println(Vref.Vref);
   Serial.print("OD    : ");Serial.println(OD);
-  Serial.print("Temp  : ");Serial.println(Temperature_degrees);
+  Serial.print("Temp  : ");Serial.println(Temperature);
   Serial.print("FB_x  : ");Serial.println(currents.x);
   Serial.print("FB_y  : ");Serial.println(currents.y);
   Serial.print("FB_z  : ");Serial.println(currents.z);
@@ -285,7 +295,7 @@ void screen::updateV(diodes Vdiodes, references Vref, double OD, feedbacks curre
 
   //Temperature
   tft.textSetCursor(locText_x+locText_hSpace, locText_y+2*locText_vSpace);
-  dtostrf(Temperature_degrees, 5, 3, string); 
+  dtostrf(Temperature, 5, 3, string); 
   tft.textWrite(string,5);
   
   //OD

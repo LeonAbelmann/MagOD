@@ -3,10 +3,9 @@
 #include <Adafruit_RA8875.h> // TFTM50 screen
 #include "src/MagOD_ADS1115/MagOD_ADS1115.h" // Modified Adafruit_ADS1015 lib
 
-const int N          = 10; // Averaging
-uint8_t   sampleRate = 4;  /* Sample rates: 0: 8SPS, 1: 16 SPS, 2: 32
-			   SPS, 3: 64 SPS, 4: 128 SPS, 5: 250 SPS 6:
-			   475 SPS 7: 860 SPS */
+const int N          = 5; // Averaging
+uint8_t   sampleRate = 0;  /* Sample rates: 0: 8SPS, 1: 16 SPS, 2: 32
+			   SPS. Does not work at higher rates*/
 int channel[] = {0, 1, 2, 3}; // Which channels to sample (only ads0) {0,1,2,3}
 int numChan   = 4;         // Number of channels in above channel array (max 4)
 

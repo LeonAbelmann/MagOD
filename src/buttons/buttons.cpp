@@ -89,10 +89,17 @@ boolean getTouchCoordinates(uint16_t *x, uint16_t *y){
     { 
       /* Calculate screen position */
       calibrateTSPoint(&calibrated, &raw, &_tsMatrix );
-      *x=(uint16_t)calibrated.x; /*Typecast into int. number of points
-				   on screen is limited, we should be
-				   fine. */
-      *y=(uint16_t)calibrated.y;
+      /* If we mirror the display, than also mirror the touchscreen! */
+      if (not mirror_tft) {
+	*x=(uint16_t)calibrated.x; /*Typecast into int. number of points
+				     on screen is limited, we should be
+				     fine. */
+	*y=(uint16_t)calibrated.y;
+      }
+      else {
+	*x = SCRN_HOR  - (uint16_t)calibrated.x ;
+	*y = SCRN_VERT - (uint16_t)calibrated.y ;
+      }
       return true; /* We had enough points */
     }
 }      
@@ -252,7 +259,7 @@ void buttons::initButton(){
 }
 
 //Is there a button pressed. If so, which one?
-uint8_t buttons::readButton() {
+int buttons::readButton() {
 #if defined(_MAGOD1)
   /* converts voltage of button into a direction */
   float a = analogRead(3);
