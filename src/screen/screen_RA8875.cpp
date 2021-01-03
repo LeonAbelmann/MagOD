@@ -190,6 +190,13 @@ void screen::setupScreen()
   tft.textWrite("Rob Krawinkel");
   tft.textSetCursor(100, 196);
   tft.textWrite("Leon Abelmann");
+  if (true) {
+    tft.textSetCursor(100, 220);
+    tft.textWrite("IP:");
+    tft.textSetCursor(124, 220);
+    tft.textWrite(WiFi.localIP().toString().c_str());
+    delay(2000);
+  }
   delay(2000);
   tft.fillScreen(RA8875_BLACK);
 

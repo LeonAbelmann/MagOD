@@ -8,8 +8,9 @@
 #define fileandserial_h
 
 #include <SD.h>
-
 #include "../../MagOD.h" //Globals
+
+
 
 class fileandserial
 {
@@ -17,9 +18,11 @@ class fileandserial
   fileandserial(); //constructor
   // File name parameters. TODO, do all of these really need to be public? LEON
   static const int fN_len = 17; //Max filename length
-  char fName_char[fN_len]; //Array to keep filename
+  char fName_char[fN_len]; //Array to keep filename (including directory name!)
+  char dirName_char[fN_len]; //Array to keep directory name
   //String fName_str; //Filename
   int file_number;
+  int dir_number;
   int SD_file_length_count = 0;
   int SD_file_number_count = 1;
   int SD_file_length_count_max = 1000;     //Approximate of datalines in a datafile. The program will finish a sequence, so the actual number of lines could be B_nr_set longer. The files should not become too long as this will take longer to save so after the file has reached this length, a new file is made with the origional name added with: "_i" where i is 1,2,3,4,5....
@@ -38,28 +41,29 @@ class fileandserial
 #define FILE_APPEND FILE_WRITE
 #elif defined(_MAGOD2)
 #endif
-
   
-  /* finds a base file name that has not been used on the microSD card */
+  /* finds a directory name that has not been used on the microSD card */
+  void setDirName(char dirName_char[]);
+  /* set the first file name in that directory */
   void setFileName(char fName_char[]);
-
-  /* increase the file number f42_1, f42_2 etc.*/
-  void updateFileName(File datfile);
+  /* increase the file number  of that file name f42_1, f42_2 etc.*/
+  File newDataFile(File datfile);
+  /* Save the settings file in the data directory */
+  void saveSettingsFile(char fName_char[]);
   
-  //Saves a settings file with the settings of the current program
-  //void saveSettingsFile(char fName_char[]);
-  
-  //Send file over serial port. KAN WEG LEON
-  void sendFileToSerial(char fName_char[]);
-
-  //Init the data file (write header)
+  /* Init the data file (write header) */
   File file_init(struct references Vref,
 		 bool ref_all_wavelength,
 		 bool save_extra_parameter,
 		 double extra_par, uint16_t program_cnt,
 		 screen thescreen);
+  
+  /* Save line of data to file */
+  void saveLine(File datfile,dataPoint data,
+		int LED_type,int Looppar_1);
 
-  void file_reset(); //Reset counters
+  /* reset counters */
+  void file_reset(); 
 
   /* Save line of data to file */
   /* void saveToFile(char fName_char[],
@@ -70,10 +74,10 @@ class fileandserial
 		  int LED_type,
 		  int Looppar_1,
 		  feedbacks Vfb); */
-  /* Save line of data to file */
-  void saveLine(File datfile,dataPoint data,
-		int LED_type,int Looppar_1);
-   
+  
+  //Send file over serial port. KAN WEG LEON
+  void sendFileToSerial(char fName_char[]);
+  
  private:
   
   /* Write a single line of data */

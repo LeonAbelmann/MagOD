@@ -32,7 +32,7 @@
 float freq_meas = 7; //Measurement frequency in Hz
 // For Arduio in MagOD1: tested up to 7 Hz. Can be 20 Hz without saving data. Can be 30 Hz if we optimize doMeasurement. Can be 100 Hz if we only read one adc. Can be 700 Hz theoretically...
 #elif defined(_MAGOD2)
-// MagOD2 measures on interupt basis on ADC0
+// MagOD2 measures on interupt basis on ADC0. Set ADC clock in adc.h
 float freq_meas = 1; /* Measurement frequency for ADC1 (currents,
 			temperature) in Hz */
 #endif
@@ -112,7 +112,6 @@ const char* host = "magod"; //HERE? LEON
 FtpServer ftpSrv;
 bool serverStarted = false;
 
-
 /* Should this be here? LEON*/
 #if defined(_MAGOD2)
 hw_timer_t * timer1 = NULL;
@@ -156,9 +155,10 @@ bool ref_all_wavelength = 0; //Set this to 1 for specific programs where you wor
 
 /* Declare variables to define the field sequence */
 unsigned int B_nr_set = 1; //the length of the field sequence array [0..B_nr_set];
+unsigned int Looppar_1 = 0; //Track at which point of the field-array we are
+
 long Nr_cycles = 0; //The number of cycles throught the array, a value of 0 means an infinite amound of cycles
-unsigned int Looppar_1 = 0; //Looppar_1,2 track at which point of the field-array the program is
-unsigned int Looppar_2 = 0;
+unsigned int Looppar_2 = 0; //Track how many times we cycled through the recipe
 
 /* Note, the definitions don't seem to work. Only the first element in the array is set to that value. Instead, I initialize the arrays in recipes.cpp */
 double B_arrayfield_x[B_NR_MAX] = {0.0}; //an array containing B_Nr_set elements for the field in the x-direction, each element has to be an integer between -256 and 256 and negative numbers can be used for opposite directions
@@ -297,7 +297,7 @@ void startRec()
 
     //Update display
     Serial.println("Updating display");
-    myscreen.updateFILE(myfile.fName_char);
+    myscreen.updateFILE(myfile.dirName_char);
     myscreen.setRecButton(true);
 
     
@@ -329,128 +329,129 @@ void stopRec()
   isRecording = false;
 }
 
-//analyse the button that is pressed and take the wanted action
-void processButtonPress()
-{
+/*analyse the button that is pressed and take the required action */
+/* This function has become too long. Take out the different actions. LEON */
+bool processButtonPress(){
+  bool buttonPressed = false;
   //Check for new button press
   uint8_t buttonPress = mybuttons.readButton();  
-  if (buttonPress!=prevButton)
-    {
-      //Start/stop measurement
-      if (buttonPress==BUTTON_SELECT){
-	if(!isRecording){
-	  Serial.println("Start rec");
-	  startRec();
-	}
-	else{       
-	  stopRec();
-	}
-	delay(1000);//Give user time to release the button
+  if (buttonPress!=prevButton){
+    buttonPressed = true;
+    //Start/stop measurement
+    if (buttonPress==BUTTON_SELECT){
+      if(!isRecording){
+	Serial.println("Start rec");
+	startRec();
       }
-      
+      else{       
+	stopRec();
+      }
+      delay(1000);//Give user time to release the button
+    } // END BUTTON_SELECT
+    
     //Set reference voltage
-      if (buttonPress==BUTTON_LEFT ){
-	if (!isRecording){
+    if (buttonPress==BUTTON_LEFT ){
+      if (!isRecording){
 #if defined(_MAGOD1)
-	  myadc.set_vrefs(Vrefs,ref_all_wavelength,myled);
-          myled.Set_LED_color(LEDColor_array[Looppar_1]);
+	myadc.set_vrefs(Vrefs,ref_all_wavelength,myled);
+	myled.Set_LED_color(LEDColor_array[Looppar_1]);
 #elif defined(_MAGOD2)
-	  myadc.set_vrefs(Vrefs,false,myled);
-	  myled.Set_LED_color(LEDColor_array[Looppar_1],
-			      LEDInt_array[Looppar_1]);
-#endif
-        }
-        //Update screen
-        //TODO, make a screen where all refs are shown in case of 3 colour
-        myscreen.updateV(Vdiodes, Vrefs, OD, Currents);
-#if defined(_MAGOD2)
-	/* This should be a function in screen.cpp. Every button could
-	   have 2-3 states (Start, Starting..., Stop), (Set Vrefs,
-	   Setting...) */
-	mybuttons.showButtonArea(2, (char *)"Set Vref",
-		       TFTCOLOR_DARKGRAY, TFTCOLOR_YELLOW);
+	myadc.set_vrefs(Vrefs,false,myled);
+	myled.Set_LED_color(LEDColor_array[Looppar_1],
+			    LEDInt_array[Looppar_1]);
 #endif
       }
-    }
+      //Update screen
+        //TODO, make a screen where all refs are shown in case of 3 colour
+      myscreen.updateV(Vdiodes, Vrefs, OD, Currents);
+#if defined(_MAGOD2)
+      /* This should be a function in screen.cpp. Every button could
+	 have 2-3 states (Start, Starting..., Stop), (Set Vrefs,
+	 Setting...) */
+      mybuttons.showButtonArea(2, (char *)"Set Vref",
+			       TFTCOLOR_DARKGRAY, TFTCOLOR_YELLOW);
+#endif
+    } // End BUTTON_LEFT
 
 #if defined(_MAGOD1)  
-  // change between the programs, MAGOD1 Version
-  if (buttonPress==BUTTON_RIGHT ){
-    if (!isRecording){
-      if (!SD.begin(SD_CS)) {
+    // change between the programs, MAGOD1 Version
+    if (buttonPress==BUTTON_RIGHT ){
+      if (!isRecording){
+	if (!SD.begin(SD_CS)) {
 	//If card not present, continue without using
-	strlcpy(myfile.fName_char,"NO SD",myfile.fN_len);
-	myscreen.updateFILE(myfile.fName_char);
-	SDpresent = false;
-      }
-      else
-        {
-	strlcpy(myfile.fName_char,"READY",myfile.fN_len);
-	myscreen.updateFILE(myfile.fName_char);
-	SDpresent = true;
+	  strlcpy(myfile.fName_char,"NO SD",myfile.fN_len);
+	  myscreen.updateFILE(myfile.fName_char);
+	  SDpresent = false;
+	}
+	else
+	  {
+	    strlcpy(myfile.fName_char,"READY",myfile.fN_len);
+	    myscreen.updateFILE(myfile.fName_char);
+	    SDpresent = true;
         }
-      
-      program_cnt++;
-      if (program_cnt>program_nmb){
-	program_cnt=0;
+	
+	program_cnt++;
+	if (program_cnt>program_nmb){
+	  program_cnt=0;
+	}
+	myled.Set_LED_color(LEDColor_array[Looppar_1]);
+	//Update display
+	myscreen.updateInfo(Looppar_1, Looppar_2, program_cnt,
+			    myfile.fName_char);
       }
-      myled.Set_LED_color(LEDColor_array[Looppar_1]);
-      //Update display
-      myscreen.updateInfo(Looppar_1, Looppar_2, program_cnt,
-			  myfile.fName_char);
-    }
-    prevButton = buttonPress;
-  } //end if buttonPress!=prevButton
-}
+    } //end if buttonPress!=prevButton
 
 #elif defined(_MAGOD2)
-  // change between the programs, MAGOD2 Version
-  if (buttonPress==BUTTON_NEXTRECIPE || buttonPress==BUTTON_PREVRECIPE){
-    if (!isRecording){
-      if (!SD.begin(SD_CS)) {
-	//If card not present, continue without using
-	strlcpy(myfile.fName_char,"NO SD",myfile.fN_len);
-	myscreen.updateFILE(myfile.fName_char);
-	SDpresent = false;
+    // change between the programs, MAGOD2 Version
+    if (buttonPress==BUTTON_NEXTRECIPE || buttonPress==BUTTON_PREVRECIPE){
+      if (!isRecording){
+	if (!SD.begin(SD_CS)) {
+	  //If card not present, continue without using
+	  strlcpy(myfile.fName_char,"NO SD",myfile.fN_len);
+	  myscreen.updateFILE(myfile.fName_char);
+	  SDpresent = false;
+	}
+	else
+	  {
+	    strlcpy(myfile.fName_char,"READY",myfile.fN_len);
+	    myscreen.updateFILE(myfile.fName_char);
+	    SDpresent = true;
+	  }
+	// By pressing next, prev, you rotate through the list of programs
+	if (buttonPress==BUTTON_NEXTRECIPE) {
+	  // Increment recipe number, and reset color of the > button to red
+	  program_cnt=program_cnt + 1;
+	  Serial.print("program_cnt : ");Serial.println(program_cnt);
+	  mybuttons.showButtonArea(BUTTON_NEXTRECIPE, (char *)"Next recipe",
+				   TFTCOLOR_RED, TFTCOLOR_BLACK);
+	};
+	if (buttonPress==BUTTON_PREVRECIPE) {
+	  program_cnt=program_cnt - 1;
+	  Serial.print("program_cnt : ");Serial.println(program_cnt);
+	  mybuttons.showButtonArea(BUTTON_PREVRECIPE, (char *)"Prev recipe",
+				   TFTCOLOR_RED, TFTCOLOR_BLACK);
+	};
+	
+	if (program_cnt>program_nmb){program_cnt=0;}
+	if (program_cnt<0){program_cnt=program_nmb;}
+	// Highlight the correct recipe on the screen
+	myscreen.showRecipes(recipes_array,program_nmb,program_cnt);
+	// Load the parameters for that recipe
+	myrecipes.program_init(recipes_array,program_cnt);
+	// Switch on the LED
+	myled.Set_LED_color(LEDColor_array[Looppar_1],
+			    LEDInt_array[Looppar_1]);
+	//Update display
+	myscreen.updateInfo(Looppar_1, Looppar_2, program_cnt,
+			    myfile.fName_char);
       }
-      else
-        {
-	strlcpy(myfile.fName_char,"READY",myfile.fN_len);
-	myscreen.updateFILE(myfile.fName_char);
-	SDpresent = true;
-        }
-      // By pressing next, prev, you rotate through the list of programs
-      if (buttonPress==BUTTON_NEXTRECIPE) {
-	// Increment recipe number, and reset color of the > button to red
-	program_cnt=program_cnt + 1;
-	Serial.print("program_cnt : ");Serial.println(program_cnt);
-	mybuttons.showButtonArea(BUTTON_NEXTRECIPE, (char *)"Next recipe",
-			     TFTCOLOR_RED, TFTCOLOR_BLACK);
-      };
-      if (buttonPress==BUTTON_PREVRECIPE) {
-	program_cnt=program_cnt - 1;
-	Serial.print("program_cnt : ");Serial.println(program_cnt);
-      	mybuttons.showButtonArea(BUTTON_PREVRECIPE, (char *)"Prev recipe",
-			     TFTCOLOR_RED, TFTCOLOR_BLACK);
-      };
-      
-      if (program_cnt>program_nmb){program_cnt=0;}
-      if (program_cnt<0){program_cnt=program_nmb;}
-      // Highlight the correct recipe on the screen
-      myscreen.showRecipes(recipes_array,program_nmb,program_cnt);
-      // Load the parameters for that recipe
-      myrecipes.program_init(recipes_array,program_cnt);
-      // Switch on the LED
-      myled.Set_LED_color(LEDColor_array[Looppar_1],
-			  LEDInt_array[Looppar_1]);
-      //Update display
-      myscreen.updateInfo(Looppar_1, Looppar_2, program_cnt,
-			  myfile.fName_char);
-    }
+    } //end if buttonPress!=prevButton
+#endif
     prevButton = buttonPress;
-  } //end if buttonPress!=prevButton
-}
-#endif      
+  } // End buttonPress!=prevButton
+  return buttonPressed;
+}    
+
 
 
 
@@ -624,16 +625,6 @@ void setup()
   Serial.println("Init ADC");
   myadc.initADC();
   
-  //setup the screen
-  Serial.println("Initializing screen...");
-  myscreen.setupScreen();
-  delay(100);
-
-  //Setup the buttons or touchscreen
-  Serial.println("Initializing buttons or touchscreen");
-  mybuttons.initButton();
-
-
   // Setup the SD Card
   // see if the card is present and can be initialized
   Serial.println("Initializing SD Card");
@@ -673,12 +664,11 @@ void setup()
     strlcpy(myfile.fName_char,"NO SD",myfile.fN_len);
     myscreen.updateFILE(myfile.fName_char);
 #endif
-  }
-  else
-  {
+  } // end of SD not intialized
+  else {
     Serial.println("SD Card Ready");
     strlcpy(myfile.fName_char,"NO SD",myfile.fN_len);
-    myscreen.updateFILE(myfile.fName_char);
+    //myscreen.updateFILE(myfile.fName_char);
     SDpresent = true;
 
 #if defined(_MAGOD2)
@@ -706,7 +696,7 @@ void setup()
     Serial.printf("SD %lluMB\n", cardSize);
     /* It would be nice to print the filesize on the screen. LEON */
     strlcpy(myfile.fName_char,"READY",myfile.fN_len);
-    myscreen.updateFILE(myfile.fName_char);
+    //myscreen.updateFILE(myfile.fName_char);
 
     /* Test if file can actually be opened for writing */
     File f = SD.open("/test.txt", FILE_WRITE);
@@ -721,52 +711,83 @@ void setup()
 	strlcpy(myfile.fName_char,"FILE ERROR",myfile.fN_len);
     }
     f.close();
-
+#endif //Defined MAGOD2
+  } // End of else: SD initialization succesfull
+  
     /* Wifi */
-    if (wifi) {
-      Serial.println("Initializing Wifi ..");
-      WiFi.mode(WIFI_STA);
-      Serial.print("Connecting to ");
-      Serial.print(ssid);
-      WiFi.begin(ssid, password);
-      int startTime = millis();
-      while ((WiFi.status() != WL_CONNECTED) &&
-	     (millis() - startTime < 10000) ){
-	delay(500);
-	Serial.print(".");
+  if (wifi) {
+    Serial.println("Initializing Wifi ..");
+    WiFi.mode(WIFI_STA);
+    Serial.print("Connecting to ");
+    Serial.print(ssid);
+    WiFi.begin(ssid, password);
+    int startTime = millis();
+    while ((WiFi.status() != WL_CONNECTED) &&
+	   (millis() - startTime < 10000) ){
+      delay(500);
+      Serial.print(".");
+    }
+    if (WiFi.status() != WL_CONNECTED) {
+      Serial.println(" Failed on time-out");
+    }
+    else {
+      Serial.println(" OK");
+      // Print local IP address and start ftp server
+      Serial.println("WiFi connected.");
+      Serial.print("IP address: ");
+      Serial.println(WiFi.localIP());
+      
+      ftpSrv.begin("esp32","esp32"); /* username, password for ftp.
+					set ports in ESP32FtpServer.h
+					(default 21, 50009 for PASV) */      
+      serverStarted = true;
+
+      /* Initialize Network Time Protocol */
+      const char *ntpServer = "84.245.9.254"; //pool.ntp.org
+      const long  gmtOffset_sec = 3600;//UTC +1
+      const int   daylightOffset_sec = 3600;//Country obeys summertime
+      configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
+      struct tm timeinfo;
+      Serial.print("Connecting to NTP server : ");
+      /* Maybe try several times with time-out, LEON */
+      if(!getLocalTime(&timeinfo)){
+	Serial.print("Failed to obtain time, ");
+	Serial.println("setting time to 1-1-2-2021 0:00");
+	struct timeval tv;
+	tv.tv_sec = 1609459200;
+	settimeofday(&tv, NULL);
       }
-      if (WiFi.status() != WL_CONNECTED) {
-	Serial.println(" Failed on time-out");
-	  }
       else {
-	Serial.println(" OK");
-	// Print local IP address and start ftp server
-	Serial.println("WiFi connected.");
-	Serial.println("IP address: ");
-	Serial.println(WiFi.localIP());
-	
-	ftpSrv.begin("esp32","esp32"); /* username, password for ftp.
-				       set ports in ESP32FtpServer.h
-				       (default 21, 50009 for PASV) */
-	serverStarted = true;
+	Serial.println(&timeinfo, "%A, %B %d %Y %H:%M:%S");
       }
     }
-#endif //Defined MAGOD2
-
+  }
+  else {// No Wifi
+	Serial.println("No Wifi: setting time to 1-1-2-2021 0:00");
+	struct timeval tv;
+	tv.tv_sec = 1609459200;
+	settimeofday(&tv, NULL);
   }
 
+  //setup the screen
+  Serial.println("Initializing screen...");
+  myscreen.setupScreen();
+  delay(100);
+  
+  //Setup the buttons or touchscreen
+  Serial.println("Initializing buttons or touchscreen");
+  mybuttons.initButton();
   
   Serial.println("Updating screen.");
   myscreen.updateInfo(Looppar_1, Looppar_2, program_cnt," ");
-
-
+  
   Serial.println("Intializing current feedback");
   myfield.Init_current_feedback();
   Init_timers();
   Looppar_1 = 0;
   Looppar_2 = 0;
   //sets the initial field to start the measurement, depending on the program used
-
+  
   // Load recipes from RECIPES.CSV file on the Flash card
   Serial.println("Setup: load recipes");
   if (SDpresent) {
@@ -814,14 +835,45 @@ void loop()
     }
   }
 
-  /* Perhaps better if we check for recipe next step first and than return. */
+  /* Check if it is time to go to the next step in the measurement loop */
+  int currenttime = millis();
+  int meastime = currenttime - time_last_field_change;
+  if ((meastime >= Switching_time[Looppar_1]) && (Exit_program_1 == LOW)) {
+    Looppar_1 = Looppar_1+1;
+    if (Looppar_1 > B_nr_set){ /* when larger than total number of values in
+				  the array, go back to first value */
+      Looppar_1 = 0; /* If we go back to 1 here, we have our
+			initialization cycle! LEON */
+      /* create a new data file */
+      dataFile = myfile.newDataFile(dataFile);
+      /* Update display */
+      myscreen.updateFILE(myfile.dirName_char);
+      
+      Looppar_2++; // Counts number of times a cycle has completed
+      //check whether the program should end if Nr_cylces is set:
+      if (Nr_cycles != 0 && Looppar_2 >= Nr_cycles) {
+	stopRec();
+      }
+    }
+    
+    // For debugging:
+    Serial.println("-------------------------------------------------");
+    Serial.print("Looppar 1: ");Serial.println(Looppar_1);
+    Serial.print("Total measurement time: ");
+    Serial.println(currenttime - time_of_start);
+    Serial.print("Time of this step     :");Serial.println(meastime);
+    // Go to next step in field sequence:
+    SetBfield_array(Looppar_1);
+    return;/* Jump to start of loop to make sure we don't miss datapoints */
+  }
   
   /* Check for button pressed and act on it */
-  /* This should have a return ! */
-  processButtonPress();
+  if (processButtonPress()){
+    Serial.println("Processing button");
+    return;/* Jump to start of loop to make sure we don't miss datapoints */
+  };
 
   /* Handle ftp server requests */
-  /* maybe timer based ??? */
   if (serverStarted)  {
     ftpSrv.handleFTP();
   }
@@ -834,6 +886,15 @@ void loop()
       myscreen.updateGraph(Vdiodes.Vdiode,LEDColor_array[Looppar_1]); //Update graph
       myscreen.updateInfo(Looppar_1, Looppar_2, program_cnt,
       			  myfile.fName_char); //Update program status
+      /* Debug time, http://www.cplusplus.com/reference/ctime/asctime/ */
+      /*
+      time_t rawtime;
+      struct tm * timeinfo;
+      time(&rawtime);
+      timeinfo = localtime(&rawtime);
+      Serial.print("time() : ");
+      Serial.println(asctime(timeinfo));
+      */
       return;/* Jump to start of loop to make sure we don't miss datapoints */
     }
   
@@ -852,38 +913,7 @@ void loop()
       return;/* Jump to start of loop to make sure we don't miss datapoints */
     }
   
-  /* Check if it is time to go to the next step in the measurement loop */
-  int currenttime = millis();
-  int meastime = currenttime - time_last_field_change;
-  if ((meastime >= Switching_time[Looppar_1]) && (Exit_program_1 == LOW)) {
-    Looppar_1 = Looppar_1+1;
-    if (Looppar_1 > B_nr_set){ /* when larger than total number of values in
-				  the array, gos back to first value */
-      Looppar_1 = 0; /* If we go back to 1 here, we have our
-			initialization cycle! LEON */
-      /* create a new data file */
-      myfile.updateFileName(dataFile);
-      /* Update display */
-      myscreen.updateFILE(myfile.fName_char);
-
-      Looppar_2++; // Counts number of times a cycle has completed
-      //check whether the program should end if Nr_cylces is set:
-      if (Nr_cycles != 0) {
-	if (Looppar_2 >= Nr_cycles) {      
-	  stopRec();
-	}
-      }
-    }
     
-    // For debugging:
-    Serial.println("-------------------------------------------------");
-    Serial.print("Looppar 1: ");Serial.println(Looppar_1);
-    Serial.print("Total measurement time: ");
-    Serial.println(currenttime - time_of_start);
-    Serial.print("Time of this step     :");Serial.println(meastime);
-    // Go to next step in field sequence:
-    SetBfield_array(Looppar_1);
-  }
 }
 //end of program
 

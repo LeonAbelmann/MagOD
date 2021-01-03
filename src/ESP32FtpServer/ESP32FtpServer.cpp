@@ -19,6 +19,7 @@
  */
 // 2017: modified by @robo8080
 // 2019: modified by @fa1ke5
+// 2020: modified by Leon
 
 #include "ESP32FtpServer.h"
 
@@ -196,6 +197,43 @@ boolean FtpServer::userPassword()
   millisDelay = millis() + 100;  // delay of 100 ms
   return false;
 }
+
+/* Return two digits, so 1->01, but 11->11. Only works number>0! */
+String twoDigits(int number){
+  if (number < 10) {
+    return ("0" + String(number));
+  }
+  else {
+    return String(number);
+  }
+}
+
+/* Format the timestamp for ftp communication with client. Format as
+   in 20210003155920 */
+String formatTimeStamp(time_t timestamp) {
+  String timeStampString;
+  struct tm * timeinfo;
+  timeinfo = localtime(&timestamp);
+#ifdef FTP_DEBUG
+  // Serial.println(1900 + timeinfo->tm_year);
+  // Serial.println(timeinfo->tm_mon);
+  // Serial.println(timeinfo->tm_mday);
+  // Serial.println(timeinfo->tm_hour);
+  // Serial.println(timeinfo->tm_min);
+  // Serial.println(timeinfo->tm_sec);
+#endif
+  timeStampString=String(1900 + timeinfo->tm_year);
+  timeStampString=timeStampString + twoDigits(1+timeinfo->tm_mon);
+  timeStampString=timeStampString + twoDigits(timeinfo->tm_mday);
+  timeStampString=timeStampString + twoDigits(timeinfo->tm_hour);
+  timeStampString=timeStampString + twoDigits(timeinfo->tm_min);
+  timeStampString=timeStampString + twoDigits(timeinfo->tm_sec);
+#ifdef FTP_DEBUG
+  Serial.println(timeStampString);
+#endif
+  return timeStampString;
+}
+
 
 boolean FtpServer::processCommand()
 {
@@ -427,11 +465,18 @@ boolean FtpServer::processCommand()
           Serial.println("File Name = "+ fn);
           #endif
           fs = String(file.size());
-          if(file.isDirectory()){
-            data.println( "01-01-2000  00:00AM <DIR> " + fn);
-          } else {
-            data.println( "01-01-2000  00:00AM " + fs + " " + fn);
-//          data.println( " " + fn );
+	  time_t timestamp;//Timestamp of file
+	  String modifystring;//Timestamp in ascii for ftp client
+	  if(file.isDirectory()){
+	      timestamp = file.getLastWrite();
+	      modifystring = formatTimeStamp(timestamp);
+	      data.println( "Type=dir;modify="+modifystring+"; "+ fn);
+	  }
+	  else {
+	    timestamp = file.getLastWrite();
+	    String modifystring = formatTimeStamp(timestamp);
+	    data.println( "Type=file;Size=" + fs +
+			  ";modify="+ modifystring +"; " + fn);
           }
           nm ++;
           file = dir.openNextFile();
@@ -439,8 +484,8 @@ boolean FtpServer::processCommand()
         client.println( "226 " + String(nm) + " matches total");
         data.stop(); 
       }
-      
-      }
+     
+     }
       else{
         client.println( "425 No data connection");
         data.stop();
@@ -484,10 +529,15 @@ boolean FtpServer::processCommand()
 	      fn.remove(0, pos+1); /* Delete everything up to and
 				      including the filename */
 	      fs = String(file.size());
+	      time_t timestamp;//Timestamp of file
+	      String modifystring;//Timestamp in ascii for ftp client
+	      timestamp = file.getLastWrite();
+	      modifystring = formatTimeStamp(timestamp);	
 	      if(file.isDirectory()){
-		data.println( "Type=dir;modify=20000101000000; " + fn);
+		data.println( "Type=dir;modify="+modifystring+"; "+ fn);
 	      } else {
-		data.println( "Type=file;Size=" + fs + ";"+"modify=20000101000000;" +" " + fn);
+		data.println( "Type=file;Size=" + fs +
+			      ";modify="+ modifystring +"; " + fn);
 	      }
 	      nm ++;
 	      file = dir.openNextFile();

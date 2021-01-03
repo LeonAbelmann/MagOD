@@ -69,6 +69,7 @@ struct dataPoint {
 #include "src/field/field.h"  //Field control
 #include "src/adc/adc.h" //ADC input control
 #include "src/ESP32FtpServer/ESP32FtpServer.h" //Wifi access with File Transfer
+#include <time.h> //Network time protocol to obtain real time.
 
 #if defined(_MAGOD1)
 #include "src/screen/screen.h" // TFT Screen with button
@@ -97,7 +98,7 @@ extern IO *  myIO; /*The exact IO routines depend on platform:
 	      ESP32 serial monitor (ESP_PLATFORM)
 	      Command line (stdioVersion)) */
 
-/* webserver variables */
+/* FTP server variables */
 extern FtpServer ftpSrv;
 extern bool serverStarted;
 extern const char* ssid ;    //WiFi SSID

@@ -305,12 +305,14 @@ bufferData_t readBuffer(){
   xQueueReceive(dataQueueHandle, &readData, 0); 
   
   /* For debug : */
+  /*
   Serial.print("\tCh: ");
   Serial.print(readData.ch);
   Serial.print("\tVal: ");
   Serial.print(readData.val);
   Serial.print("\tTime: ");
   Serial.println(readData.time);
+  */
   return readData;
 }
 

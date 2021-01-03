@@ -1,0 +1,3 @@
+# Ignore these files for commit
+password.h
+Testfunctions/MagOD2/ESP32_FTPServer_SD/password.h
