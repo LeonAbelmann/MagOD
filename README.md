@@ -12,11 +12,10 @@ KIST Europe, University of Twente
 Next to software, also the source codes to create hardware are
 available:
 
-- Measurement head design, 3D print file (OpenSCAD, on [Thingiverse]
-(https://www.thingiverse.com/thing:3122930) )
+- Measurement head design, 3D print file (OpenSCAD, on [Thingiverse](https://www.thingiverse.com/thing:3122930) )
 - Spice simulations, electronic diagrams, PCB layout (Spice, KiCad on
-  [Dropbox] (https://www.dropbox.com/sh/1dcai82byvd3hy0/AAA3AGXw0jbr9n2gzdcszufia))
-- Laser cut pattern for housing electronics (DXF, on [Dropbox] (https://www.dropbox.com/sh/1dcai82byvd3hy0/AAA3AGXw0jbr9n2gzdcszufia))
+  [Dropbox](https://www.dropbox.com/sh/1dcai82byvd3hy0/AAA3AGXw0jbr9n2gzdcszufia))
+- Laser cut pattern for housing electronics (DXF, on [Dropbox](https://www.dropbox.com/sh/1dcai82byvd3hy0/AAA3AGXw0jbr9n2gzdcszufia))
 
 ## Specifications
 - Up to 800 samples per second, allows precise analysis of the rotation speed of magnetic bacteria
