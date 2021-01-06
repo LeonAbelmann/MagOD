@@ -237,12 +237,14 @@ void screen::setupScreen()
   
   /* Right Column */
 
-  //Position 1 is used for filename
-  //Position 2 - 4 are still free
+  //Position 0 is used for filename
+  //Position 3 is used for Vref (next to OD in left column)
+  //Position 5 and 6 are for the loop counters
+  //So position 1, 2, 4 are still free
   
   //Voltage reference photodiode
-  tft.textSetCursor(column_space, locText_y+4*locText_vSpace);
-    tft.textWrite("Vref:");
+  tft.textSetCursor(column_space, locText_y+3*locText_vSpace);
+  tft.textWrite("Vref:");
   
   //Which run in the program:
   tft.textSetCursor(column_space, locText_y+5*locText_vSpace);
@@ -253,7 +255,7 @@ void screen::setupScreen()
   tft.textWrite("Stp :");
 
   this->updateV(Vdiodes,Vrefs,0,Currents);
-  this->updateInfo(0,0,0,"MAGOD2");
+  this->updateInfo(0,0,0,0,"MAGOD2");
   //Draw rectangle for graph
   tft.drawRect(g_x, g_y, g_w, g_h, TFTCOLOR_WHITE);
   //tft.drawRect(g_x+1, g_y+1, g_w-2, g_h-2, TFTCOLOR_RED);
@@ -355,39 +357,76 @@ void screen::showRecipes(recipe recipe_arr[], int N, int cnt){
   }
 };
 
+void stripfilename(char *fname)
+{   /* Strip everything after last /
+       https://stackoverflow.com/questions/43163677/
+       how-do-i-strip-a-file-extension-from-a-string-in-c/43163761*/
+  
+    char *end = fname + strlen(fname);
+    while (end > fname && *end != '/') {
+        --end;
+    }
+    if (end > fname) {//so we found a '/'
+	/* fill everything up with "\0" */
+	while ( end <= (fname + strlen(fname)) ) {
+	  *end = '\0';
+	  ++end;
+	}
+      }
+}
+
 //update program settings whenever requested
-void screen::updateInfo(unsigned int Looppar_1, unsigned int Looppar_2, int16_t program_cnt, const char *filename)
+void screen::updateInfo(unsigned int Looppar_1, unsigned int Looppar_2,
+			int16_t program_cnt, int led, const char *filename)
 {
   // First element is filename
   // Clear existing file field
   tft.fillRect(locText_x+column_space,
 	       locText_y,
 	       column_space,
-	       locText_vSpace+2, TFTCOLOR_BLACK);
+	       locText_vSpace+3, TFTCOLOR_BLACK);
   tft.textSetCursor(column_space,
 		    locText_y);
-  //strcpy(filestring, filename); /* truncate to length of filestring */
-  //tft.textWrite(filestring);
+  char filestring[40] = { '\0' };
+  strcpy(filestring, filename);
+  stripfilename(filestring);
+
+  Serial.print("filename : ");Serial.println(filename);
+  Serial.print("filestring : ");Serial.println(filestring);
+
   tft.textTransparent(TFTCOLOR_RED);
-  tft.textWrite(filename,10);
+  /* truncate to 10 characters */
+  tft.textWrite(filestring,10);
 
   //Clear existing data
   tft.fillRect(locText_x+column_space+locText_hSpace,
-	       locText_y+locText_vSpace+2,
+	       locText_y+locText_vSpace+3,
 	       column_space-locText_hSpace,
-	       6*locText_vSpace+2, TFTCOLOR_BLACK);
-  tft.textTransparent(TFTCOLOR_RED);
-
+	       6*locText_vSpace+1, TFTCOLOR_BLACK);
+  
   char string[5];
-  char filestring[15];
 
   //Reference signal
+  //Text color matches led color :)
+  switch (led) {
+  case RED:
+    tft.textTransparent(TFTCOLOR_RED);  
+    break;
+  case GREEN:
+    tft.textTransparent(TFTCOLOR_GREEN);
+    break;
+  case BLUE:
+    tft.textTransparent(TFTCOLOR_BLUE);
+    break;
+    }
+
   tft.textSetCursor(column_space+locText_hSpace,
-		    locText_y+4*locText_vSpace);
+		    locText_y+3*locText_vSpace);
   dtostrf(Vrefs.Vref, 5, 3, string); 
   tft.textWrite(string,5);
 
   //Run: Looppar_2, number of cycles
+  tft.textTransparent(TFTCOLOR_RED);
   tft.textSetCursor(column_space+locText_hSpace,
 		    locText_y+5*locText_vSpace);
   dtostrf(Looppar_2, 5, 0, string); 
@@ -406,7 +445,8 @@ void screen::updateFILE(const char *filename)
   /* Loopar_ and program_cnt are globals defined in MagOD.h */
   Serial.print("UpdateFile, filename is ");
   Serial.println(filename);
-  updateInfo(Looppar_1, Looppar_2, program_cnt, filename);
+  updateInfo(Looppar_1, Looppar_2, program_cnt,
+	     LEDColor_array[Looppar_1],filename);
 }
 
 #endif // defined _MAGOD2

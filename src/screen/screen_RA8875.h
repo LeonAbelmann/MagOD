@@ -46,7 +46,8 @@ class screen{
   void setupScreen();
   // https://forum.arduino.cc/index.php?topic=203124.0, answer #1:
   void showRecipes(struct recipe recipe_arr[], int N, int cnt);
-  void updateInfo(unsigned int Looppar_1, unsigned int Looppar_2, int16_t program_cnt, const char *filename);
+  void updateInfo(unsigned int Looppar_1, unsigned int Looppar_2,
+		  int16_t program_cnt, int led, const char *filename);
   void updateGraph(double value, int led);
   //void setScreenLimit(uint16_t val1, uint16_t val2);
   void updateV(diodes Vdiodes, references Vref, double OD,

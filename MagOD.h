@@ -125,7 +125,7 @@ extern unsigned long time_last_field_change; //Time since the last field step
 /* LED parameters */
 #define LEDnumber 3 //Number of LEDs available
 extern int LEDs[LEDnumber];
-extern int LED_type; //The color of the LED e.g (RED, GREEN, BlUE)
+//extern int LED_type; //The color of the LED e.g (RED, GREEN, BlUE)
 #if defined(_MAGOD2)
 extern int LED_intensity[LEDnumber];//The brightness of the leds
 #endif

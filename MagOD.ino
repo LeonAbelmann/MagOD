@@ -297,7 +297,7 @@ void startRec()
 
     //Update display
     Serial.println("Updating display");
-    myscreen.updateFILE(myfile.dirName_char);
+    myscreen.updateFILE(myfile.fName_char);
     myscreen.setRecButton(true);
 
     
@@ -397,7 +397,7 @@ bool processButtonPress(){
 	myled.Set_LED_color(LEDColor_array[Looppar_1]);
 	//Update display
 	myscreen.updateInfo(Looppar_1, Looppar_2, program_cnt,
-			    myfile.fName_char);
+			    LEDColor_array[Looppar_1], myfile.fName_char);
       }
     } //end if buttonPress!=prevButton
 
@@ -443,7 +443,7 @@ bool processButtonPress(){
 			    LEDInt_array[Looppar_1]);
 	//Update display
 	myscreen.updateInfo(Looppar_1, Looppar_2, program_cnt,
-			    myfile.fName_char);
+			    LEDColor_array[Looppar_1], myfile.fName_char);
       }
     } //end if buttonPress!=prevButton
 #endif
@@ -779,7 +779,8 @@ void setup()
   mybuttons.initButton();
   
   Serial.println("Updating screen.");
-  myscreen.updateInfo(Looppar_1, Looppar_2, program_cnt," ");
+  myscreen.updateInfo(Looppar_1, Looppar_2,
+		      program_cnt,LEDColor_array[Looppar_1], " ");
   
   Serial.println("Intializing current feedback");
   myfield.Init_current_feedback();
@@ -847,7 +848,7 @@ void loop()
       /* create a new data file */
       dataFile = myfile.newDataFile(dataFile);
       /* Update display */
-      myscreen.updateFILE(myfile.dirName_char);
+      myscreen.updateFILE(myfile.fName_char);
       
       Looppar_2++; // Counts number of times a cycle has completed
       //check whether the program should end if Nr_cylces is set:
@@ -882,19 +883,13 @@ void loop()
   if(screenUpdateFlag)
     { //Serial.println("Updating screen");
       screenUpdateFlag=false; // reset flag for next time
-      myscreen.updateV(Vdiodes, Vrefs, OD, Currents); //Update values
-      myscreen.updateGraph(Vdiodes.Vdiode,LEDColor_array[Looppar_1]); //Update graph
+      //Update measured values
+      myscreen.updateV(Vdiodes, Vrefs, OD, Currents); 
+      //Update graph:
+      myscreen.updateGraph(Vdiodes.Vdiode,LEDColor_array[Looppar_1]);
+      //Update program status:
       myscreen.updateInfo(Looppar_1, Looppar_2, program_cnt,
-      			  myfile.fName_char); //Update program status
-      /* Debug time, http://www.cplusplus.com/reference/ctime/asctime/ */
-      /*
-      time_t rawtime;
-      struct tm * timeinfo;
-      time(&rawtime);
-      timeinfo = localtime(&rawtime);
-      Serial.print("time() : ");
-      Serial.println(asctime(timeinfo));
-      */
+      			  LEDColor_array[Looppar_1], myfile.fName_char); 
       return;/* Jump to start of loop to make sure we don't miss datapoints */
     }
   
