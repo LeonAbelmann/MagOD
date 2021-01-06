@@ -30,7 +30,7 @@ available:
 - Scattered light detector
 - Fully programmable (ESP32 using Arduino IDE), open source
 - User friendly spreadsheet recipe definition (csv format)
-- Data collection on SD card, accesible by ftp over Wifi
+- Data collection on SD card, accessible by ftp over Wifi
 
 ## How to join
 Send mail to Leon (l.abelmann@utwente.nl) if you are interested, all skills are welcome.
