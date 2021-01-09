@@ -256,6 +256,9 @@ void recipes::serialRecipesPrint(recipe* recipe, int numRecipes){
   for (int i=0;i<=numRecipes;i++){
     myIO->serialPrintln((char*)"");
     myIO->serialPrint(recipe[i].name); myIO->serialPrint((char*)"  ");
+    myIO->serialPrint((char*)" Number of cycles :" );
+    myIO->serialPrint(recipe[i].N_cycles);
+    myIO->serialPrintln((char*)"");
     myIO->serialPrint((char*)" Number of steps [0.. N] :" );
     myIO->serialPrint(recipe[i].recipe_sequence.length);
     myIO->serialPrintln((char*)"");
@@ -462,8 +465,9 @@ void recipes::program_init(recipe recipes_array[],int recipe_num)
   memset(Gradient_z, 1, B_NR_MAX);
 
   /* Copy measurement settings from recipes_array. Inefficient? See above. LEON */
-  B_nr_set =  recipes_array[recipe_num].recipe_sequence.length; 
-
+  B_nr_set  =  recipes_array[recipe_num].recipe_sequence.length; 
+  Nr_cycles =  recipes_array[recipe_num].N_cycles;
+  
   for (int i=0; i <= B_nr_set; i++){
     B_arrayfield_x[i] = recipes_array[recipe_num].recipe_sequence.Bx[i];
     B_arrayfield_y[i] = recipes_array[recipe_num].recipe_sequence.By[i];

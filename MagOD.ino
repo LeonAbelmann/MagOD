@@ -404,6 +404,9 @@ void processButtonPress()
       //Update display
       myscreen.updateInfo(Looppar_1, Looppar_2, program_cnt,
 			  myfile.fName_char);
+      /* Debug, show recipe */
+      
+      /* End debug */
     }
     prevButton = buttonPress;
   } //end if buttonPress!=prevButton
