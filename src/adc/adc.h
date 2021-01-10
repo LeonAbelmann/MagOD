@@ -20,7 +20,7 @@
 /* ESP32 pin that the ready pin of the ADC is attached to */
 #define ADS1115_RDY 13                     
 /* samplerate for adc0 */
-#define sampleRateADC0 2 /* Sample rates: 0: 8 SPS, 1: 16 SPS, 2: 32
+#define sampleRateADC0 0 /* Sample rates: 0: 8 SPS, 1: 16 SPS, 2: 32
 			    SPS, 3: 64 SPS, 4: 128 SPS, 5: 250 SPS, 6:
 			    475 SPS 7: 860 SPS */
 

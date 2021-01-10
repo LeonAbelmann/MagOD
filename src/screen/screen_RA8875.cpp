@@ -19,77 +19,106 @@ screen::screen(void)
 {
 }
 
-void screen::updateGraph(double value, int led)
-{ //Needs a serious upgrade, became too complicated. LEON
-  //Plot measurement point and correct for out-of-bounds
-  double val_conv = (value-g_minVal)/(g_maxVal-g_minVal);
-  if(val_conv<0){val_conv=0;}
-  if(val_conv>1){val_conv=1;}
-  val_conv = val_conv*(g_h-3);//scale value on height of graph
-  val_conv = round(g_y+g_h-val_conv-2);//plot it upside down???LEON
-  int pixelcolor = TFTCOLOR_GRAY; /* init to grey, to indicate error */
-  // Pixel color is determined by led color
-  //Serial.print("Screen: LED type: ");Serial.println(led);
-  switch (led) {
-  case RED:
-    pixelcolor = TFTCOLOR_RED;
-    break;
-  case GREEN:
-    pixelcolor = TFTCOLOR_GREEN;
-    break;
-  case BLUE:
-    pixelcolor = TFTCOLOR_BLUE;
-    break;
+/**************************************************************/
+/* clearGraph */
+/* Clear the graph area */
+/**************************************************************/
+void screen::clearGraph(){
+  tft.fillRect(g_x+1, g_y+1, g_w-2, g_h-2, TFTCOLOR_BLACK);
+}
+
+/**************************************************************/
+/* updateGraph */
+/* Plot the next datapoint in the graph area. Store the last updated point in lastCount.*/
+/* graphArray : array of datapoints */
+/* graphCount : index of last datapoint in array */
+/* graphLength: total length of array */
+/* startTime  : starting time for data in the array (offset) */
+/* graphTime  : total length of time axis */
+/* led        : color of the graph (RED/GREEN/BLUE) */
+/**************************************************************/
+void screen::updateGraph(dataPlot *graphArray,
+			 int graphCount, int graphLength,
+			 long startTime, long graphTime)
+{ /*
+  Serial.print(" updateGraph : lastCount: ");
+  Serial.print(lastCount);
+  Serial.print(" , graphCount: ");
+  Serial.println(graphCount);
+  */
+  
+  /* If graphCount < lastCount than we apparently have wrapped. In
+     that case clear the graph and make sure we draw from 0 */
+  if (graphCount < lastCount) {
+    clearGraph();
+    lastCount=0; // we draw the entire array
   }
-
-  tft.graphicsMode();
-  tft.drawPixel(g_xCursor, val_conv, pixelcolor);
-  tft.drawLine(g_xCursor_prev, g_value_prev, g_xCursor, val_conv, pixelcolor);//Why isn't drawing the line sufficient, why also pixel?
-  
-  //store min and max value of a a cycle
-  if (value < value_min)
-    {
-      value_min = value;
-    }
-  if (value > value_max)
-    {
-      value_max = value;
-    }
-  
-  //Update counter
-  g_xCursor_prev = g_xCursor;
-  g_value_prev = val_conv;
-  g_xCursor++;
-  //rescaling of the screengraph
-  if(g_xCursor>=g_x+g_w-1)
-    {
-      g_xCursor=g_x+1;
-      g_xCursor_prev=g_xCursor;
-      g_maxVal = value_max *1.004+0.002;
-      g_minVal = value_min /1.004-0.002;
-      value_max = value;
-      value_min = value;
-      //Erase place for labels
-      tft.fillRect(0,g_y,g_x,g_y+g_h,TFTCOLOR_BLACK);
+  /* draw all points since the last time this function was called */
+    for(int cnt=lastCount;cnt<=graphCount;cnt++){
+      //Serial.print(" cnt: ");Serial.print(cnt);
+      /* Calculate coordinate of pixel along time axis */
+      /* Note, int/int=int, so convert to double first */
+      int x_pixel = g_x + round(g_w*(double)cnt/graphLength);
+      /* Calculate coordinate of pixel along signal axis. Note that
+	 (g_x,g_y) are the coordinates of the TOP left corner */
+      /*
+      //Serial.print(" g_y: ");Serial.print(g_y);
+      //Serial.print(" g_h: ");Serial.print(g_h);
+      Serial.print(" g_maxVal: ");Serial.print(g_maxVal);
+      Serial.print(" g_minVal: ");Serial.print(g_minVal);
+      Serial.print(" val: ");Serial.print(graphArray[cnt].val);
+      */
+      int y_pixel = g_y + round(g_h *
+				(double)(g_maxVal - graphArray[cnt].val)
+				/(g_maxVal - g_minVal));
+      /* Serial.print(" x,y : ");
+      Serial.print(x_pixel);
+      Serial.print(" : ");
+      Serial.print(y_pixel);
+      */
+      /* Select the color for the line, matches LED color */
+      int pixelcolor = TFTCOLOR_GRAY; /* init to grey, to indicate
+					 error */
+      //Serial.print("Screen: LED type: ");Serial.println(led);
+      switch (graphArray[cnt].color) {
+      case RED:
+	pixelcolor = TFTCOLOR_RED;
+	break;
+      case GREEN:
+	pixelcolor = TFTCOLOR_GREEN;
+	break;
+      case BLUE:
+	pixelcolor = TFTCOLOR_BLUE;
+	break;
       }
-
-  
-  //Insert empty space
-  //tft.graphicsMode();
-  tft.drawFastVLine(g_xCursor, g_y+1, g_h-3, TFTCOLOR_BLACK);
-
-  // Write scale, does not have to be done every run! LEON
-  tft.textMode();/*Go back to default textMode */
-  tft.textTransparent(TFTCOLOR_YELLOW);
-  char string[15];
-  //Write min value bottom left
-  tft.textSetCursor(0,g_y+g_h-locText_vSpace);
-  dtostrf(g_minVal, 5, 3, string);
-  tft.textWrite(string,5);
-  //Write max value top left
-  tft.textSetCursor(0,g_y);
-  dtostrf(g_maxVal, 5, 3, string);
-  tft.textWrite(string,5);
+      /* 
+      Serial.print(" col: ");Serial.print(graphArray[cnt].color);
+      Serial.println(""); //debug LEON
+      */
+      tft.graphicsMode();
+      tft.drawPixel(x_pixel, y_pixel, pixelcolor);
+    }
+    lastCount = graphCount;
+    /*
+    Serial.print("LastCount : ");
+    Serial.println(lastCount);//debug
+    */
+    //Insert empty space
+    //tft.graphicsMode();
+    //tft.drawFastVLine(g_xCursor, g_y+1, g_h-3, TFTCOLOR_BLACK);
+      
+    // Write scale, does not have to be done every run! LEON
+    tft.textMode();/*Go back to default textMode */
+    // tft.textTransparent(TFTCOLOR_YELLOW);
+    // char string[15];
+    // //Write min value bottom left
+    // tft.textSetCursor(0,g_y+g_h-locText_vSpace);
+    // dtostrf(g_minVal, 5, 3, string);
+    // tft.textWrite(string,5);
+    // //Write max value top left
+    // tft.textSetCursor(0,g_y);
+    // dtostrf(g_maxVal, 5, 3, string);
+    // tft.textWrite(string,5);
 }
 
 //sets button to indicate whether the program is running
@@ -130,7 +159,8 @@ void screen::setupScreen()
   column_space = 85; //Space between the two columns of text data
   //Graph display
   g_x=40,g_y=88; // Top left of graph
-  g_w=SCRN_HOR-g_x-1,g_h=SCRN_VERT-g_y-2;
+  g_w=SCRN_HOR-g_x-1;
+  g_h=SCRN_VERT-g_y-2;
   g_xCursor=g_x+1;
   g_minVal=0;//Minimum value on the graph (V)
   g_maxVal=adsMaxV0;//Maximum value on the graph (V)
@@ -138,6 +168,7 @@ void screen::setupScreen()
   g_value_prev=g_y+g_h-2;
   value_min = g_maxVal;
   value_max = 0;
+  lastCount = 0; //Last datapoint that was drawn
 
   //tft.initR(INITR_BLACKTAB); No initR in RA8875, ignore for the moment, Leon
   Serial.println("Trying to find RA8875 screen...");
@@ -165,11 +196,13 @@ void screen::setupScreen()
   delay(100);
   /* Switch to text mode */  
   Serial.println("Screen in Textmode");
+  int text0_x=10;
+  int text0_y=10;
   tft.textMode();
-  tft.textSetCursor(100, 100);
+  tft.textSetCursor(text0_x,text0_y);
   tft.textTransparent(RA8875_BLACK);
   tft.textWrite("MagOD 2.2");
-  tft.textSetCursor(200, 100);
+  tft.textSetCursor(text0_x+100, text0_y);
 #if defined(_KIST)
   tft.textWrite("KIST MagOD2");
 #endif  
@@ -182,18 +215,18 @@ void screen::setupScreen()
 #if defined(_ASTON)
   tft.textWrite("ASTON MagOD2");
 #endif  
-  tft.textSetCursor(100, 124);
+  tft.textSetCursor(text0_x, text0_y+24);
   tft.textWrite("Tijmen Hageman, Jordi Hendrix, Hans Keizer");
-  tft.textSetCursor(100, 148);
+  tft.textSetCursor(text0_x, text0_y+48);
   tft.textWrite("Marcel Welleweerd, Dave van As, Ruthvik Bandaru");
-  tft.textSetCursor(100, 172);
+  tft.textSetCursor(text0_x, text0_y+72);
   tft.textWrite("Rob Krawinkel");
-  tft.textSetCursor(100, 196);
+  tft.textSetCursor(text0_x, text0_y+96);
   tft.textWrite("Leon Abelmann");
   if (true) {
-    tft.textSetCursor(100, 220);
+    tft.textSetCursor(text0_x, text0_y+120);
     tft.textWrite("IP:");
-    tft.textSetCursor(124, 220);
+    tft.textSetCursor(text0_x+24,text0_y+120);
     tft.textWrite(WiFi.localIP().toString().c_str());
     delay(2000);
   }
@@ -357,22 +390,23 @@ void screen::showRecipes(recipe recipe_arr[], int N, int cnt){
   }
 };
 
-void stripfilename(char *fname)
-{   /* Strip everything after last /
-       https://stackoverflow.com/questions/43163677/
-       how-do-i-strip-a-file-extension-from-a-string-in-c/43163761*/
+void stripfilename(char *fname){
+  /* Strip everything after last /
+     https://stackoverflow.com/questions/43163677/
+     how-do-i-strip-a-file-extension-from-a-string-in-c/43163761*/
   
-    char *end = fname + strlen(fname);
-    while (end > fname && *end != '/') {
-        --end;
-    }
-    if (end > fname) {//so we found a '/'
-	/* fill everything up with "\0" */
-	while ( end <= (fname + strlen(fname)) ) {
-	  *end = '\0';
-	  ++end;
-	}
-      }
+  char *end = fname + strlen(fname);
+  while (end > fname && *end != '/') {
+    --end;
+  }
+  if (end > fname) {//so we found a '/'
+    *end = '\0';
+  }
+  /* trunctate to 10 characters*/
+  if (strlen(fname) > 10) {
+    end = fname +10;
+    *end = '\0';
+  }
 }
 
 //update program settings whenever requested
@@ -387,16 +421,18 @@ void screen::updateInfo(unsigned int Looppar_1, unsigned int Looppar_2,
 	       locText_vSpace+3, TFTCOLOR_BLACK);
   tft.textSetCursor(column_space,
 		    locText_y);
-  char filestring[40] = { '\0' };
+  char filestring[40];
+  filestring[0] = '\0';//strip length
   strcpy(filestring, filename);
   stripfilename(filestring);
-
+  /*
   Serial.print("filename : ");Serial.println(filename);
   Serial.print("filestring : ");Serial.println(filestring);
-
+  Serial.print("length : ");Serial.println(strlen(filestring));
+  */
+  
   tft.textTransparent(TFTCOLOR_RED);
-  /* truncate to 10 characters */
-  tft.textWrite(filestring,10);
+  tft.textWrite(filestring,strlen(filestring));
 
   //Clear existing data
   tft.fillRect(locText_x+column_space+locText_hSpace,
@@ -440,7 +476,7 @@ void screen::updateInfo(unsigned int Looppar_1, unsigned int Looppar_2,
 }
 
 // Update the filename field in the info column
-void screen::updateFILE(const char *filename)
+void screen::updateFILE(char *filename)
 {
   /* Loopar_ and program_cnt are globals defined in MagOD.h */
   Serial.print("UpdateFile, filename is ");

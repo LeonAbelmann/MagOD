@@ -46,10 +46,10 @@ void writeDataPointInFile (File datfile,
 
 //Saves a settings file with the settings of the current program
 void fileandserial::saveSettingsFile(char fName_char[]){
-  //Create filename for settings, like f42/settings.csv
+  //Create filename for settings, like f42/sett.csv
   String fName_settings_str = "/f";
     fName_settings_str = fName_settings_str + dir_number +
-    "/settings.csv";
+    "/sett.csv";
   char fName_settings_char[17];
   fName_settings_str.toCharArray(fName_settings_char, 17);
   //Serial.println(fName_settings_str);
@@ -134,7 +134,8 @@ void fileandserial::file_reset()
 File fileandserial::file_init(struct references Vref, bool ref_all_wavelength, bool save_extra_parameter, double extra_par, uint16_t program_cnt, screen thescreen)
 //Prepare file for saving data
 {   //calls fucntion to valid filename
-    thescreen.updateFILE("Choosing name");
+  char message[] = "Choosing...";
+  thescreen.updateFILE(message);
     setFileName(fName_char);
     //Save settings file
     Serial.print("Saving settings file ...");

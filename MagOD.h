@@ -62,6 +62,13 @@ struct dataPoint {
   double        val;    // What is its value
 };
 
+#define GRAPH_LENGTH SCRN_HOR //Maximum plotlength does not have to be
+			     //bigger than the number of screen pixels.
+struct dataPlot {
+  double val; // Value to be plotted in the graph
+  int color; // Which color (RED, GREEN, BLUE);
+};
+
 /* MagOD libraries, should be src subdirectory MagOD.ino folder */
 #include "src/timer/timer.h" // On board timers
 #include "src/led/led.h" // Control of three colour LED

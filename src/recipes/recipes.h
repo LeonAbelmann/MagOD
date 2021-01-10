@@ -78,6 +78,9 @@ class recipes
   /* Initialize the measurement arrays to those defined in recipe
      'recipe_num' */
   void program_init(recipe recipes_array[],int recipe_num);
+
+  /* Get the length of total sequence time for recipe 'cnt' */
+  int getSequenceLength(recipe recipearray[], int cnt);
   
  private:
   /* In case we need something local */

@@ -130,17 +130,28 @@ references Vrefs = {1,1,1,1};   /* Reference values of photodector
 				  get meaningful OD */
 feedbacks Currents = {0,0,0};   /* Current feedback values */
 
+/* Parameters for displayed graph */
+dataPlot graph[GRAPH_LENGTH] = {0,0};/* Graph with datapoints and
+					their color to display */
+int graphCount      = 0; // Index counting datapoints in graph
+int graphLength     = GRAPH_LENGTH; // Total lengt. <= GRAPH_LENGTH
+long startTime      = millis(); /* Time at which the measurement
+				   started */
+long lengthTimeAxis = 20000; /* Total length of time axis of graph (ms)*/
+
 /* Calculated parameters */
 double OD = 0;                 /*Optical Density. Calculated in
 				 CaldOD() */
 
 /* Time parameters */
-unsigned long time_of_data_point = 0; /*Store time when datapoint was
-					taken*/
-unsigned long time_of_start = 0;      /*Time at which the measurement was
-					started*/
-unsigned long time_last_field_change = 0; /*Time since the
-					    last field step */
+unsigned long time_of_data_point = millis(); /*Store time when
+					datapoint was taken. OBSOLETE?
+					LEON*/
+unsigned long time_of_start = millis(); /*Time at which the
+					measurement was started.
+					OBSOLETE? LEON*/
+unsigned long time_last_field_change = millis(); /*Time since the last
+					    field step */
 
 /* LED parameters */
 //int LED_type = GREEN; //The color of the LED
@@ -242,8 +253,7 @@ void startRec()
   }
   else
   {
-    // Something wrong with string length on display. Added spaces. LEON
-    strlcpy(myfile.fName_char,"READY     ",myfile.fN_len);
+    strlcpy(myfile.fName_char,"READY",myfile.fN_len);
     myscreen.updateFILE(myfile.fName_char);
     SDpresent = true;
     
@@ -285,21 +295,38 @@ void startRec()
     myfield.Init_current_feedback();
     Serial.println("Done");
 
-    //Note starting time
+    //Update display value for file
+    Serial.println("Updating display");
+    myscreen.updateFILE(myfile.fName_char);
+    myscreen.setRecButton(true);
+    
+    //Note starting time, do this BEFORE setting the field
     time_of_start = millis();
     Serial.print("Started measurement at:  ");
     Serial.println(time_of_start);
     
     //start coil actuation
     Serial.println("Setting magnetic field and LEDs at step 0");
-    Looppar_1=0;
-    SetBfield_array(Looppar_1);
+    Looppar_1 = 0;
+    SetBfield_array(Looppar_1);    
 
-    //Update display
-    Serial.println("Updating display");
-    myscreen.updateFILE(myfile.fName_char);
-    myscreen.setRecButton(true);
-
+    //Set parameters for the graph display.
+    startTime       = time_of_start; /* Time at which the measurement
+					started */
+    /*Calculate total length of graph time axis from length of recipe
+      step:*/
+    lengthTimeAxis  = myrecipes.getSequenceLength(recipes_array,
+						  program_cnt);
+    myscreen.clearGraph(); //Clear graph
+    
+    /* Empty buffer */
+    Serial.print("Emptying buffer");
+    while (not myadc.bufferEmpty()) {
+      dataPoint trash = myadc.getDataPoint();
+      Serial.print(".");
+    }
+    Serial.println();
+    graphCount = 0; // Clear data array
     
     //Activate recording mode
     isRecording = true;
@@ -312,8 +339,7 @@ void stopRec()
 {
   Exit_program_1 = HIGH;
   myscreen.setRecButton(false);
-  //Something wrong with string length. For now added spaces
-  strlcpy(myfile.fName_char,"DONE      ",myfile.fN_len);
+  strlcpy(myfile.fName_char,"DONE",myfile.fN_len);
   myscreen.updateFILE(myfile.fName_char);
   // reset globals
   Looppar_2 = 0;
@@ -593,6 +619,91 @@ void updateValues(dataPoint data, diodes &V, double &OD,
   }
 }
 
+/* If Vdiode was measured, add value to graph display array. Function
+   returns updated index of graph array */
+/* data : measured datapoint (.channel, .time, .val)  */
+/* plot : array of measurement points to be plotted */
+/* count : index for graphArray */
+/* length: length of graphArray */
+/* start : (ms) time at which measurement started (offset for display
+   time axis */
+/* lengthTime: (ms) total length of x-axis. */
+int updateGraphArray(dataPoint data,
+		     dataPlot *plot, int count, int length,
+		     long start, long lengthTime) {
+  if (data.channel == DIODE) {
+    /* calculate time passed since start of new sequence */
+    long graphTime = data.time - start;
+    /* if time goes beyond length of time axis, start again from zero */
+    while (graphTime > lengthTime){
+      graphTime = graphTime - lengthTime;
+    }
+    /* round off graphTime to nearest index */
+    double fraction = (double)graphTime/(double)lengthTime;
+    int index = round(fraction*length); // Array index
+    /* Debug: 
+    Serial.print("updateGraph: start: ");
+    Serial.print(start);
+    Serial.print(", lengthTime: ");
+    Serial.print(lengthTime);
+    Serial.print(", graphTime: ");
+    Serial.println(graphTime);
+    Serial.print(", fraction: ");
+    Serial.print(fraction);
+    Serial.print(", length: ");
+    Serial.print(length);
+    Serial.print(", index: ");
+    Serial.println(index);
+     End debug: */
+    /* index should be between 0 and GRAPH_LENGTH. Panic if that is
+       not the case */
+    if ((index < 0) || (index > GRAPH_LENGTH)) {
+      Serial.print("ERROR: Updategraph: index = ");
+      Serial.println(index);
+      index=0;
+    }
+    /* if index is smaller than count, apparently we wrapped
+       around. Reset count in that case */
+    if (index < count) {
+      plot[index].val=data.val;
+      plot[index].color=LEDColor_array[Looppar_1];
+    }
+    /* if index is equal to count, we did not proceed more than one
+       step in the array. In that case average with value already there */
+    if (index == count) {
+      plot[index].val=(plot[index].val + data.val)/2;
+      plot[index].color=LEDColor_array[Looppar_1];
+    }
+    /* if index > count add measured value to the graphArray. If there
+       are non-used indices before the index, fill them all with same
+       value. (Maybe interpolate in later versions. LEON) */
+    if (index > count) {
+      for (i=count; i<=index; i++){
+	plot[i].val=data.val;
+	plot[i].color=LEDColor_array[Looppar_1];
+	if (i > GRAPH_LENGTH) {
+	  Serial.println("updateGraph: index out of bounds!");
+	  count = GRAPH_LENGTH;
+	  break;
+	}
+      }
+      /* Debug
+      Serial.println("updateGraphArray: graphTime: ");
+      Serial.print(graphTime);
+      Serial.print(" plot array ");
+      for (int j=0; j< count; j++) {
+	Serial.print(plot[j].val);
+	Serial.print(", ");
+      }
+      Serial.println();
+      End debug*/
+    }
+    count = index; // in any case, count equal index after this.
+  } // end if data.channel = DIODE
+  return count;
+}
+
+
 void setup()
 {
   delay(1000);//Give serial monitor time
@@ -826,6 +937,9 @@ void loop()
     nextData = myadc.getDataPoint();
     /* Update values for display */
     updateValues(nextData, Vdiodes, OD, Currents, Temperature);
+    /* If Vdiode was measured, add value to graph display array */
+    graphCount = updateGraphArray(nextData, graph, graphCount,
+				  graphLength,startTime,lengthTimeAxis);
     /* If we are recording, write datapoint to file */
     if (isRecording){
       /* Write datapoint to file */
@@ -841,15 +955,21 @@ void loop()
   int meastime = currenttime - time_last_field_change;
   if ((meastime >= Switching_time[Looppar_1]) && (Exit_program_1 == LOW)) {
     Looppar_1 = Looppar_1+1;
-    if (Looppar_1 > B_nr_set){ /* when larger than total number of values in
-				  the array, go back to first value */
+    Serial.print("Loop: Updating Looppar_1 to : ");
+    Serial.println(Looppar_1);
+    if (Looppar_1 > B_nr_set){ /* when larger than total number of
+				  values in the array, go back to
+				  first value */
       Looppar_1 = 0; /* If we go back to 1 here, we have our
 			initialization cycle! LEON */
       /* create a new data file */
       dataFile = myfile.newDataFile(dataFile);
       /* Update display */
       myscreen.updateFILE(myfile.fName_char);
-      
+      /* Reset the graph */
+      graphCount      = 0; 
+      startTime       = millis(); //Inaccurate, but simple. LEON
+
       Looppar_2++; // Counts number of times a cycle has completed
       //check whether the program should end if Nr_cylces is set:
       if (Nr_cycles != 0 && Looppar_2 >= Nr_cycles) {
@@ -884,9 +1004,10 @@ void loop()
     { //Serial.println("Updating screen");
       screenUpdateFlag=false; // reset flag for next time
       //Update measured values
-      myscreen.updateV(Vdiodes, Vrefs, OD, Currents); 
-      //Update graph:
-      myscreen.updateGraph(Vdiodes.Vdiode,LEDColor_array[Looppar_1]);
+      myscreen.updateV(Vdiodes, Vrefs, OD, Currents);
+      //Update graph on screen
+      myscreen.updateGraph(graph, graphCount, graphLength, startTime,
+      			   lengthTimeAxis);
       //Update program status:
       myscreen.updateInfo(Looppar_1, Looppar_2, program_cnt,
       			  LEDColor_array[Looppar_1], myfile.fName_char); 

@@ -43,31 +43,41 @@ class screen{
  public:
   screen(); //Constructor
   Adafruit_RA8875 tft = Adafruit_RA8875(TFT_CS, TFT_RST);
-  void setupScreen();
-  // https://forum.arduino.cc/index.php?topic=203124.0, answer #1:
-  void showRecipes(struct recipe recipe_arr[], int N, int cnt);
-  void updateInfo(unsigned int Looppar_1, unsigned int Looppar_2,
-		  int16_t program_cnt, int led, const char *filename);
-  void updateGraph(double value, int led);
-  //void setScreenLimit(uint16_t val1, uint16_t val2);
-  void updateV(diodes Vdiodes, references Vref, double OD,
-	       feedbacks currents);
-  void updateFILE(const char *str);
-  void setRecButton(bool active);
 
   int16_t column_space; //Distance between columns on top
   int16_t locText_vSpace,locText_hSpace;//Distance between text fields
   int16_t screenSiz_x,screenSiz_h;//Size of screen
   int16_t locText_x,locText_y;//Location of top left corner text fields
   int16_t g_x,g_y,g_w,g_h;//Size of graph area
+
+  void setupScreen();
+
+  // https://forum.arduino.cc/index.php?topic=203124.0, answer #1:
+  void showRecipes(struct recipe recipe_arr[], int N, int cnt);
+
+  /* data fields: */
+  void updateInfo(unsigned int Looppar_1, unsigned int Looppar_2,
+		  int16_t program_cnt, int led, const char *filename);
+  void updateV(diodes Vdiodes, references Vref, double OD,
+	       feedbacks currents);
+  void updateFILE(char *str);
+  void setRecButton(bool active);
+
+  /* graph */
+  void updateGraph(dataPlot *graphArray,
+		   int graphCount, int graphLength,
+		   long startTime, long graphTime);
+  void clearGraph();
+
   
  private:
   int16_t g_xCursor, g_xCursor_prev;
   int16_t V1,V2,Vref,OD;
-  double g_minVal,g_maxVal;
+  double g_minVal,g_maxVal; // Min, max value of y range in graph (V)
   double g_value_prev;
-  double value_min;
-  double value_max;
+  double value_min; 
+  double value_max; 
+  int lastCount; // Which point was updated last?
 };
 
 #endif // Screen_RA8875_h

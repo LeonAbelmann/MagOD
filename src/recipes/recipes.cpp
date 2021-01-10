@@ -206,6 +206,21 @@ bool readSequenceStep(char* line, sequence& seq, int num, char* recipe_name){
   return stepFound;
 }
 
+/* Get the total length of the sequence in recipe cnt */
+int recipes::getSequenceLength(recipe recipearray[], int cnt){
+  /* total number of field steps [0..N] */
+  int N = recipearray[cnt].recipe_sequence.length;
+  /* add all times */
+  double time = 0;
+  for (int i=0; i<=N; i++){
+    time = time + recipearray[cnt].recipe_sequence.time[i];
+  }
+  Serial.print("Total sequence time : ");
+  Serial.println(time);
+  return round(time); 
+}
+
+
 /* Read sequence of steps from file, until @ endSequence is found */
 bool readSequence(char* line, sequence& seq, char* recipe_name,
 		  File recipeFile){
