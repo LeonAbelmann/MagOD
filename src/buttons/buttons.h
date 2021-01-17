@@ -7,8 +7,6 @@
 #ifndef buttons_h
 #define buttons_h
 
-//THIS SHOULD NOT BE HERE: LEON
-//#include "../MagOD_ADS1115/MagOD_ADS1115.h" // Modified Adafruit_ADS1015 lib
 #include "../../MagOD.h"
 
 #define BUTTON_NONE 0
@@ -20,6 +18,7 @@
 // New MagOD2 buttons start at 10
 #define BUTTON_NEXTRECIPE 10
 #define BUTTON_PREVRECIPE 11
+#define BUTTON_GRAPH 12
 
 class buttons
 {

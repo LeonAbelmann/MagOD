@@ -21,10 +21,18 @@ screen::screen(void)
 
 /**************************************************************/
 /* clearGraph */
-/* Clear the graph area */
+/* recArray : time info is retrieved from current recipe (program) */
+/* Clear the graph area. Write labels and vertical lines for recipe
+   transitions */
 /**************************************************************/
-void screen::clearGraph(){
+void screen::clearGraph(recipe recArray[], int program){
+  Serial.println("Clear graph");
+  /* clear the graph area */
   tft.fillRect(g_x+1, g_y+1, g_w-2, g_h-2, TFTCOLOR_BLACK);
+  /* redraw y-axis values */
+  graphUpdateScale(g_minVal,g_maxVal);
+  /* draw time info */
+  graphRecipeLines(recArray,program);
 }
 
 /**************************************************************/
@@ -33,13 +41,12 @@ void screen::clearGraph(){
 /* graphArray : array of datapoints */
 /* graphCount : index of last datapoint in array */
 /* graphLength: total length of array */
-/* startTime  : starting time for data in the array (offset) */
-/* graphTime  : total length of time axis */
-/* led        : color of the graph (RED/GREEN/BLUE) */
+/* recArray   : list of recipes to calculate time info */
+/* program    : currently selected program */
 /**************************************************************/
 void screen::updateGraph(dataPlot *graphArray,
 			 int graphCount, int graphLength,
-			 long startTime, long graphTime)
+			 recipe recArray[], int program)
 { /*
   Serial.print(" updateGraph : lastCount: ");
   Serial.print(lastCount);
@@ -50,7 +57,7 @@ void screen::updateGraph(dataPlot *graphArray,
   /* If graphCount < lastCount than we apparently have wrapped. In
      that case clear the graph and make sure we draw from 0 */
   if (graphCount < lastCount) {
-    clearGraph();
+    clearGraph(recArray, program);
     lastCount=0; // we draw the entire array
   }
   /* draw all points since the last time this function was called */
@@ -58,19 +65,25 @@ void screen::updateGraph(dataPlot *graphArray,
       //Serial.print(" cnt: ");Serial.print(cnt);
       /* Calculate coordinate of pixel along time axis */
       /* Note, int/int=int, so convert to double first */
-      int x_pixel = g_x + round(g_w*(double)cnt/graphLength);
+      int x_pixel = g_x+1 + round((g_w-2)*(double)cnt/graphLength);
       /* Calculate coordinate of pixel along signal axis. Note that
 	 (g_x,g_y) are the coordinates of the TOP left corner */
-      /*
+      /* 
       //Serial.print(" g_y: ");Serial.print(g_y);
       //Serial.print(" g_h: ");Serial.print(g_h);
       Serial.print(" g_maxVal: ");Serial.print(g_maxVal);
       Serial.print(" g_minVal: ");Serial.print(g_minVal);
       Serial.print(" val: ");Serial.print(graphArray[cnt].val);
       */
-      int y_pixel = g_y + round(g_h *
+      int y_pixel = g_y + round((g_h) *
 				(double)(g_maxVal - graphArray[cnt].val)
 				/(g_maxVal - g_minVal));
+      /* make sure the graph stays 1 pixel inside the graph area */
+      if (y_pixel < g_y+1) {
+	y_pixel = g_y+1;}
+      else if (y_pixel > g_y+g_h-2){
+	y_pixel = g_y+g_h-2;}
+      
       /* Serial.print(" x,y : ");
       Serial.print(x_pixel);
       Serial.print(" : ");
@@ -103,22 +116,7 @@ void screen::updateGraph(dataPlot *graphArray,
     Serial.print("LastCount : ");
     Serial.println(lastCount);//debug
     */
-    //Insert empty space
-    //tft.graphicsMode();
-    //tft.drawFastVLine(g_xCursor, g_y+1, g_h-3, TFTCOLOR_BLACK);
-      
-    // Write scale, does not have to be done every run! LEON
     tft.textMode();/*Go back to default textMode */
-    // tft.textTransparent(TFTCOLOR_YELLOW);
-    // char string[15];
-    // //Write min value bottom left
-    // tft.textSetCursor(0,g_y+g_h-locText_vSpace);
-    // dtostrf(g_minVal, 5, 3, string);
-    // tft.textWrite(string,5);
-    // //Write max value top left
-    // tft.textSetCursor(0,g_y);
-    // dtostrf(g_maxVal, 5, 3, string);
-    // tft.textWrite(string,5);
 }
 
 //sets button to indicate whether the program is running
@@ -148,29 +146,107 @@ void screen::setRecButton(bool active)
 #endif
 }
 
+/****************************************************************/
+/* graphUpdateScale(t_min,t_max,g_min,g_max) */
+/* Update the labels on the vertical axis
+/****************************************************************/
+void screen::graphUpdateScale(double g_minVal, double g_maxVal){
+  /* clear text areas */
+  tft.fillRect(0,g_y,g_x-1,SCRN_VERT-g_y,TFTCOLOR_BLACK);
+  tft.textTransparent(TFTCOLOR_YELLOW);
+  char string[15];
+  /* Write max value top left */
+  tft.textSetCursor(0,g_y-2);
+  dtostrf(g_maxVal, 5, 3, string);
+  tft.textWrite(string,5);
+  /* Write min value bottom left */
+  tft.textSetCursor(0,g_y+g_h-12);
+  dtostrf(g_minVal, 5, 3, string);
+  tft.textWrite(string,5);
+}
 
-//setup of text on the screen 
-void screen::setupScreen()
-{
-  screenSiz_x=SCRN_HOR,	screenSiz_h=SCRN_VERT;
-  //Text area
-  locText_x=0, locText_y=0; //Top left of text area
-  locText_hSpace = 40, locText_vSpace=12;//Size of each line
-  column_space = 85; //Space between the two columns of text data
-  //Graph display
-  g_x=40,g_y=88; // Top left of graph
-  g_w=SCRN_HOR-g_x-1;
-  g_h=SCRN_VERT-g_y-2;
-  g_xCursor=g_x+1;
-  g_minVal=0;//Minimum value on the graph (V)
-  g_maxVal=adsMaxV0;//Maximum value on the graph (V)
-  g_xCursor_prev=g_x+1;
-  g_value_prev=g_y+g_h-2;
-  value_min = g_maxVal;
-  value_max = 0;
-  lastCount = 0; //Last datapoint that was drawn
+/****************************************************************/
+/* graphRecipeLines() */
+/* Plot vertical lines at the transition times of the recipe sequences
+/****************************************************************/
+void screen::graphRecipeLines(recipe recArray[], int program){
+  /* Get number of steps */
+  int N = recArray[program].recipe_sequence.length;
 
-  //tft.initR(INITR_BLACKTAB); No initR in RA8875, ignore for the moment, Leon
+  /* First add up all times of the steps */
+  double totaltime = 0;
+  for (int i=0; i<=N; i++){
+    totaltime = totaltime + recArray[program].recipe_sequence.time[i];
+  }
+  Serial.print("Total sequence time : ");
+  Serial.print(totaltime);
+  Serial.print(", transitions at : ");
+  
+  /* Plot vertical lines at positions 1..N-1 */
+  int ycoord = g_y+1; // top of graph
+  double time = 0;
+  for (int i=0; i<=N; i++){
+    time = time + recArray[program].recipe_sequence.time[i];
+    Serial.print(time);Serial.print(", ");
+    int tcoord = round(g_w*(time/totaltime));//where on the time axis
+    int xcoord = g_x+tcoord;//add offset of graph
+    tft.writeFastVLine(xcoord, ycoord, g_h-3, TFTCOLOR_DARKGRAY);
+  }
+  Serial.println();
+  
+  /* Write time on bottom right, first clear previous text */
+  tft.fillRect(g_x,g_y+g_h+1,SCRN_HOR,SCRN_VERT-g_y-g_h, TFTCOLOR_BLACK);
+  //Round time to seconds for 4 digits (max 9999s)
+  char string[15];
+  dtostrf(round((double)totaltime/1000), 4, 0, string);
+  tft.textTransparent(TFTCOLOR_YELLOW);
+  tft.textSetCursor(g_x+g_w-32,g_y+g_h-2);
+  tft.textWrite(string, 4);
+}
+
+/****************************************************************/
+/* graphAutoScale() */
+/* Scale the graph based on the minimum and maximum in the graphArray */
+/****************************************************************/
+void screen::graphAutoScale(dataPlot *graphArray,
+			    int graphCount, int graphLength,
+			    recipe recArray[], int program){
+  Serial.print("Autoscaling graph from ");
+  /* Find minimum and maximum in current graph and map on globals */
+  double value = graphArray[0].val;
+  g_minVal = value - graphMinScale/2;//Limitvertical scale to GraphMinScale
+  g_maxVal = value + graphMinScale/2;
+  for(int cnt=1;cnt<=graphCount;cnt++){
+    value = graphArray[cnt].val;
+    if (g_minVal > value) {
+      g_minVal = value;}
+    else {
+      if (g_maxVal < value) {
+	g_maxVal = value;}
+    }
+  }
+  Serial.print(g_minVal);Serial.print(" to ");Serial.println(g_maxVal);
+  /* Clear graph and update scale */
+  clearGraph(recArray, program);
+  /* Redraw graph from start*/
+  lastCount = 0;
+  updateGraph(graphArray,graphCount,graphLength,
+	      recArray, program);
+}
+
+
+/****************************************************************/
+/* setupScreen(t_minval,t_maxval,g_minval,g_maxval) */
+/* setup of text and graphbox on the screen */
+/* t_minval,t_maxval : left and right of horizontal axis (s) */
+/* g_minval,g_maxval : left and right of vertical axis (V)*/
+/****************************************************************/
+void screen::setupScreen(double t_min, double t_max,
+			 double g_min, double g_max)
+{ /* Initialize vertical scale */
+  g_minVal = g_min;
+  g_maxVal = g_max;
+
   Serial.println("Trying to find RA8875 screen...");
   /* Initialise the display using 'RA8875_480x272' or 'RA8875_800x480' */
   if (!tft.begin(RA8875_480x272)) {
@@ -233,7 +309,6 @@ void screen::setupScreen()
   delay(2000);
   tft.fillScreen(RA8875_BLACK);
 
-
   /* Color of all text labels */
   tft.textTransparent(TFTCOLOR_YELLOW);
 
@@ -289,15 +364,21 @@ void screen::setupScreen()
 
   this->updateV(Vdiodes,Vrefs,0,Currents);
   this->updateInfo(0,0,0,0,"MAGOD2");
+
+  /* Graph */
   //Draw rectangle for graph
   tft.drawRect(g_x, g_y, g_w, g_h, TFTCOLOR_WHITE);
   //tft.drawRect(g_x+1, g_y+1, g_w-2, g_h-2, TFTCOLOR_RED);
+
+  // Write scale
+  graphUpdateScale(g_minVal,g_maxVal);
 
   //Buttons are loaded in initButton
 }
 
 //filling in the values on the screen
-void screen::updateV(diodes Vdiodes, references Vref, double OD, feedbacks currents)
+void screen::updateV(diodes Vdiodes, references Vref,
+		     double OD, feedbacks currents)
 {
   /* Debug */
   /*
@@ -312,9 +393,9 @@ void screen::updateV(diodes Vdiodes, references Vref, double OD, feedbacks curre
   */
   //Clear existing data (x0,y0,x1,y1)
   //Left column
-  tft.fillRect(locText_x+locText_hSpace,
+  tft.fillRect(locText_x + locText_hSpace,
 	       locText_y,
-	       column_space-locText_hSpace,
+	       column_space - locText_hSpace,
 	       7*locText_vSpace+2, TFTCOLOR_BLACK);
   //Right column
   // tft.fillRect(column_space+locText_hSpace,

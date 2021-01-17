@@ -44,14 +44,10 @@ class screen{
   screen(); //Constructor
   Adafruit_RA8875 tft = Adafruit_RA8875(TFT_CS, TFT_RST);
 
-  int16_t column_space; //Distance between columns on top
-  int16_t locText_vSpace,locText_hSpace;//Distance between text fields
-  int16_t screenSiz_x,screenSiz_h;//Size of screen
-  int16_t locText_x,locText_y;//Location of top left corner text fields
-  int16_t g_x,g_y,g_w,g_h;//Size of graph area
+  void setupScreen(double t_minval, double t_maxval,
+		   double g_minval, double g_maxval);
 
-  void setupScreen();
-
+  
   // https://forum.arduino.cc/index.php?topic=203124.0, answer #1:
   void showRecipes(struct recipe recipe_arr[], int N, int cnt);
 
@@ -66,18 +62,37 @@ class screen{
   /* graph */
   void updateGraph(dataPlot *graphArray,
 		   int graphCount, int graphLength,
-		   long startTime, long graphTime);
-  void clearGraph();
+		   recipe recArray[], int program);
+  void clearGraph(recipe recArray[], int program);
+  void graphUpdateScale(double g_minVal, double g_maxVal);
+  void graphAutoScale(dataPlot *graphArray,
+		      int graphCount, int graphLength,
+		      recipe recArray[], int program);
+  void graphRecipeLines(recipe recArray[], int program);
 
+  int16_t screenSiz_x = SCRN_HOR; //Size of screen
+  int16_t screenSiz_h = SCRN_VERT;
+
+  //Text area
+  int16_t column_space = 85; //Space between the two columns of text data
+  int16_t locText_vSpace = 12;//Vertical distance between text fields
+  int16_t locText_hSpace = 40;//Horizontal distance between text fields
+  //Graph area
+  int16_t g_x = 40;//Graph area (top left x,y, width, height
+  int16_t g_y = 88;
+  int16_t g_w = SCRN_HOR-g_x-1;
+  int16_t g_h = SCRN_VERT-g_y-12;
   
  private:
-  int16_t g_xCursor, g_xCursor_prev;
-  int16_t V1,V2,Vref,OD;
+  // For text fields
+  int16_t locText_x =0;//Location of top left corner text fields
+  int16_t locText_y= 0;
+  int16_t V1,V2,Vref,OD;//Obsolete? LEON
+  
+  // For graph:
+  int lastCount = 0; // Which point was updated last?
   double g_minVal,g_maxVal; // Min, max value of y range in graph (V)
-  double g_value_prev;
-  double value_min; 
-  double value_max; 
-  int lastCount; // Which point was updated last?
+  double graphMinScale = 0.010; //Min vertical scale (V)
 };
 
 #endif // Screen_RA8875_h

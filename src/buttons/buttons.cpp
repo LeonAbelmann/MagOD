@@ -205,6 +205,13 @@ int buttons::whichButton(int x, int y){
       (y > buttonOffset_y+size_y)         &&
       (y < buttonOffset_y+2*size_y)) {
     buttonpressed = BUTTON_PREVRECIPE;}
+  // Button BUTTON_GRAPH, pressed in graph area
+  int x0 = myscreen.g_x;
+  int x1 = myscreen.g_x + myscreen.g_w;
+  int y0 = myscreen.g_y;
+  int y1 = myscreen.g_y + myscreen.g_h;
+  if ((x > x0) && (x < x1) && (y > y0) && (y < y1)) {
+    buttonpressed = BUTTON_GRAPH;}
   return buttonpressed;
 }
 #endif //defined(_MAGOD2)
@@ -319,6 +326,12 @@ int buttons::readButton() {
 	      showButtonArea(BUTTON_PREVRECIPE, (char *)"Prev recipe",
 			     TFTCOLOR_WHITE, TFTCOLOR_BLACK);
 	      return BUTTON_PREVRECIPE;
+
+	      // BUTTON_GRAPH is for autoscale graph
+	    case BUTTON_GRAPH :
+	      Serial. println("Button: BUTTON_GRAPH");
+	      // no need tos show button area
+	      return BUTTON_GRAPH;
 
 	    default:
 	      Serial. println("0: BUTTON_NONE");

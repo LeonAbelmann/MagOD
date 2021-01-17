@@ -36,7 +36,7 @@ float freq_meas = 7; //Measurement frequency in Hz
 float freq_meas = 1; /* Measurement frequency for ADC1 (currents,
 			temperature) in Hz */
 #endif
-float freq_screen = 2; //Screen update frequency in Hz
+float freq_screen = 4; //Screen update frequency in Hz
 
 /* Do you want Wifi */
 bool wifi = true;
@@ -137,7 +137,7 @@ int graphCount      = 0; // Index counting datapoints in graph
 int graphLength     = GRAPH_LENGTH; // Total lengt. <= GRAPH_LENGTH
 long startTime      = millis(); /* Time at which the measurement
 				   started */
-long lengthTimeAxis = 20000; /* Total length of time axis of graph (ms)*/
+long lengthTimeAxis = 200000; /* x-axis ranges from 0..lengthTimeAxis (ms)
 
 /* Calculated parameters */
 double OD = 0;                 /*Optical Density. Calculated in
@@ -148,8 +148,7 @@ unsigned long time_of_data_point = millis(); /*Store time when
 					datapoint was taken. OBSOLETE?
 					LEON*/
 unsigned long time_of_start = millis(); /*Time at which the
-					measurement was started.
-					OBSOLETE? LEON*/
+					measurement was started.*/
 unsigned long time_last_field_change = millis(); /*Time since the last
 					    field step */
 
@@ -315,18 +314,14 @@ void startRec()
 					started */
     /*Calculate total length of graph time axis from length of recipe
       step:*/
-    lengthTimeAxis  = myrecipes.getSequenceLength(recipes_array,
-						  program_cnt);
-    myscreen.clearGraph(); //Clear graph
-    
-    /* Empty buffer */
     Serial.print("Emptying buffer");
     while (not myadc.bufferEmpty()) {
       dataPoint trash = myadc.getDataPoint();
       Serial.print(".");
     }
-    Serial.println();
     graphCount = 0; // Clear data array
+
+    myscreen.clearGraph(recipes_array, program_cnt);; //Clear graph
     
     //Activate recording mode
     isRecording = true;
@@ -470,15 +465,29 @@ bool processButtonPress(){
 	//Update display
 	myscreen.updateInfo(Looppar_1, Looppar_2, program_cnt,
 			    LEDColor_array[Looppar_1], myfile.fName_char);
+	startTime       = millis();
+	Serial.print("Emptying buffer");
+	while (not myadc.bufferEmpty()) {
+	  dataPoint trash = myadc.getDataPoint();
+	  Serial.print(".");
+	}
+	lengthTimeAxis =
+	  myrecipes.getSequenceLength(recipes_array,program_cnt);
+	graphCount = 0; // Clear data array
+	myscreen.clearGraph(recipes_array, program_cnt);; //Clear graph
       }
     } //end if buttonPress!=prevButton
+
+    if (buttonPress == BUTTON_GRAPH){
+      myscreen.graphAutoScale(graph, graphCount, graphLength,
+			      recipes_array, program_cnt);
+    }
+
 #endif
     prevButton = buttonPress;
   } // End buttonPress!=prevButton
   return buttonPressed;
 }    
-
-
 
 
 //calculate the optical density value, whenever using three wavelengths, the right reference has to be chosen
@@ -641,7 +650,7 @@ int updateGraphArray(dataPoint data,
     /* round off graphTime to nearest index */
     double fraction = (double)graphTime/(double)lengthTime;
     int index = round(fraction*length); // Array index
-    /* Debug: 
+    /* Debug:  
     Serial.print("updateGraph: start: ");
     Serial.print(start);
     Serial.print(", lengthTime: ");
@@ -654,7 +663,7 @@ int updateGraphArray(dataPoint data,
     Serial.print(length);
     Serial.print(", index: ");
     Serial.println(index);
-     End debug: */
+    /* End debug: */
     /* index should be between 0 and GRAPH_LENGTH. Panic if that is
        not the case */
     if ((index < 0) || (index > GRAPH_LENGTH)) {
@@ -663,10 +672,19 @@ int updateGraphArray(dataPoint data,
       index=0;
     }
     /* if index is smaller than count, apparently we wrapped
-       around. Reset count in that case */
+       around. Fill the array's up to max and from zero value. Maybe
+       interpolate in future versions. LEON*/
     if (index < count) {
-      plot[index].val=data.val;
-      plot[index].color=LEDColor_array[Looppar_1];
+      /* Fill last part of array from count to GRAPH_LENGTH */
+      for (i=count; i<=GRAPH_LENGTH; i++){
+	plot[i].val=data.val;
+	plot[i].color=LEDColor_array[Looppar_1];
+      }
+      /* Fill first part of array from 0 to index */
+      for (i=0; i<=index; i++){
+	plot[i].val=data.val;
+	plot[i].color=LEDColor_array[Looppar_1];
+      }
     }
     /* if index is equal to count, we did not proceed more than one
        step in the array. In that case average with value already there */
@@ -882,7 +900,8 @@ void setup()
 
   //setup the screen
   Serial.println("Initializing screen...");
-  myscreen.setupScreen();
+  double maxTime = (double)lengthTimeAxis/1000;//convert to seconds
+  myscreen.setupScreen(0,maxTime,0,adsMaxV0);
   delay(100);
   
   //Setup the buttons or touchscreen
@@ -915,6 +934,15 @@ void setup()
 	myscreen.showRecipes(recipes_array,program_nmb,program_cnt);
 	Serial.println("Loading first program");
 	myrecipes.program_init(recipes_array,program_cnt);
+	Serial.print("Duration of first program: ");
+	lengthTimeAxis =
+	  myrecipes.getSequenceLength(recipes_array,program_cnt);
+	if (lengthTimeAxis <= 0) {
+	  Serial.print(" <=0, resetting to :");
+	  lengthTimeAxis = 20000;
+	}
+	Serial.print(lengthTimeAxis);
+	myscreen.clearGraph(recipes_array, program_cnt);; //Clear graph
 	Serial.println("Switching on LED");
 	myled.Set_LED_color(LEDColor_array[Looppar_1],
 			    LEDInt_array[Looppar_1]);
@@ -1006,8 +1034,8 @@ void loop()
       //Update measured values
       myscreen.updateV(Vdiodes, Vrefs, OD, Currents);
       //Update graph on screen
-      myscreen.updateGraph(graph, graphCount, graphLength, startTime,
-      			   lengthTimeAxis);
+      myscreen.updateGraph(graph, graphCount, graphLength,
+      			   recipes_array, program_cnt);
       //Update program status:
       myscreen.updateInfo(Looppar_1, Looppar_2, program_cnt,
       			  LEDColor_array[Looppar_1], myfile.fName_char); 
