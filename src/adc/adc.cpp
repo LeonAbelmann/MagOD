@@ -2,7 +2,9 @@
  MagOD libary 
  December 2020
  Measures reference voltages
- Tijmen Hageman, Jordi Hendrix, Hans Keizer, Leon Abelmann 
+ Tijmen Hageman, Jordi Hendrix, Hans Keizer, Leon Abelmann */
+/* Updated in version 2.4 with hardware interupt of adc converter and
+   data buffer.
 */
 
 #include "../../MagOD.h"
@@ -252,24 +254,28 @@ double convertCurrent(uint16_t value, int coil)
   double result;
   /* Every coil system has a slightly different calibration. */
   /* adc4Offset, adc4SlopePos and adc4SlopeNeg are defined in calibration.h */
+  //Serial.print("convertCurrent : adc = ");Serial.print(value);
   switch (coil) {
   case IX: // X-coils on adc4
     if (value-adc4Offset < 0)
-      { result=(value-adc4Offset)*adc4SlopePos;}
-    else
       { result=(value-adc4Offset)*adc4SlopeNeg;}
+    else
+      { result=(value-adc4Offset)*adc4SlopePos;}
+    //Serial.print(", current X: ");Serial.println(result);
     return result;
   case IY: // Y-coils on adc6 !!!!!
     if (value-adc6Offset < 0)
-      { result=(value-adc6Offset)*adc6SlopePos;}
-    else
       { result=(value-adc6Offset)*adc6SlopeNeg;}
+    else
+      { result=(value-adc6Offset)*adc6SlopePos;}
+    //Serial.print(", current Y: ");Serial.println(result);
     return result;
   case IZ: // Z-coils on adc5 !!!!!
     if (value-adc5Offset < 0)
-      { result=(value-adc5Offset)*adc5SlopePos;}
-    else
       { result=(value-adc5Offset)*adc5SlopeNeg;}
+    else
+      { result=(value-adc5Offset)*adc5SlopePos;}
+    //Serial.print(", current Z: ");Serial.println(result);
     return result;
   default:
     return 0;

@@ -125,7 +125,6 @@ extern float freq_meas;   /* Measurement frequency in Hz */
 extern float freq_screen; /* Screen update frequency in Hz */
 
 /* Time parameters */
-extern unsigned long time_of_data_point; //Store time when datapoint was taken
 extern unsigned long time_of_start; //Time at which the measurement was started
 extern unsigned long time_last_field_change; //Time since the last field step
 
@@ -136,9 +135,7 @@ extern int LEDs[LEDnumber];
 #if defined(_MAGOD2)
 extern int LED_intensity[LEDnumber];//The brightness of the leds
 #endif
-extern int LED_switch_cycles; //The number of cycles after which the LED changes the frequency, when a 0 is entered, the LED keeps the beginning frequency during the complete measurement 
-extern int Counter_cycles_led; //counter used to store the amount of complete cycles the LED has had the same colour, to check when the colour has to change (after LED_switch_cycles)
-extern bool ref_all_wavelength; //Set this to 1 for specific programs where you work with multiple wavelengths in a single measurement (such that it stores the reference value of all 3 wavelengths)
+extern bool ref_all_wavelength; //Set this to 1 for specific programs where you work with multiple wavelengths in a single measurement (such that it stores the reference value of all 3 wavelengths). Can be removed, but you need to adapt set_vrefs in adc.cpp.
 
 /* Parameters to control the menu */
 extern recipe recipes_array[]; //List of recipes. 
@@ -147,11 +144,11 @@ extern int program_cnt; //Current recipe
 
 
 /* Declare variables to define the field sequence */
-#define B_NR_MAX 12 //Max number of elements
-extern unsigned int B_nr_set; //the number of elements in the array
-extern long Nr_cycles; //The number of cycles throught the array, a value of 0 means an infinite amound of cycles
-extern unsigned int Looppar_1; //Looppar_1,2 track at which point of the field-array the program is
-extern unsigned int Looppar_2; 
+#define B_NR_MAX 24 //Max number of elements
+extern int B_nr_set; //the number of elements in the array
+extern int Nr_cycles; //The number of cycles through the array, a value of 0 means an infinite amound of cycles
+extern int Looppar_1; //Looppar_1,2 track at which point of the field-array the program is
+extern int Looppar_2; 
 extern unsigned long Switching_time[B_NR_MAX]; //the time the program waits before switching to the next value of the magnetic field, in matrix to allow an alterating switching time, keep all values the same to have a constant switching time
 extern double B_arrayfield_x[B_NR_MAX]; //an array containing B_Nr_set elements for the field in the x-direction, each element has to be an integer between -256 and 256 and negative numbers can be used for opposite directions
 extern double B_arrayfield_y[B_NR_MAX]; //an array containing B_Nr_set elements for the field in the y-direction, each element has to be an integer between -256 and 256 and negative numbers can be used for opposite directions

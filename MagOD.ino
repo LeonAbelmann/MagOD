@@ -1,7 +1,7 @@
-/* MagOD version 2.4 */
-/* Dec 2020 */
-/* Tijmen Hageman, Jordi Hendrix, Hans Keizer, Leon Abelmann */
-/* Based on original code, modified by Leon for readablity and ease of recipe change */
+/* MagOD veresion 2.4 */
+/* Jan 2021 */
+/* Tijmen Hageman, Jordi Hendrix, Hans Keizer, Leon Abelmann, Marcel
+   Welleweerd, Dave van As, Ruthvik Bandaru, Rob Krawinkel */
 
 /* Class definitions */
 #include "MagOD.h"
@@ -38,13 +38,13 @@ float freq_meas = 1; /* Measurement frequency for ADC1 (currents,
 #endif
 float freq_screen = 4; //Screen update frequency in Hz
 
-/* Do you want Wifi */
+/* Do you want Wifi :) */
 bool wifi = true;
 
 /* Program menu settings */
 recipe recipes_array[MaxRecipes]; // Array of recipes
-int    program_cnt = 0; // Current recipe selected, default 0
-int    program_nmb = 0; /*Total number of recipes in recipes_array
+int    program_cnt = 0; /* Current recipe selected, default 0 */
+int    program_nmb = 0; /* Total number of recipes in recipes_array
 			  [0..program_nmb] */
 
 /* ADCO works on interupt. Data is stored in buffer. See adc.cpp */
@@ -72,7 +72,7 @@ bool SDpresent         = false; //There is a readable SD card in the slot
 uint8_t prevButton     = 0;     //Status of the button
 
 
-/* Control parameters */
+/* Extra control parameters, kind of obsolete */
 bool sendToSerial      = 0;     /*Do we send files during the
 				   measurement over serial port? */
 bool save_extra_parameter = 0;  /*set this to 1 when you want to store
@@ -144,9 +144,6 @@ double OD = 0;                 /*Optical Density. Calculated in
 				 CaldOD() */
 
 /* Time parameters */
-unsigned long time_of_data_point = millis(); /*Store time when
-					datapoint was taken. OBSOLETE?
-					LEON*/
 unsigned long time_of_start = millis(); /*Time at which the
 					measurement was started.*/
 unsigned long time_last_field_change = millis(); /*Time since the last
@@ -159,16 +156,14 @@ int LEDs[3] = {RED, GREEN, BLUE};
 int LED_intensity[3] = {15,65,95};//Values that don't saturate the photodiode
 #endif
 // OBSOLETE? LEON
-int LED_switch_cycles = 0; //The number of cycles after which the LED changes the frequency, when a 0 is entered, the LED keeps the beginning frequency during the complete measurement 
-int Counter_cycles_led = 1; //counter used to store the amount of complete cycles the LED has had the same colour, to check when the colour has to change (after LED_switch_cycles)
-bool ref_all_wavelength = 0; //Set this to 1 for specific programs where you work with multiple wavelengths in a single measurement (such that it stores the reference value of all 3 wavelengths
+bool ref_all_wavelength = 0; //Set this to 1 for specific programs where you work with multiple wavelengths in a single measurement (such that it stores the reference value of all 3 wavelengths. Can be removed, but you need to rewrite set_vrefs in adc.cpp
 
 /* Declare variables to define the field sequence */
-unsigned int B_nr_set = 1; //the length of the field sequence array [0..B_nr_set];
-unsigned int Looppar_1 = 0; //Track at which point of the field-array we are
+int B_nr_set = 1; //the length of the field sequence array [0..B_nr_set];
+int Looppar_1 = 0; //Track at which point of the field-array we are
 
-long Nr_cycles = 0; //The number of cycles throught the array, a value of 0 means an infinite amound of cycles
-unsigned int Looppar_2 = 0; //Track how many times we cycled through the recipe
+int Nr_cycles = 0; //The number of cycles throught the array, a value of 0 means an infinite amound of cycles
+int Looppar_2 = 0; //Track how many times we cycled through the recipe
 
 /* Note, the definitions don't seem to work. Only the first element in the array is set to that value. Instead, I initialize the arrays in recipes.cpp */
 double B_arrayfield_x[B_NR_MAX] = {0.0}; //an array containing B_Nr_set elements for the field in the x-direction, each element has to be an integer between -256 and 256 and negative numbers can be used for opposite directions
@@ -331,23 +326,21 @@ void startRec()
 
 void stopRec()
 //stop the measurement
-{
+{ Serial.println("Stop rec");
   Exit_program_1 = HIGH;
+  // reset loop counters
+  Looppar_2 = 0;
+  Looppar_1 = 0;
+  // Switch off field
+  myfield.Reset_Bfield();
+  // Close file
+  dataFile.close();
+  // De-activate recording mode
+  isRecording = false;
+  // Update screen
   myscreen.setRecButton(false);
   strlcpy(myfile.fName_char,"DONE",myfile.fN_len);
   myscreen.updateFILE(myfile.fName_char);
-  // reset globals
-  Looppar_2 = 0;
-  Looppar_1 = 0;
-  // Reset file counters
-  myfile.file_reset();
-  // Switch off field
-  myfield.Reset_Bfield();
-  Serial.println("Stop rec");
-  // Close file
-  dataFile.close();
-  //De-activate recording mode
-  isRecording = false;
 }
 
 /*analyse the button that is pressed and take the required action */
@@ -555,25 +548,10 @@ double calcOD(struct references Vrefs, double Vdiode)
 
 
 void writeDataPointToFile(File datfile, dataPoint data){
-  /* Write measurements to datafile. HIERR*/
+  /* Write measurements to datafile.*/
   myfile.saveLine(datfile,data,LEDColor_array[Looppar_1],Looppar_1);
-  /* myfile.saveToFile(myfile.fName_char,time_of_data_point,
-		    Vdiodes,Temperature,OD,
-		    LEDColor_array[Looppar_1],Looppar_1,Currents); */
   /* update file length */
-  myfile.SD_file_length_count = myfile.SD_file_length_count + 1;
-
-  // This does not work, why? I think it should be B_nr_set-1
-  //      if ((SD_file_length_count > SD_file_length_count_max) && (Looppar_1 >= (B_nr_set))){
-  // if (myfile.SD_file_length_count > myfile.SD_file_length_count_max){
-  //   /* reset file length counter */
-  //   myfile.SD_file_length_count = 0;
-  //   /* Send the file to the serial port */
-  //   if (sendToSerial)
-  //     {
-  // 	myfile.sendFileToSerial(myfile.fName_char);
-  //     }    
-  // } //if (SD_file_length_count > SD_file_length_count_max)
+  //myfile.SD_file_length_count = myfile.SD_file_length_count + 1;
 } 
 
 //Initialization of all the timers used in the program
@@ -583,7 +561,7 @@ void Init_timers()
   mytimer.initTimer(1,long(1000000/freq_meas));
   mytimer.attachInterrupt(1, measEvent);
   
-  //Setup timer 3 for current sensing
+  //Setup timer 3 for current compenstation
   mytimer.initTimer(3,1000000);
   mytimer.attachInterrupt(3, Updatecurrent);
   
@@ -941,7 +919,7 @@ void setup()
 	  Serial.print(" <=0, resetting to :");
 	  lengthTimeAxis = 20000;
 	}
-	Serial.print(lengthTimeAxis);
+	Serial.println(lengthTimeAxis);
 	myscreen.clearGraph(recipes_array, program_cnt);; //Clear graph
 	Serial.println("Switching on LED");
 	myled.Set_LED_color(LEDColor_array[Looppar_1],
@@ -952,7 +930,6 @@ void setup()
       Serial.println("RECIPES.CSV not found");
     }
   }
-
   Serial.println("Initialization finished");
 }
 
@@ -1013,13 +990,15 @@ void loop()
     Serial.print("Time of this step     :");Serial.println(meastime);
     // Go to next step in field sequence:
     SetBfield_array(Looppar_1);
-    return;/* Jump to start of loop to make sure we don't miss datapoints */
+    return;/* Jump to start of loop to make sure we don't miss
+	      datapoints */
   }
   
   /* Check for button pressed and act on it */
   if (processButtonPress()){
     Serial.println("Processing button");
-    return;/* Jump to start of loop to make sure we don't miss datapoints */
+    return;/* Jump to start of loop to make sure we don't miss
+	      datapoints */
   };
 
   /* Handle ftp server requests */
@@ -1039,25 +1018,29 @@ void loop()
       //Update program status:
       myscreen.updateInfo(Looppar_1, Looppar_2, program_cnt,
       			  LEDColor_array[Looppar_1], myfile.fName_char); 
-      return;/* Jump to start of loop to make sure we don't miss datapoints */
+      return;/* Jump to start of loop to make sure we don't miss
+		datapoints */
     }
   
-  /* Recalibrate current if timer 3 has set the flag */
+  /* Recalibrate current if timer 3 has set the flag. This does not
+     work for the moment, needs to be implemented again. LEON */
   if(Updatecurrentflag == true)
     {
       //Reset flag
       Updatecurrentflag = false;
-      //Perform current recalibration procedure. But only if the program has not exit yet and when the PWM value has not too recently changed
+      /* Perform current recalibration procedure. But only if the
+	 program has not exit yet and when the PWM value has not too
+	 recently changed */
       if ((Exit_program_1 == LOW) &&
-	  ((millis() - time_last_field_change) > myfield.Current_wait_time))
+	  ((millis() - time_last_field_change) >
+	   myfield.Current_wait_time))
 	{
 	  myfield.Current_feedback();
 	  Serial.println("Perform feedback on current");
 	}
-      return;/* Jump to start of loop to make sure we don't miss datapoints */
+      return;/* Jump to start of loop to make sure we don't miss
+		datapoints */
     }
-  
-    
 }
 //end of program
 

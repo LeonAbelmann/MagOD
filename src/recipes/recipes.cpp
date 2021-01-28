@@ -1,3 +1,9 @@
+/* recipes.cpp
+   MagOD2 libary
+   Rutvhik Bandaru, Leon Abelmann
+   Loads recipe from SD card, performs checks, translates to global variables
+   Jan 2021 : Corrected for number sequences exceeding maximum.
+*/
 #include "recipes.h"
 
 #define MAXPARSTRINGS 10 // Size of array that holds parameter names
@@ -215,8 +221,8 @@ int recipes::getSequenceLength(recipe recipearray[], int cnt){
   for (int i=0; i<=N; i++){
     time = time + recipearray[cnt].recipe_sequence.time[i];
   }
-  Serial.print("Total sequence time : ");
-  Serial.println(time);
+  // Serial.print("Total sequence time : ");
+  // Serial.println(time);
   return round(time); 
 }
 
@@ -257,6 +263,15 @@ bool readSequence(char* line, sequence& seq, char* recipe_name,
 	//myIO->serialPrintln(sequenceNumber);
 	readSequenceStep(line, seq, sequenceNumber, recipe_name);
 	sequenceNumber=sequenceNumber+1;
+	// Panic if array is full: 
+	if (sequenceNumber > MaxSequenceLength) {
+	  // Just overwrite last sequence
+	  sequenceNumber = MaxSequenceLength;
+	  myIO->serialPrint((char*)
+		"ERROR: readSequence Maximum number of sequences (");
+	  myIO->serialPrint(MaxSequenceLength);
+	  myIO->serialPrintln((char*)") reached!");
+	  }
       }
     }
   }
@@ -464,7 +479,8 @@ recipe_num: which recipe the user selected
 void recipes::program_init(recipe recipes_array[],int recipe_num)
 {   
   myIO->serialPrintln((char*)"Starting program_init");
-  //myIO->initSerial(); /* Why reset the IO ? LEON*/
+  myIO->serialPrint((char*)"Loading recipe number: ");
+  myIO->serialPrintln(recipe_num);
   
   /* Reset all arrays,default to do nothing for 1 second */
   B_nr_set = 1; // [0..1]
@@ -476,15 +492,36 @@ void recipes::program_init(recipe recipes_array[],int recipe_num)
   memset(Gradient_y, 1, B_NR_MAX);
   memset(Gradient_z, 1, B_NR_MAX);
 
-  /* Copy measurement settings from recipes_array. Inefficient? See above. LEON */
-  B_nr_set =  recipes_array[recipe_num].recipe_sequence.length; 
+  /* Copy measurement settings from recipes_array. Inefficient? See
+     above. LEON */
+  B_nr_set  = recipes_array[recipe_num].recipe_sequence.length; 
+  Nr_cycles = recipes_array[recipe_num].N_cycles; 
 
+  myIO->serialPrint((char*)
+		    "Nr_cycles: Number of cycles this program runs   : ");
+  myIO->serialPrintln(B_nr_set);
+  myIO->serialPrint((char*)
+		    "B_nr_set: Number of sequence steps [0..B_nr_set]: ");
+  myIO->serialPrintln(B_nr_set);
+
+  myIO->serialPrintln((char*)"i : [Bx, By, Bz, time, color, intensity] ");
   for (int i=0; i <= B_nr_set; i++){
     B_arrayfield_x[i] = recipes_array[recipe_num].recipe_sequence.Bx[i];
     B_arrayfield_y[i] = recipes_array[recipe_num].recipe_sequence.By[i];
     B_arrayfield_z[i] = recipes_array[recipe_num].recipe_sequence.Bz[i];
     Switching_time[i] = recipes_array[recipe_num].recipe_sequence.time[i];
     LEDColor_array[i] = recipes_array[recipe_num].recipe_sequence.led[i].color;
-    LEDInt_array[i]   = recipes_array[recipe_num].recipe_sequence.led[i].intensity;
+    LEDInt_array[i]   =
+      recipes_array[recipe_num].recipe_sequence.led[i].intensity;
+    /* Debug: */
+    myIO->serialPrint(i);myIO->serialPrint((char*)" [ ");
+    myIO->serialPrint(B_arrayfield_x[i]);myIO->serialPrint((char*)", ");
+    myIO->serialPrint(B_arrayfield_y[i]);myIO->serialPrint((char*)", ");
+    myIO->serialPrint(B_arrayfield_z[i]);myIO->serialPrint((char*)", ");
+    myIO->serialPrint(Switching_time[i]);myIO->serialPrint((char*)", ");
+    myIO->serialPrint(LEDColor_array[i]);myIO->serialPrint((char*)", ");
+    myIO->serialPrint(LEDInt_array[i]);myIO->serialPrintln((char*)" ]");     
   }
+  myIO->serialPrintln((char*)"");
+
 }

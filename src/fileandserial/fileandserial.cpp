@@ -2,14 +2,12 @@
  MagOD libary 
  Juli 2019
  File IO
- Tijmen Hageman, Jordi Hendrix, Hans Keizer, Leon Abelmann 
+ Tijmen Hageman, Jordi Hendrix, Hans Keizer, Ruthvik Bandary, Leon Abelmann */
+/* In version 2.4 we write into a directory, one file per sequence.
 */
 
 #include "Arduino.h"
 #include "fileandserial.h"
-
-/* We should consider saving the files in directories. LEON */
-
 
 //Constructor
 fileandserial::fileandserial(){
@@ -88,8 +86,6 @@ void fileandserial::saveSettingsFile(char fName_char[]){
       f.println();
       f.print("# Prg=");f.println(program_cnt);
       f.print("# B_nr_set=");f.println(B_nr_set); 
-      f.print("# LED_switch_cycles=");
-      f.println(LED_switch_cycles);
       f.print("# Nr_cycles=");f.println(Nr_cycles);
       f.println("");
       f.println("# Recipe: ");
@@ -125,11 +121,6 @@ void fileandserial::saveLine(File datfile,dataPoint data,
     }
 }
 
-void fileandserial::file_reset()
-{
-  SD_file_number_count = 1;
-  SD_file_length_count = 0;
-}
 
 File fileandserial::file_init(struct references Vref, bool ref_all_wavelength, bool save_extra_parameter, double extra_par, uint16_t program_cnt, screen thescreen)
 //Prepare file for saving data
@@ -251,7 +242,6 @@ File fileandserial::newDataFile(File datfile){
   file_number = file_number + 1;
   Serial.print("New datafile: ");Serial.print(fName_str);
   Serial.print(" : ");Serial.println(fName_char);
-  SD_file_number_count = SD_file_number_count +1; // Obsolete? LEON
 
   /* Open file */
   datfile = SD.open(fName_char, FILE_WRITE);
@@ -266,8 +256,7 @@ File fileandserial::newDataFile(File datfile){
 }
 
 
-/* OBSOLETE, LEON: */
-//void sendFileToSerial(char fName_char[fN_len]) {
+/* Keep for MagOD1: */
 void fileandserial::sendFileToSerial(char fName_char[]) {
   File f = SD.open(fName_char);
   // if the file is available, write it to the serial port:
@@ -291,28 +280,3 @@ void fileandserial::sendFileToSerial(char fName_char[]) {
 }
 
 
-/* Write data to SD card */
-// void fileandserial::saveToFile(char fName_char[fN_len],
-// 			       unsigned long time_of_data_point,
-// 			       diodes Vdiodes,
-// 			       double Temperature,
-// 			       double OD,
-// 			       int LED_type,
-// 			       int Looppar_1,
-// 			       feedbacks Vfb)
-// {
-  
-//   File f = SD.open(fName_char, FILE_APPEND);
-
-//   if (!f)
-//     {
-//       Serial.print(fName_char);
-//       Serial.println(" failed to open.");
-//     }
-//   else
-//     {
-//       writeDataLine(f, time_of_data_point, Vdiodes,
-// 		    Temperature,OD,LED_type,Looppar_1,Vfb);
-//       f.close();
-//     }
-// }

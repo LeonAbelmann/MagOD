@@ -1,10 +1,12 @@
 /* screen_8875.cpp
  MagOD2 libary 
- Mar 2019
  Definition of screen layout and screen update functions 
  for TFT050 screen (MAGOD2 system has that one) 
- Tijmen Hageman, Jordi Hendrix, Hans Keizer, Leon Abelmann 
-*/
+ Tijmen Hageman, Jordi Hendrix, Hans Keizer, Leon Abelmann */
+/* Jan 2021, version 2.4 */
+/* Graph x-axis now matching time of recipe sequence,
+   lines indicating the transition between steps, autoscale, previous
+   measurement in brown. */
 
 #include "Arduino.h"
 
@@ -58,7 +60,21 @@ void screen::updateGraph(dataPlot *graphArray,
      that case clear the graph and make sure we draw from 0 */
   if (graphCount < lastCount) {
     clearGraph(recArray, program);
-    lastCount=0; // we draw the entire array
+    /* Redraw all data in gray. Copied from below, make routine! LEON */
+    tft.graphicsMode();
+    int pixelcolor = TFTCOLOR_BROWN;
+    for(int cnt=0;cnt<=graphLength-1;cnt++){
+      int x_pixel = g_x+1 + round((g_w-2)*(double)cnt/graphLength);
+      int y_pixel = g_y + round((g_h) *
+				(double)(g_maxVal - graphArray[cnt].val)
+				/(g_maxVal - g_minVal));
+      if (y_pixel < g_y+2) {
+	y_pixel = g_y+2;}
+      else if (y_pixel > g_y+g_h-3){
+	y_pixel = g_y+g_h-3;}
+      tft.drawPixel(x_pixel, y_pixel, pixelcolor);
+    }
+    lastCount=0; // we draw the new data from 0.
   }
   /* draw all points since the last time this function was called */
     for(int cnt=lastCount;cnt<=graphCount;cnt++){
@@ -78,11 +94,11 @@ void screen::updateGraph(dataPlot *graphArray,
       int y_pixel = g_y + round((g_h) *
 				(double)(g_maxVal - graphArray[cnt].val)
 				/(g_maxVal - g_minVal));
-      /* make sure the graph stays 1 pixel inside the graph area */
-      if (y_pixel < g_y+1) {
-	y_pixel = g_y+1;}
-      else if (y_pixel > g_y+g_h-2){
-	y_pixel = g_y+g_h-2;}
+      /* make sure the graph stays 2 pixels inside the graph area */
+      if (y_pixel < g_y+2) {
+	y_pixel = g_y+2;}
+      else if (y_pixel > g_y+g_h-3){
+	y_pixel = g_y+g_h-3;}
       
       /* Serial.print(" x,y : ");
       Serial.print(x_pixel);
@@ -277,7 +293,7 @@ void screen::setupScreen(double t_min, double t_max,
   tft.textMode();
   tft.textSetCursor(text0_x,text0_y);
   tft.textTransparent(RA8875_BLACK);
-  tft.textWrite("MagOD 2.2");
+  tft.textWrite("MagOD 2.4");
   tft.textSetCursor(text0_x+100, text0_y);
 #if defined(_KIST)
   tft.textWrite("KIST MagOD2");

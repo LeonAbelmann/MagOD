@@ -1,8 +1,9 @@
 /* buttons.cpp
  MagOD2 libary 
- Feb 2020
+ Jan 2021
  Controls buttons (joystick for MagOD1, touchscreen for MagOD2)
- Tijmen Hageman, Jordi Hendrix, Hans Keizer, Leon Abelmann 
+ Tijmen Hageman, Jordi Hendrix, Hans Keizer, Leon Abelmann */
+/* Updated in 2.4 with button for autoscale graph
 */
 
 #include "Arduino.h"

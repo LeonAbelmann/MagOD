@@ -1,7 +1,6 @@
 /* field.cpp
  MagOD2 libary 
  Oct 2018
- Controls buttons (joystick)
  Tijmen Hageman, Jordi Hendrix, Hans Keizer, Leon Abelmann 
 */
 
@@ -65,7 +64,7 @@ void field::Init_field() /*Sets the pins in the correct status*/
 void field::SetBfieldFast(double Val_Bmag_x, double Val_Bmag_y, double Val_Bmag_z, bool Gx, bool Gy, bool Gz)
 /* sets the B-field and the direction for given values of the magnetic field magnitudes, the input should be the magnetic field where the sign determines the direction, the function also stores the latest set PWM values, which are used in the current feedback calculations*/
 {
-  double fact_x = 1;
+  double fact_x = 1; // For future use, compensation for coil heating
   double fact_y = 1;
   double fact_z = 1;
 
@@ -73,17 +72,23 @@ void field::SetBfieldFast(double Val_Bmag_x, double Val_Bmag_y, double Val_Bmag_
      reset every time you need to set the field: */
   ledcAttachPin(CoilPinZ, Coil_z);
 
+  /* First checks whether the field is positive, negative or 0 (is
+     required because otherwise the offset (B-term) in linearization
+     of relation between Field and PWM is non-zero) */
   
-  //first checks whether the field is positive, negative or 0 (is required because otherwise the offset (B-term) in linearization of relation between Field and PWM is non-zero)
-  /* whether the B-field is negative or positive determines the
-     direction of the motor driver (Dir_i).  Dir is low low: output A
-     of motor driver is high and B is low, high: output A of motor
+  /* Whether the B-field is negative or positive determines the
+     direction of the motor driver (Dir_i).  Dir is low: output A
+     of motor driver is high and B is low, Dir is high: output A of motor
      driver is low and B is high. We define MB as positive lead, so
-     positive fields are for dir_i HIGH. See manual MD13S page 6*/
+     for positive fields dir_i is HIGH. See manual MD13S page 6*/
 
+  /* The PWM value is calculated from the B-field (using the
+     characterization measurements giving the parameters A and B) the
+     compensationfactors for a gradient (use 1 coil) and for heating
+     (current sense) are then used to calculate the PWM value
+     required. Compensation factors do not influence the offset of
+     the sensor and thus not affect B */
   
-  //the PWM value is calculated from the wanted B-field (using the characterization measurements giving the parameters A and B) teh compensationfactors for a gradient (use 1 coil) and for heating (current sense) are then used to calculate the PWM value required
-  //compensation factors do not influence the offset of the sensor and thus not affect B
   if (Val_Bmag_x < -0.0001)
     { 
       Current_PWM_value_x =
@@ -91,15 +96,15 @@ void field::SetBfieldFast(double Val_Bmag_x, double Val_Bmag_y, double Val_Bmag_
 	       Bx_neg_TPWM)
 	     );
       coilPwmWrite(Coil_x, Current_PWM_value_x);
-      digitalWrite(Dir_x, HIGH);
+      digitalWrite(Dir_x, LOW);
     }
    else if (Val_Bmag_x > 0.0001)
    {
-      digitalWrite(Dir_x, LOW);
-      Serial.println("Otto: dir_X set to low");
+      digitalWrite(Dir_x, HIGH);
       Current_PWM_value_x =
 	round(
-	   abs(fact_x * Comp_fact_x*Ax_pos_TPWM * Val_Bmag_x + Bx_pos_TPWM)
+	   abs(fact_x * Comp_fact_x*Ax_pos_TPWM * Val_Bmag_x +
+	       Bx_pos_TPWM)
 	     );
       coilPwmWrite(Coil_x, Current_PWM_value_x);
     }
@@ -107,60 +112,65 @@ void field::SetBfieldFast(double Val_Bmag_x, double Val_Bmag_y, double Val_Bmag_
     {
       Current_PWM_value_x = 0;
       coilPwmWrite(Coil_x, Current_PWM_value_x);
-      digitalWrite(Dir_x, LOW);
+      digitalWrite(Dir_x, HIGH);
     }
     
-   if (Val_Bmag_y < -0.0001)
+  if (Val_Bmag_y < -0.0001)
     {
-       Current_PWM_value_y =
-	 round(
-	       abs(fact_y *Comp_fact_y*Ay_neg_TPWM * Val_Bmag_y + By_neg_TPWM)
-	       );
-       coilPwmWrite(Coil_y, Current_PWM_value_y);
-       digitalWrite(Dir_y, HIGH);
-    }
-   else if (Val_Bmag_y > 0.0001)
-   {
-      Current_PWM_value_y = round(abs(fact_y * Comp_fact_y*Ay_pos_TPWM * Val_Bmag_y + By_pos_TPWM));
+      Current_PWM_value_y =
+	round(
+	      abs(fact_y *Comp_fact_y*Ay_neg_TPWM * Val_Bmag_y +
+		  By_neg_TPWM)
+	      );
       coilPwmWrite(Coil_y, Current_PWM_value_y);
       digitalWrite(Dir_y, LOW);
     }
-   else
-   {
+  else if (Val_Bmag_y > 0.0001)
+    {
+      Current_PWM_value_y =
+	round(abs(fact_y * Comp_fact_y*Ay_pos_TPWM * Val_Bmag_y +
+		  By_pos_TPWM));
+      coilPwmWrite(Coil_y, Current_PWM_value_y);
+      digitalWrite(Dir_y, HIGH);
+    }
+  else
+    {
       Current_PWM_value_y = 0;
       coilPwmWrite(Coil_y, Current_PWM_value_y);
-      digitalWrite(Dir_y, LOW);
-   }
-   
-   if (Val_Bmag_z < -0.0001)
-    {
-      Current_PWM_value_z = round(abs(fact_z * Comp_fact_z*Az_neg_TPWM * Val_Bmag_z + Bz_neg_TPWM));
-      coilPwmWrite(Coil_z, Current_PWM_value_z);
-      digitalWrite(Dir_z, HIGH);
+      digitalWrite(Dir_y, HIGH);
     }
-   else if (Val_Bmag_z > 0.0001)
+  
+   if (Val_Bmag_z < -0.0001)
      {
-       Current_PWM_value_z = round(abs(fact_z * Comp_fact_z*Az_pos_TPWM * Val_Bmag_z + Bz_pos_TPWM));
+       Current_PWM_value_z =
+	 round(abs(fact_z * Comp_fact_z*Az_neg_TPWM * Val_Bmag_z +
+		   Bz_neg_TPWM));
        coilPwmWrite(Coil_z, Current_PWM_value_z);
        digitalWrite(Dir_z, LOW);
-    }
+     }
+   else if (Val_Bmag_z > 0.0001)
+     {
+       Current_PWM_value_z =
+	 round(abs(fact_z * Comp_fact_z*Az_pos_TPWM * Val_Bmag_z +
+		   Bz_pos_TPWM));
+       coilPwmWrite(Coil_z, Current_PWM_value_z);
+       digitalWrite(Dir_z, HIGH);
+     }
    else
      {
        Current_PWM_value_z = 0;
        coilPwmWrite(Coil_z, Current_PWM_value_z);
-       digitalWrite(Dir_z, LOW);
+       digitalWrite(Dir_z, HIGH);
      }
-
-    //print the PWM values for debugging
-    Serial.print("PWM_x: ");
-    Serial.println(Current_PWM_value_x);
-    Serial.print("PWM_y: ");
-    Serial.println(Current_PWM_value_y);
-    Serial.print("PWM_z: ");
-    Serial.println(Current_PWM_value_z);
    
-   
- }
+   //print the PWM values for debugging
+   Serial.print("PWM_x: ");
+   Serial.println(Current_PWM_value_x);
+   Serial.print("PWM_y: ");
+   Serial.println(Current_PWM_value_y);
+   Serial.print("PWM_z: ");
+   Serial.println(Current_PWM_value_z);   
+}
 
 
 double field::Current_feedback_calculation(double T_wanted, int Read_pin, double V_current_init, bool gradient, double A_neg, double B_neg, double A_pos, double B_pos, double Comp_fact_prev)
