@@ -30,7 +30,7 @@
 #define	TFTCOLOR_RED       RA8875_RED
 #define	TFTCOLOR_GRAY      0x7B4D
 #define	TFTCOLOR_LIGHTGRAY 0xBDF7
-#define	TFTCOLOR_DARKGRAY  0x7BEF
+#define	TFTCOLOR_DARKGRAY  0x39C2
 #define	TFTCOLOR_GREEN     RA8875_GREEN
 #define	TFTCOLOR_YELLOW    RA8875_YELLOW
 #define	TFTCOLOR_WHITE     RA8875_WHITE
@@ -43,30 +43,56 @@ class screen{
  public:
   screen(); //Constructor
   Adafruit_RA8875 tft = Adafruit_RA8875(TFT_CS, TFT_RST);
-  void setupScreen();
+
+  void setupScreen(double t_minval, double t_maxval,
+		   double g_minval, double g_maxval);
+
+  
   // https://forum.arduino.cc/index.php?topic=203124.0, answer #1:
   void showRecipes(struct recipe recipe_arr[], int N, int cnt);
-  void updateInfo(unsigned int Looppar_1, unsigned int Looppar_2, int16_t program_cnt, const char *filename);
-  void updateGraph(double value, int led);
-  //void setScreenLimit(uint16_t val1, uint16_t val2);
+
+  /* data fields: */
+  void updateInfo(unsigned int Looppar_1, unsigned int Looppar_2,
+		  int16_t program_cnt, int led, const char *filename);
   void updateV(diodes Vdiodes, references Vref, double OD,
 	       feedbacks currents);
-  void updateFILE(const char *str);
+  void updateFILE(char *str);
   void setRecButton(bool active);
 
-  int16_t column_space; //Distance between columns on top
-  int16_t locText_vSpace,locText_hSpace;//Distance between text fields
-  int16_t screenSiz_x,screenSiz_h;//Size of screen
-  int16_t locText_x,locText_y;//Location of top left corner text fields
-  int16_t g_x,g_y,g_w,g_h;//Size of graph area
+  /* graph */
+  void updateGraph(dataPlot *graphArray,
+		   int graphCount, int graphLength,
+		   recipe recArray[], int program);
+  void clearGraph(recipe recArray[], int program);
+  void graphUpdateScale(double g_minVal, double g_maxVal);
+  void graphAutoScale(dataPlot *graphArray,
+		      int graphCount, int graphLength,
+		      recipe recArray[], int program);
+  void graphRecipeLines(recipe recArray[], int program);
+
+  int16_t screenSiz_x = SCRN_HOR; //Size of screen
+  int16_t screenSiz_h = SCRN_VERT;
+
+  //Text area
+  int16_t column_space = 85; //Space between the two columns of text data
+  int16_t locText_vSpace = 12;//Vertical distance between text fields
+  int16_t locText_hSpace = 40;//Horizontal distance between text fields
+  //Graph area
+  int16_t g_x = 40;//Graph area (top left x,y, width, height
+  int16_t g_y = 88;
+  int16_t g_w = SCRN_HOR-g_x-1;
+  int16_t g_h = SCRN_VERT-g_y-12;
   
  private:
-  int16_t g_xCursor, g_xCursor_prev;
-  int16_t V1,V2,Vref,OD;
-  double g_minVal,g_maxVal;
-  double g_value_prev;
-  double value_min;
-  double value_max;
+  // For text fields
+  int16_t locText_x =0;//Location of top left corner text fields
+  int16_t locText_y= 0;
+  int16_t V1,V2,Vref,OD;//Obsolete? LEON
+  
+  // For graph:
+  int lastCount = 0; // Which point was updated last?
+  double g_minVal,g_maxVal; // Min, max value of y range in graph (V)
+  double graphMinScale = 0.010; //Min vertical scale (V)
 };
 
 #endif // Screen_RA8875_h

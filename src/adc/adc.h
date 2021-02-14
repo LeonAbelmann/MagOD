@@ -1,6 +1,6 @@
 /* adc.h
  MagOD libary 
- April 2019
+ December 2020
  Photodiode readout
  Tijmen Hageman, Jordi Hendrix, Hans Keizer, Leon Abelmann 
 */
@@ -8,54 +8,64 @@
 #define adc_h
 
 //#include <Adafruit_ADS1015.h>  // ADC library, now included in standard libraries
+#include "../MagOD_ADS1115/MagOD_ADS1115.h" // Modified Adafruit_ADS1015 lib
+
 
 #include "../../MagOD.h"
 #include "../led/led.h" // Needed for set_vrefs. adc and led are interdepenent. Perhaps solve in MagOD itself. TODO. LEON
 
-/* trying to change the sample rate. The default used by Adafruit_ADS1015 is ADS1015_REG_CONFIG_DR_1600SPS. Standard it has the value (0x0080). The ADS1115 has the following datarates (https://cdn-shop.adafruit.com/datasheets/ads1115.pdf, page 19):
-SPS    Bits [7-5] Hex
-8SPS   000        (0x0000)          
-16SPS  001        (0x0020)  
-32SPS  010        (0x0040)  
-64SPS  011        (0x0060)
-128SPS 100        (0x0080)  (default) 
-250SPS 101        (0x00A0) 
-475SPS 110        (0x00C0) 
-860SPS 111        (0x00E0) 
-
-There is also a conversion delay. It is default at 8 ms (8), speed up by reducing. Somehow we have to change these values into e.g
-
-#define ADS1115_CONVERSIONDELAY         (2)
-#define ADS1015_REG_CONFIG_DR_1600SPS (0x0020)
-
-https://hackaday.io/project/11154-alli-gait-or-analysis/log/44744-need-for-speed-ads1116-library-mod */
-
-
 /* addresses of ADS1115 ADC's */
 #define ADS1115_ADDRESS_0 (0x48) // 1001 000 (ADDR -> GND)
 #define ADS1115_ADDRESS_1 (0x49) // 1001 001 (ADDR -> VDD)
+/* ESP32 pin that the ready pin of the ADC is attached to */
+#define ADS1115_RDY 13                     
+/* samplerate for adc0 */
+#define sampleRateADC0 0 /* Sample rates: 0: 8 SPS, 1: 16 SPS, 2: 32
+			    SPS, 3: 64 SPS, 4: 128 SPS, 5: 250 SPS, 6:
+			    475 SPS 7: 860 SPS */
 
 #if defined(_MAGOD1)
 #define Temp_read //12 //Pin for NTC ADC
 #endif
 /* MagOD2 uses adc1 for reading temperature */
 
+
+/* Definition of the buffer size, how many elements does it have */
+#define bufferSize 1000
+/* Buffer data structure type*/
+typedef struct {
+  uint8_t ch;                 // Channel that was measured on
+  uint16_t val;               // Value that was measured
+  unsigned long time;         // Time of the measurement
+  /* the millis function returns a 32bit value meaning it will
+     overflow after 49 days */
+} bufferData_t;
+
+/* readable names for the ADC channels */
+#define SCAT  0 /* ads0 ADC0 Ain0 scattering photodiode */
+#define DIODE 1 /* ads0 ADC1 Ain1 photodetector */
+#define SPLIT 2 /* ads0 ADC2 Ain2 not connected */
+#define LED   3 /* ads0 ADC3 Ain3 photodiode that measures LED directly */
+#define IX    4 /* ads1 ADC0 A4 x-coils current monitor */
+#define IZ    5 /* ads1 ADC1 A5 y-coils current monitor */
+#define IY    6 /* ads1 ADC1 A6 z-coils current monitor */
+#define NTC   7 /* ads1 ADC3 Ain7 ADCNTC temperature sensor */
+// MagOD1 has DIODE_UP ad 2 DIODE_DOWN at 3.
+
+
 class adc
 {
  public:
   adc();
-#if defined(_MAGOD1)
-  double adsMaxV;  //max voltage that can be measured by the ADC
-#elif defined(_MAGOD2)
-  double adsMaxV0,adsMaxV1;  //max voltages, for two ADCs
-#endif
-  void initADC(); //Start the ADCs with correct amplification
-  void set_vrefs(references &Vref, bool ref_all_wavelength, led myled); //measure reference voltage
-  diodes readDiodes(); // Read the signals from the photodiodes
-  double readTemp(); //Read the temperature sensor
-  feedbacks readFeedbacks();//Read the currents to the coils
+  void       initADC(); /* Start the ADCs with correct amplification,etc */
+  bool       bufferEmpty();//Check if ADC0 buffer has data
+  dataPoint  getDataPoint(); /* Get datapoint and convert*/
+  //measure reference voltage:
+  void       set_vrefs(references &Vref, bool ref_all_wavelength, led myled); 
+  /* diodes     readDiodes(); // Read the signals from the photodiodes */
+  /* double     readTemp(); //Read the temperature sensor */
+  /* feedbacks  readFeedbacks();//Read the currents to the coils */
  private:
-  //none
 };
 
 #endif

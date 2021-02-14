@@ -30,8 +30,9 @@ int Dir_x = 25;                /* direction pin of the coils in the x
 				  direction low: output A of motor
 				  driver is high and B is low
 				  (positive direction), high: output A
-				  of motor driver is low and B is
-				  high (negative direction)*/
+				  of motor driver is low and B is high
+				  (negative direction). See manual
+				  MD13S page 6*/
 int Dir_y = 27;                // direction pin of the coils in the y direction
 int Dir_z = 12;                // direction pin of the coils in the z direction
 
@@ -82,10 +83,10 @@ void setup () {
 const int X=1;
 const int Y=2;
 const int Z=3;
-// int directions[]={Z}; //or {Y}, or {X,Y,Z} :)
-// int num_dir=1;
-int directions[]={X,Y,Z}; //or {Y}, or {X,Y,Z} :)
-int num_dir=3;
+int directions[]={Z}; //or {Y}, or {X,Y,Z} :)
+int num_dir=1;
+// int directions[]={X,Y,Z}; //or {Y}, or {X,Y,Z} :)
+// int num_dir=3;
 
 void loop()
 {
@@ -120,7 +121,7 @@ void loop()
 	Serial.println(Dir_i);
       }
       
-      for (double step = -1; step <= 1; step = step+0.5)
+      for (double step = -1; step <= 1; step = step+0.1)
 	{
 	  /* Set the current direction */
 	  if (step <  0) {digitalWrite(Dir_i, HIGH);};
@@ -134,7 +135,7 @@ void loop()
 	  adc4 = 0;
 	  adc5 = 0;
 	  adc6 = 0;
-	  int N = 100;
+	  int N = 150;
 	  for (int j = 0; j < N; j++)
 	    { ad4 = ads1.readADC_SingleEnded(0);
 	      ad5 = ads1.readADC_SingleEnded(1);

@@ -1,7 +1,7 @@
 # MagOD
-Magnetic Optical Density meter, targeted for analysis of
-magneto-tactic bacteria but also suitable for analysis of suspensions
-of magnetic nanoparticles.
+Magnetic Optical Density meter
+Tijmen Hageman, Jordi Hendrix, Hans Keizer, Marcel Welleweerd, Dave
+van As, Ruthvik Bandaru, Rob Krawinkel, Leon Abelmann.
 
 Tijmen Hageman, Jordi Hendrix, Hans Keizer, Marcel Welleweerd, Dave
 van As, Ruthvik Bandaru, Rob Krawinkel, Leon Abelmann.

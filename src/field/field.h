@@ -143,7 +143,7 @@ class field
   int Current_PWM_value_y; //same but for y
   int Current_PWM_value_z; //same but for z
  
-  uint8_t timer3_seconds_counted = 0;
+  unsigned int timer3_seconds_counted = 0;
   
   double Current_feedback_calculation(double T_wanted, int Read_pin, double V_current_init, bool gradient, double A_neg, double B_neg, double A_pos, double B_pos, double Comp_fact_prev);
   void coilPwmWrite(int Coil, int PWM_value);

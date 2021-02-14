@@ -55,6 +55,15 @@ const double adc5SlopeNeg = 0.00024766;
 const int    adc6Offset   = 12960;
 const double adc6SlopePos = 0.00027076;
 const double adc6SlopeNeg = 0.00024817;
+
+/* Temperature calibration */
+/* See NTCAGLUG02 datasheet */
+const double NTCT     = 25.0; // NTC central temperature
+const double NTCC     = -4.39e-2; //NTC temperature coeff at NTCT
+const double NTCR     = 1.0; /* Ratio between R26=10k and 10 kOhm of
+				NTC at 25oC */
+const double NTCV     = 5.0;  //Drive voltage
+
 #endif
 
 // System that is at KIST Europe
@@ -113,11 +122,19 @@ const double adc5SlopeNeg = 0.00024766;
 const int    adc6Offset   = 12960;
 const double adc6SlopePos = 0.00027076;
 const double adc6SlopeNeg = 0.00024817;
+
+/* See NTCAGLUG02 datasheet */
+/* Temperature calibration */
+const double NTCT     = 25.0; // NTC central temperature
+const double NTCC     = -4.39e-2; //NTC temperature coeff at NTCT
+const double NTCR     = 1.0; /* Ratio between R26=10k and 10 kOhm of
+				NTC at 25oC */
+const double NTCV     = 5.0;  //Drive voltage
+
 #endif
 
 #if defined(_BAYREUTH)
 /* RA8875 Touchscreen calibration. Run adapted ts_calibration.ino (Testfunctions/MagOD2/TestTFT50/ts_calibration/)*/
-
 
 # define TOUCH_DIVIDER -360072
 # define TOUCH_An      188736
@@ -170,8 +187,82 @@ const double adc6SlopeNeg = -0.000223; /* not working properly */
 const int    adc5Offset   = 13050;
 const double adc5SlopePos = -0.000238;
 const double adc5SlopeNeg = -0.000238;
+
+/* Temperature calibration */
+/* See NTCAGLUG02 datasheet */
+const double NTCT     = 25.0; // NTC central temperature
+const double NTCC     = -4.39e-2; //NTC temperature coeff at NTCT
+const double NTCR     = 1.0; /* Ratio between R26=10k and 10 kOhm of
+				NTC at 25oC */
+const double NTCV     = 5.0;  //Drive voltage
+
 #endif
 
 #if defined(_ASTON)
-/* RA8875 Touchscreen calibration. Run adapted ts_calibration.ino (Testfunctions/MagOD2/TestTFT50/)*/
+/* Mirror TFT screen (determines what is the front of the controller) */
+const bool mirror_tft = true;
+
+/* RA8875 Touchscreen calibration. Run adapted ts_calibration.ino (Testfunctions/MagOD2/TestTFT50/ts_calibration/)*/
+# define TOUCH_DIVIDER -353559
+# define TOUCH_An      188736
+# define TOUCH_Bn      768
+# define TOUCH_Cn      -184074960
+# define TOUCH_Dn      -545
+# define TOUCH_En      117611
+# define TOUCH_Fn      -106917755
+
+
+/* PWM to current calibration */
+/* B>0:PWM_value=abs(Ax_pos_TPWM * Val_Bmag_x + Bx_pos_TPWM) */
+/* B<0 PWM_value=abs(Ax_neg_TPWM * Val_Bmag_x + Bx_neg_TPWM) same for
+   Ay, Az etc.*/
+/* In first order at full range, 255 PWM is 12V, we measured 2.5A and
+   5.6 mT. 255 bit/5.6mT = 45 bit/mT */
+/* You can calibrate the coils using TestCurrentCalibration.ino  */
+/* In CurrentCalibration.ods you will find the current as
+   function of PWM, in terms of A/bit. To get Ax_neg_TPMW in bits/mT
+   take 1/(slope*mtPerAmp). 0.01356 A/bit and 1.5 mT/A gives
+   Ax_neg_TPWM=-49.1584 bit/mT
+*/  
+  const double Ax_neg_TPWM = 48.1; 
+  const double Bx_neg_TPWM = 0; 
+  const double Ax_pos_TPWM = 48.0;
+  const double Bx_pos_TPWM = 0; 
+
+  const double Ay_neg_TPWM = 48.6; 
+  const double By_neg_TPWM = 0; 
+  const double Ay_pos_TPWM = 48.7; 
+  const double By_pos_TPWM = 0; 
+
+  const double Az_neg_TPWM = 51.9; 
+  const double Bz_neg_TPWM = 0; 
+  const double Az_pos_TPWM = 52.9; 
+  const double Bz_pos_TPWM = 0;
+
+/* Current calibration */
+/* We assume calibration is done at GAIN_ONE. Use the testprogram
+   TestCurrentCalibration.ino and a multimeter to get the relation
+   between ADC bits and currents. See CurrentCalibration.ods*/
+/* ADC 4 measures current in X-direction */
+const int    adc4Offset   = 12955;
+const double adc4SlopePos = -0.000238;
+const double adc4SlopeNeg = -0.000238; /* not working properly! */
+  /* ADC 6 measures current in Y-direction !!!*/
+const int    adc6Offset   = 13199;
+const double adc6SlopePos = -0.000240;
+const double adc6SlopeNeg = -0.000223; /* not working properly */
+/* ADC 5 measures current in Z-direction !!!*/
+const int    adc5Offset   = 13050;
+const double adc5SlopePos = -0.000238;
+const double adc5SlopeNeg = -0.000238;
+
+/* Temperature calibration */
+/* See NTCAGLUG02 datasheet */
+const double NTCT = 25.0; // NTC central temperature
+const double NTCC = -4.39e-2; //NTC temperature coeff at NTCT
+const double NTCR = 0.3204; /* Ratio between R26=3.204k and 10 kOhm of
+				NTC at 25oC */
+const double NTCV = 5.0;  //Drive voltage
+
+
 #endif

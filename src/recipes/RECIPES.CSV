@@ -9,15 +9,16 @@
 ,,,,,,,,,
 ,,,,,,,,,
 @,Recipe,Cmag Green,,,,,,,
+#,For Cmag measurement at 1 and 0.5 mT,,,,,,,,
 #,"If N_cycles = 0, run indefinitely",,,,,,,,
 @,N_cycles,0,,,,,,,
 @,Sequence,,,,,,,,
 #,B_x[mT],B_y[mT],B_z[mT],T_switch[s],LED Color,LED Intensity [0-255],Grad_x,Grad_y,Grad_z
-,0.5,0,0,10,GREEN,230,1,1,1
-,0,1,0,20,GREEN,230,1,1,1
-,1,0,0,20,GREEN,230,1,1,1
-,0,0.5,0,30,GREEN,230,1,1,1
-,0.5,0,0,29.5,GREEN,230,1,1,1
+,0.5,0,0,10,GREEN,40,1,1,1
+,0,1,0,20,GREEN,40,1,1,1
+,1,0,0,20,GREEN,40,1,1,1
+,0,0.5,0,30,GREEN,40,1,1,1
+,0.5,0,0,30,GREEN,40,1,1,1
 @,EndSequence,,,,,,,,
 @,EndRecipe,,,,,,,,
 ,,,,,,,,,
@@ -26,11 +27,11 @@
 @,N_cycles,0,,,,,,,
 @,Sequence,,,,,,,,
 #,B_x[mT],B_y[mT],B_z[mT],T_switch[s],LED Color,LED Intensity [0-255],Grad_x,Grad_y,Grad_z
-,0.5,0,0,10,RED,95,1,1,1
-,0,1,0,20,RED,95,1,1,1
-,1,0,0,20,RED,95,1,1,1
-,0,0.5,0,30,RED,95,1,1,1
-,0.5,0,0,29.5,RED,95,1,1,1
+,0.5,0,0,10,RED,5,1,1,1
+,0,1,0,20,RED,5,1,1,1
+,1,0,0,20,RED,5,1,1,1
+,0,0.5,0,30,RED,5,1,1,1
+,0.5,0,0,30,RED,5,1,1,1
 @,EndSequence,,,,,,,,
 @,EndRecipe,,,,,,,,
 ,,,,,,,,,
@@ -39,37 +40,43 @@
 @,N_cycles,0,,,,,,,
 @,Sequence,,,,,,,,
 #,B_x[mT],B_y[mT],B_z[mT],T_switch[s],LED Color,LED Intensity [0-255],Grad_x,Grad_y,Grad_z
-,0.5,0,0,10,BLUE,175,1,1,1
-,0,1,0,20,BLUE,175,1,1,1
-,1,0,0,20,BLUE,175,1,1,1
-,0,0.5,0,30,BLUE,175,1,1,1
-,0.5,0,0,29.5,BLUE,175,1,1,1
+,0.5,0,0,10,BLUE,20,1,1,1
+,0,1,0,20,BLUE,20,1,1,1
+,1,0,0,20,BLUE,20,1,1,1
+,0,0.5,0,30,BLUE,20,1,1,1
+,0.5,0,0,30,BLUE,20,1,1,1
 @,EndSequence,,,,,,,,
 @,EndRecipe,,,,,,,,
 ,,,,,,,,,
-@,Recipe,MRT  Green,,,,,,,
-@,N_cycles,0,,,,,,,
+@,Recipe,MRT Green,,,,,,,
+#,"Determine velocity of MC-1, first collect them at bottom, than send them up",,,,,,,,
+@,N_cycles,1,,,,,,,
 @,Sequence,,,,,,,,
 #,B_x[mT],B_y[mT],B_z[mT],T_switch[s],LED Color,LED Intensity [0-255],Grad_x,Grad_y,Grad_z
-,0,0,1,800,GREEN,95,1,1,1
-,0,0,-1,100,GREEN,95,1,1,1
+,0,0,1,800,GREEN,30,1,1,1
+,0,0,-1,200,GREEN,30,1,1,1
 @,EndSequence,,,,,,,,
 @,EndRecipe,,,,,,,,
 ,,,,,,,,,
-@,Recipe,MRT  Red,,,,,,,
-@,N_cycles,0,,,,,,,
+@,Recipe,Scan Int,,,,,,,
+#,"Scan the LED intensity, to determine working range",,,,,,,,
+@,N_cycles,1,,,,,,,
 @,Sequence,,,,,,,,
 #,B_x[mT],B_y[mT],B_z[mT],T_switch[s],LED Color,LED Intensity [0-255],Grad_x,Grad_y,Grad_z
-,0,0,1,800,RED,230,1,1,1
-,0,0,-1,100,RED,230,1,1,1
-@,EndSequence,,,,,,,,
-@,EndRecipe,,,,,,,,
-,,,,,,,,,
-@,Recipe,MRT  Blue,,,,,,,
-@,N_cycles,0,,,,,,,
-@,Sequence,,,,,,,,
-#,B_x[mT],B_y[mT],B_z[mT],T_switch[s],LED Color,LED Intensity [0-255],Grad_x,Grad_y,Grad_z
-,0,0,1,800,BLUE,175,1,1,1
-,0,0,-1,100,BLUE,175,1,1,1
+,0,0,0,5,RED,10,1,1,1
+,0,0,0,5,RED,20,1,1,1
+,0,0,0,5,RED,30,1,1,1
+,0,0,0,5,RED,40,1,1,1
+,0,0,0,5,RED,50,1,1,1
+,0,0,0,5,GREEN,10,1,1,1
+,0,0,0,5,GREEN,20,1,1,1
+,0,0,0,5,GREEN,30,1,1,1
+,0,0,0,5,GREEN,40,1,1,1
+,0,0,0,5,GREEN,50,1,1,1
+,0,0,0,5,BLUE,10,1,1,1
+,0,0,0,5,BLUE,20,1,1,1
+,0,0,0,5,BLUE,30,1,1,1
+,0,0,0,5,BLUE,40,1,1,1
+,0,0,0,5,BLUE,50,1,1,1
 @,EndSequence,,,,,,,,
 @,EndRecipe,,,,,,,,

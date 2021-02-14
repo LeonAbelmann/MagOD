@@ -1,8 +1,9 @@
 /* buttons.cpp
  MagOD2 libary 
- Feb 2020
+ Jan 2021
  Controls buttons (joystick for MagOD1, touchscreen for MagOD2)
- Tijmen Hageman, Jordi Hendrix, Hans Keizer, Leon Abelmann 
+ Tijmen Hageman, Jordi Hendrix, Hans Keizer, Leon Abelmann */
+/* Updated in 2.4 with button for autoscale graph
 */
 
 #include "Arduino.h"
@@ -89,10 +90,17 @@ boolean getTouchCoordinates(uint16_t *x, uint16_t *y){
     { 
       /* Calculate screen position */
       calibrateTSPoint(&calibrated, &raw, &_tsMatrix );
-      *x=(uint16_t)calibrated.x; /*Typecast into int. number of points
-				   on screen is limited, we should be
-				   fine. */
-      *y=(uint16_t)calibrated.y;
+      /* If we mirror the display, than also mirror the touchscreen! */
+      if (not mirror_tft) {
+	*x=(uint16_t)calibrated.x; /*Typecast into int. number of points
+				     on screen is limited, we should be
+				     fine. */
+	*y=(uint16_t)calibrated.y;
+      }
+      else {
+	*x = SCRN_HOR  - (uint16_t)calibrated.x ;
+	*y = SCRN_VERT - (uint16_t)calibrated.y ;
+      }
       return true; /* We had enough points */
     }
 }      
@@ -198,6 +206,13 @@ int buttons::whichButton(int x, int y){
       (y > buttonOffset_y+size_y)         &&
       (y < buttonOffset_y+2*size_y)) {
     buttonpressed = BUTTON_PREVRECIPE;}
+  // Button BUTTON_GRAPH, pressed in graph area
+  int x0 = myscreen.g_x;
+  int x1 = myscreen.g_x + myscreen.g_w;
+  int y0 = myscreen.g_y;
+  int y1 = myscreen.g_y + myscreen.g_h;
+  if ((x > x0) && (x < x1) && (y > y0) && (y < y1)) {
+    buttonpressed = BUTTON_GRAPH;}
   return buttonpressed;
 }
 #endif //defined(_MAGOD2)
@@ -252,7 +267,7 @@ void buttons::initButton(){
 }
 
 //Is there a button pressed. If so, which one?
-uint8_t buttons::readButton() {
+int buttons::readButton() {
 #if defined(_MAGOD1)
   /* converts voltage of button into a direction */
   float a = analogRead(3);
@@ -312,6 +327,12 @@ uint8_t buttons::readButton() {
 	      showButtonArea(BUTTON_PREVRECIPE, (char *)"Prev recipe",
 			     TFTCOLOR_WHITE, TFTCOLOR_BLACK);
 	      return BUTTON_PREVRECIPE;
+
+	      // BUTTON_GRAPH is for autoscale graph
+	    case BUTTON_GRAPH :
+	      Serial. println("Button: BUTTON_GRAPH");
+	      // no need tos show button area
+	      return BUTTON_GRAPH;
 
 	    default:
 	      Serial. println("0: BUTTON_NONE");

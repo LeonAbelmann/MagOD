@@ -1,4 +1,5 @@
-/* MagOD_ADS1115.h
+/**************************************************************************/
+/* MagOD_ADS1115.cpp
    MagOD libary 
    April 2020
    Adafruit_ADS1015 optmized for MagOD
@@ -6,7 +7,8 @@
 
 Introduced interupt based single shot readout, startReadADC(channel) and getADC(). Also added correct bit patterns for sampling rate ADS1115
 
-From: 
+Adapted from: 
+
     @file     Adafruit_ADS1015.cpp
     @author   K.Townsend (Adafruit Industries)
     @license  BSD (see license.txt)
@@ -92,20 +94,20 @@ static uint16_t readRegister(uint8_t i2cAddress, uint8_t reg) {
     @brief  Instantiates a new ADS1015 class w/appropriate properties
 */
 /**************************************************************************/
-// MagOD_ADS1015::MagOD_ADS1015(uint8_t i2cAddress) 
-// {
-//    m_i2cAddress = i2cAddress;
-//    m_conversionDelay = ADS1015_CONVERSIONDELAY;
-//    m_bitShift = 4;
-//    m_gain = GAIN_TWOTHIRDS; /* +/- 6.144V range (limited to VDD +0.3V max!) */
-// }
+Adafruit_ADS1015::Adafruit_ADS1015(uint8_t i2cAddress) 
+{
+   m_i2cAddress = i2cAddress;
+   m_conversionDelay = ADS1015_CONVERSIONDELAY;
+   m_bitShift = 4;
+   m_gain = GAIN_TWOTHIRDS; /* +/- 6.144V range (limited to VDD +0.3V max!) */
+}
 
 /**************************************************************************/
 /*!
     @brief  Instantiates a new ADS1115 class w/appropriate properties
 */
 /**************************************************************************/
-MagOD_ADS1115::MagOD_ADS1115(uint8_t i2cAddress)
+Adafruit_ADS1115::Adafruit_ADS1115(uint8_t i2cAddress)
 {
    m_i2cAddress = i2cAddress;
    m_conversionDelay = ADS1115_CONVERSIONDELAY;
@@ -118,7 +120,7 @@ MagOD_ADS1115::MagOD_ADS1115(uint8_t i2cAddress)
     @brief  Sets up the HW (reads coefficients values, etc.)
 */
 /**************************************************************************/
-void MagOD_ADS1115::begin() {
+void Adafruit_ADS1015::begin() {
   Wire.begin();
 }
 
@@ -127,7 +129,7 @@ void MagOD_ADS1115::begin() {
     @brief  Sets the gain and input voltage range
 */
 /**************************************************************************/
-void MagOD_ADS1115::setGain(adsGain_t gain)
+void Adafruit_ADS1015::setGain(adsGain_t gain)
 {
   m_gain = gain;
 }
@@ -137,7 +139,7 @@ void MagOD_ADS1115::setGain(adsGain_t gain)
     @brief  Gets a gain and input voltage range
 */
 /**************************************************************************/
-adsGain_t MagOD_ADS1115::getGain()
+adsGain_t Adafruit_ADS1015::getGain()
 {
   return m_gain;
 }
@@ -147,7 +149,7 @@ adsGain_t MagOD_ADS1115::getGain()
     @brief  Gets a single-ended ADC reading from the specified channel
 */
 /**************************************************************************/
-uint16_t MagOD_ADS1115::readADC_SingleEnded(uint8_t channel) {
+uint16_t Adafruit_ADS1015::readADC_SingleEnded(uint8_t channel) {
   if (channel > 3)
   {
     return 0;
@@ -204,7 +206,7 @@ uint16_t MagOD_ADS1115::readADC_SingleEnded(uint8_t channel) {
             positive or negative.
 */
 /**************************************************************************/
-int16_t MagOD_ADS1115::readADC_Differential_0_1() {
+int16_t Adafruit_ADS1015::readADC_Differential_0_1() {
   // Start with default values
   uint16_t config = ADS1015_REG_CONFIG_CQUE_NONE    | // Disable the comparator (default val)
                     ADS1015_REG_CONFIG_CLAT_NONLAT  | // Non-latching (default val)
@@ -255,7 +257,7 @@ int16_t MagOD_ADS1115::readADC_Differential_0_1() {
             positive or negative.
 */
 /**************************************************************************/
-int16_t MagOD_ADS1115::readADC_Differential_2_3() {
+int16_t Adafruit_ADS1015::readADC_Differential_2_3() {
   // Start with default values
   uint16_t config = ADS1015_REG_CONFIG_CQUE_NONE    | // Disable the comparator (default val)
                     ADS1015_REG_CONFIG_CLAT_NONLAT  | // Non-latching (default val)
@@ -307,7 +309,7 @@ int16_t MagOD_ADS1115::readADC_Differential_2_3() {
             This will also set the ADC in continuous conversion mode.
 */
 /**************************************************************************/
-void MagOD_ADS1115::startComparator_SingleEnded(uint8_t channel, int16_t threshold)
+void Adafruit_ADS1015::startComparator_SingleEnded(uint8_t channel, int16_t threshold)
 {
   // Start with default values
   uint16_t config = ADS1015_REG_CONFIG_CQUE_1CONV   | // Comparator enabled and asserts on 1 match
@@ -353,7 +355,7 @@ void MagOD_ADS1115::startComparator_SingleEnded(uint8_t channel, int16_t thresho
             results without changing the config value.
 */
 /**************************************************************************/
-int16_t MagOD_ADS1115::getLastConversionResults()
+int16_t Adafruit_ADS1015::getLastConversionResults()
 {
   // Wait for the conversion to complete
   delay(m_conversionDelay);
@@ -377,14 +379,21 @@ int16_t MagOD_ADS1115::getLastConversionResults()
   }
 }
 
-/* New functions for MagOD interupt based. From manual, page 15 */
 
-/* CONVERSION READY PIN (ADS1114/5 ONLY)
-   The ALERT/RDY pin can also be configured as a conversion ready pin. This mode of operation can be realized if the MSB of the high threshold register is set to '1' and the MSB of the low threshold register is set to '0'. The COMP_POL bit continues to function and the COMP_QUE bits can disable the pin; however, the COMP_MODE and COMP_LAT bits no longer control any function. When configured as a conversion ready pin, ALERT/RDY continues to require a pull-up resistor. When in continuous conversion mode, the ADS1113/4/5 provide a brief (~8 microsecond) pulse on the ALERT/RDY pin at the end of each conversion. When in single-shot shutdown mode, the ALERT/RDY pin asserts low at the end of a conversion if the COMP_POL bit is set to '0'.*/
+/* **********************************************************************/
+/* New functions for MagOD interupt based sampling.  */
+/* 
+**********************************************************************/
+/* Manual: SBAS444B -MAY 2009-REVISED OCTOBER 2009,  https://www.mouser.com/datasheet/2/405/sbas444b-92533.pdf, also available in MagOD Datasheet directory under ads1115.pdf. 
 
-void MagOD_ADS1115::startReadADC(uint8_t channel, int SPS) {
+From manual ADS1115, page 15
+
+CONVERSION READY PIN (ADS1114/5 ONLY)
+The ALERT/RDY pin can also be configured as a conversion ready pin. This mode of operation can be realized if the MSB of the high threshold register is set to '1' and the MSB of the low threshold register is set to '0'. The COMP_POL bit continues to function and the COMP_QUE bits can disable the pin; however, the COMP_MODE and COMP_LAT bits no longer control any function. When configured as a conversion ready pin, ALERT/RDY continues to require a pull-up resistor. When in continuous conversion mode, the ADS1113/4/5 provide a brief (~8 microsecond) pulse on the ALERT/RDY pin at the end of each conversion. When in single-shot shutdown mode, the ALERT/RDY pin asserts low at the end of a conversion if the COMP_POL bit is set to '0'.*/
+
+void Adafruit_ADS1015::startReadADC(uint8_t channel, int SPS) {
   uint16_t SPSSetting; // Sampling rate
-  /* 
+  /* SPS:
      0 : 8SPS
      1 : 16SPS
      2 : 32SPS
@@ -410,6 +419,18 @@ void MagOD_ADS1115::startReadADC(uint8_t channel, int SPS) {
   case (0) : SPSSetting = ADS1115_REG_CONFIG_DR_8SPS;
     break;
   case (1) : SPSSetting = ADS1115_REG_CONFIG_DR_16SPS;
+    break;
+  case (2) : SPSSetting = ADS1115_REG_CONFIG_DR_32SPS;
+    break;
+  case (3) : SPSSetting = ADS1115_REG_CONFIG_DR_64SPS;
+    break;
+  case (4) : SPSSetting = ADS1115_REG_CONFIG_DR_128SPS;
+    break;
+  case (5) : SPSSetting = ADS1115_REG_CONFIG_DR_250SPS;
+    break;
+  case (6) : SPSSetting = ADS1115_REG_CONFIG_DR_475SPS;
+    break;
+  case (7) : SPSSetting = ADS1115_REG_CONFIG_DR_860SPS;
     break;
   }
   
@@ -448,10 +469,9 @@ void MagOD_ADS1115::startReadADC(uint8_t channel, int SPS) {
   writeRegister(m_i2cAddress, ADS1015_REG_POINTER_CONFIG, config);
 }
 
-uint16_t MagOD_ADS1115::getADC() {
+uint16_t Adafruit_ADS1015::getADC() {
   /* Read the conversion results, shift to 12 bit for ADS1015
      (m_bitShift=0 for ADS1115.*/
   return readRegister(m_i2cAddress, ADS1015_REG_POINTER_CONVERT) >> m_bitShift;
 }
-
 

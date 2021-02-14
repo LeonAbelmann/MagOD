@@ -1,7 +1,7 @@
 /*
     Simulate the writing to the SD card on one core at 8Hz, measure the performance
     Have the WiFi accessible SD card on the other core, measure performance
-    Run both simulatanuously and measure performance
+    Run both simulatanuously and measure performance#include <WebServer.h>
 
     Designed and tested by Rob Kräwinkel 20-05-2020
 */
@@ -46,8 +46,7 @@ void returnFail(String msg) {
 }
 
 void loadFromSdCard(String path) {
-    
-    File requestedFile = SD.open((char *)path.c_str());
+  File requestedFile = SD.open((char *)path.c_str());
     if (requestedFile.isDirectory()) {
         printDirectory(requestedFile);
         requestedFile.close();
