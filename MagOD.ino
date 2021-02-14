@@ -938,7 +938,6 @@ void setup()
 /* Main loop */
 void loop()
 {
-  mistake
   /* Check if there are datapoints in the buffer */
   if (not myadc.bufferEmpty()) {
     /* get the next datapoint */

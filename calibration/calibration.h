@@ -2,6 +2,9 @@
 
 // System that is at CEA Cadarache
 #if defined(_CEA)
+/* Mirror TFT screen (determines what is the front of the controller) */
+const bool mirror_tft = true;
+
 /* RA8875 Touchscreen calibration. Run adapted ts_calibration.ino (Testfunctions/MagOD2/TestTFT50/)*/
 # define TOUCH_DIVIDER -339148
 # define TOUCH_An      182400
@@ -68,6 +71,9 @@ const double NTCV     = 5.0;  //Drive voltage
 
 // System that is at KIST Europe
 #if defined(_KIST)
+/* Mirror TFT screen (determines what is the front of the controller) */
+const bool mirror_tft = false;
+
 /* RA8875 Touchscreen calibration. Run adapted ts_calibration.ino (Testfunctions/MagOD2/TestTFT50/)*/
 # define TOUCH_DIVIDER -339256
 # define TOUCH_An      178944
@@ -134,6 +140,9 @@ const double NTCV     = 5.0;  //Drive voltage
 #endif
 
 #if defined(_BAYREUTH)
+/* Mirror TFT screen (determines what is the front of the controller) */
+const bool mirror_tft = true;
+
 /* RA8875 Touchscreen calibration. Run adapted ts_calibration.ino (Testfunctions/MagOD2/TestTFT50/ts_calibration/)*/
 
 # define TOUCH_DIVIDER -360072
