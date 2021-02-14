@@ -15,7 +15,7 @@ fileandserial::fileandserial(){
 
 void writeHeader(File datfile){
   /* Create file and write header line */
-  datfile.print("# Time[ms],Looppar,Vdiode[V],Vled[V],Vscat[V],");
+  datfile.print("# Time[ms],Looppar,Vdiode[V],Vscat[V],Vled[V],");
   datfile.println("Temperature[C],Ix[A],Iy[A],Iz[A],LED_type");
   Serial.println("Done");  
 }
@@ -26,15 +26,15 @@ void writeDataPointInFile (File datfile,
 			   int Looppar_1)
 {
   /* Data order see writeHeader() : */
-  /* Time, Looppar_1, Vdiode, Vled, Vscat, Temperature, Ix, Iy, Yz,
+  /* Time, Looppar_1, Vdiode, Vscat, Vled, Temperature, Ix, Iy, Yz,
      LED_type */
   int sn = 4; //Significant numbers for printing ADC voltages
   datfile.print(data.time); datfile.print(",");
   datfile.print(Looppar_1); datfile.print(",");
   //Serial.print("writeDataPointInFile: channel: ");Serial.println(data.channel);
-  if (data.channel == LED  ) {datfile.print(data.val,sn);};datfile.print(",");
-  if (data.channel == SCAT ) {datfile.print(data.val,sn);};datfile.print(",");
   if (data.channel == DIODE) {datfile.print(data.val,sn);};datfile.print(",");
+  if (data.channel == SCAT ) {datfile.print(data.val,sn);};datfile.print(",");
+  if (data.channel == LED  ) {datfile.print(data.val,sn);};datfile.print(",");
   if (data.channel == NTC  ) {datfile.print(data.val,sn);};datfile.print(",");
   if (data.channel == IX   ) {datfile.print(data.val,sn);};datfile.print(",");
   if (data.channel == IY   ) {datfile.print(data.val,sn);};datfile.print(",");
@@ -42,12 +42,32 @@ void writeDataPointInFile (File datfile,
   datfile.println(LED_type);
 }
 
+/* Convert number to string with fixed length Ndigits by prepending
+   zero's if necessary. Prepend - for negative numbers*/
+String toDigits(int number, int Ndigits){
+  String s;
+  if (number<0) {
+    s = "-";
+    number = -number;
+  }
+  else {
+    s = "";
+  }
+  long power = pow(10,(Ndigits-1)); // E.g Ndigits=3, power=100
+  /* E.g. when n=142, do nothing. When n=42, add one zero. When
+     number=0, s= Ndigit zeros (eg. "000") */
+  while ((number < power) and (power>1)) {
+    s = s + "0";
+    power = power/10;
+  }
+  s = s + number;
+  return s;
+}
+
 //Saves a settings file with the settings of the current program
 void fileandserial::saveSettingsFile(char fName_char[]){
   //Create filename for settings, like f42/sett.csv
-  String fName_settings_str = "/f";
-    fName_settings_str = fName_settings_str + dir_number +
-    "/sett.csv";
+  String fName_settings_str = "/f" +toDigits(dir_number,3) +"/sett.csv";
   char fName_settings_char[17];
   fName_settings_str.toCharArray(fName_settings_char, 17);
   //Serial.println(fName_settings_str);
@@ -190,13 +210,14 @@ void fileandserial::writeDataLine(Stream &file,
 }
 
 
+
 /* finds a directory name that has not been used on the microSD card */
 void fileandserial::setDirName(char dirName_char[]){
   int i=0;
   String dirName_str;
   //Keeps looping until found
   while (true){
-    dirName_str = "/f" + (String)i; /* Not sure if MagOD1 understands
+    dirName_str = "/f" + toDigits(i,3); /* Not sure if MagOD1 understands
 				       the /, LEON */
     /* Convert string to char array */
     dirName_str.toCharArray(dirName_char, fN_len);
@@ -214,30 +235,34 @@ void fileandserial::setDirName(char dirName_char[]){
   }
 }
 
+  
 /* Creates the first file in a new directory on the SD card */
 void fileandserial::setFileName(char fName_char[]){
   char dirName_char[fN_len];
   /* Find an directory name that has not yet been used */
   setDirName(dirName_char);
-  /* Create file, with same name as directory. Like /f42/f42_0.csv.
+  /* Create file. Like /f042/f0000.csv.
      Not sure if MagOD1 understands the /, LEON */
   String fName_str(dirName_char); // Convert char array to string
-  fName_str = fName_str + "/f" + dir_number + "_0.csv"; //Add filename
+  fName_str = fName_str + "/f0000.csv"; //Add filename
   fName_str.toCharArray(fName_char, fN_len);
   //prints for debugging
   Serial.print("Filename = ");Serial.println(fName_char);
   file_number = 1;
 }
 
-/*when a field sequence has finished, a new file is made with the same name + the addition of "_i" with i = 1,2,3,4,5.... */
+/*when a field sequence has finished, a new file is made with filename
+  incremented */
 File fileandserial::newDataFile(File datfile){
   /* Close the previous datafile */
   Serial.print("Closing : ");Serial.println(fName_char);
   datfile.close();
-  /* Create a new filename, like /f42/f42_1.cvs */
-  String fName_str = "/f"; 
-  fName_str = fName_str + dir_number + "/f" + dir_number +"_" +
-	  file_number +".csv";
+  /* Create a new filename, maximum is /f999/f9999.csv */
+  // convert dir number to three digits
+  String dirstring = toDigits(dir_number,3);
+  // convert file number to four digits
+  String filestring = toDigits(file_number,4);
+  String fName_str = "/f" + dirstring + "/f" + filestring +".csv";
   fName_str.toCharArray(fName_char, fN_len);
   file_number = file_number + 1;
   Serial.print("New datafile: ");Serial.print(fName_str);

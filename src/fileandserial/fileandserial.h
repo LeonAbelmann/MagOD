@@ -15,7 +15,7 @@ class fileandserial
  public:
   fileandserial(); //constructor
   // File name parameters. 
-  static const int fN_len = 17; //Max filename length
+  static const int fN_len = 17; //Max filename length f000/f000_000.csv
   char fName_char[fN_len]; //Array to keep filename (including directory name!)
   
   /* SD2Card only defined for Arduino's */

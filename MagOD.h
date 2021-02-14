@@ -1,6 +1,6 @@
 /* MagOD.h
  MagOD libary 
- Dec 2020
+ Feb 2021
  Struct definitions, global (external) variables
  Leon Abelmann 
 */
@@ -8,9 +8,9 @@
 #define _MagOD_h
 
 /* Define which system you compile for, outcomment only one */
-//#define _CEA
+#define _CEA
 //#define _BAYREUTH
-#define _ASTON
+//#define _ASTON
 //#define _KIST_1
 //#define _KIST
 #include "calibration/calibration.h"

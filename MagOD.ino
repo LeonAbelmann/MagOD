@@ -38,7 +38,8 @@ float freq_meas = 1; /* Measurement frequency for ADC1 (currents,
 #endif
 float freq_screen = 4; //Screen update frequency in Hz
 
-/* Do you want Wifi :) */
+/* Do you want Wifi :). Make sure password.h is present, see under FTP
+   server for details */
 bool wifi = true;
 
 /* Program menu settings */
@@ -314,6 +315,7 @@ void startRec()
       dataPoint trash = myadc.getDataPoint();
       Serial.print(".");
     }
+    Serial.println();
     graphCount = 0; // Clear data array
 
     myscreen.clearGraph(recipes_array, program_cnt);; //Clear graph
@@ -936,6 +938,7 @@ void setup()
 /* Main loop */
 void loop()
 {
+  mistake
   /* Check if there are datapoints in the buffer */
   if (not myadc.bufferEmpty()) {
     /* get the next datapoint */
@@ -960,36 +963,37 @@ void loop()
   int meastime = currenttime - time_last_field_change;
   if ((meastime >= Switching_time[Looppar_1]) && (Exit_program_1 == LOW)) {
     Looppar_1 = Looppar_1+1;
-    Serial.print("Loop: Updating Looppar_1 to : ");
-    Serial.println(Looppar_1);
-    if (Looppar_1 > B_nr_set){ /* when larger than total number of
-				  values in the array, go back to
-				  first value */
-      Looppar_1 = 0; /* If we go back to 1 here, we have our
-			initialization cycle! LEON */
-      /* create a new data file */
-      dataFile = myfile.newDataFile(dataFile);
-      /* Update display */
-      myscreen.updateFILE(myfile.fName_char);
-      /* Reset the graph */
-      graphCount      = 0; 
-      startTime       = millis(); //Inaccurate, but simple. LEON
-
-      Looppar_2++; // Counts number of times a cycle has completed
-      //check whether the program should end if Nr_cylces is set:
-      if (Nr_cycles != 0 && Looppar_2 >= Nr_cycles) {
-	stopRec();
-      }
-    }
-    
     // For debugging:
     Serial.println("-------------------------------------------------");
     Serial.print("Looppar 1: ");Serial.println(Looppar_1);
     Serial.print("Total measurement time: ");
     Serial.println(currenttime - time_of_start);
     Serial.print("Time of this step     :");Serial.println(meastime);
-    // Go to next step in field sequence:
-    SetBfield_array(Looppar_1);
+    /* when larger than total number of values in the array, wrap
+       over */
+    if (Looppar_1 > B_nr_set){ 
+      Looppar_1 = 0; /* If we go back to 1 here, we have our
+			initialization cycle! LEON */
+      Looppar_2++; // Counts number of times a cycle has completed
+      /* check whether the program should end if Nr_cylces is set: */
+      if (Nr_cycles != 0 && Looppar_2 >= Nr_cycles) {
+	stopRec();
+      }
+      else {
+	/* create a new data file */
+	dataFile = myfile.newDataFile(dataFile);
+	/* Update display */
+	myscreen.updateFILE(myfile.fName_char);
+	/* Reset the graph */
+	graphCount      = 0; 
+	startTime       = millis(); //Inaccurate, but simple. LEON
+      }
+    }
+    /* Go to next step in field sequence */
+    SetBfield_array(Looppar_1); /* Does not do anything if Looppar_2
+				   >= Nr_cycles because stopRec sets
+				   Exit_program = HIGH */
+    
     return;/* Jump to start of loop to make sure we don't miss
 	      datapoints */
   }
