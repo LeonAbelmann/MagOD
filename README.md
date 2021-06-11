@@ -3,9 +3,6 @@ Magnetic Optical Density meter
 Tijmen Hageman, Jordi Hendrix, Hans Keizer, Marcel Welleweerd, Dave
 van As, Ruthvik Bandaru, Rob Krawinkel, Leon Abelmann.
 
-Tijmen Hageman, Jordi Hendrix, Hans Keizer, Marcel Welleweerd, Dave
-van As, Ruthvik Bandaru, Rob Krawinkel, Leon Abelmann.
-
 KIST Europe, University of Twente
 
 ## Other sources
