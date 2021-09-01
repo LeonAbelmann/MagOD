@@ -25,7 +25,7 @@ const uint32_t Frequency_PWM = 20000;    //set the pwm frequency of the coil-dri
 const int ledChannel_x = 3; /*0-15*/
 const int ledChannel_y = 4; /*0-15*/
 const int ledChannel_z = 5; /*0-15*/
-const int resolution = 8; /* no bits resolution, 1-16 bit */
+const int resolution = 8; /* number bits resolution, 1-16 bit */
 int Dir_x = 25;                /* direction pin of the coils in the x
 				  direction low: output A of motor
 				  driver is high and B is low
@@ -83,9 +83,9 @@ void setup () {
 const int X=1;
 const int Y=2;
 const int Z=3;
-int directions[]={Z}; //or {Y}, or {X,Y,Z} :)
+int directions[]={Z}; //or {Y}, etc.
 int num_dir=1;
-// int directions[]={X,Y,Z}; //or {Y}, or {X,Y,Z} :)
+// int directions[]={X,Y,Z}; 
 // int num_dir=3;
 
 void loop()
@@ -121,7 +121,7 @@ void loop()
 	Serial.println(Dir_i);
       }
       
-      for (double step = -1; step <= 1; step = step+0.1)
+      for (double step = -1; step <= 1; step = step+0.2)
 	{
 	  /* Set the current direction */
 	  if (step <  0) {digitalWrite(Dir_i, HIGH);};

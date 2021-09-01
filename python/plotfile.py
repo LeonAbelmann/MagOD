@@ -18,7 +18,7 @@ def graph(filename,offset):
     y = data['Vscat']
 
     x = x - x[0] -220000
-    y = y - offset
+    y = 3.0 - y - offset
     offset = offset + 0.00
     plt.plot(x/1000,y,
              'k',linestyle='-',marker='.')
@@ -31,5 +31,8 @@ if __name__ == "__main__":
         print(filename)
         offset = graph(filename, offset)
     ax = plt.gca()
-    ax.set_xlim(left=0,right=220)
+    ax.set_xlim(left=0,right=200)
+    plt.ylabel("Vdiode / V")
+    plt.xlabel("Time / s")
+    plt.savefig("plot.pdf", format="pdf")
     plt.show()

@@ -254,7 +254,7 @@ void loop()
 
       for(int intensity = 0;
 	  intensity <= pow(2,LEDresolution);
-	  intensity = intensity + 5 )
+	  intensity = intensity + 1 )
 	{ ledcWrite(LEDChannel,intensity);
 	  delay(100);//wait for the led to stabilize
 	  iChan=0;

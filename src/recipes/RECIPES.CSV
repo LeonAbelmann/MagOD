@@ -5,13 +5,14 @@
 @,Parameters,,,,,,,,
 ,B_x,B_y,B_z,T_switch,LED_Color,LED_Intensity,Grad_x,Grad_y,Grad_z
 ,,,,,,,,,
-#,Programs are listed below,,,,,,,,
+#,"Programs are listed below, maximum number is 8 (defined in recipes.h)",,,,,,,,
 ,,,,,,,,,
 ,,,,,,,,,
 @,Recipe,Cmag Green,,,,,,,
 #,For Cmag measurement at 1 and 0.5 mT,,,,,,,,
 #,"If N_cycles = 0, run indefinitely",,,,,,,,
 @,N_cycles,0,,,,,,,
+#,Maximum number of steps is 20 (defined in recipes.h),,,,,,,,
 @,Sequence,,,,,,,,
 #,B_x[mT],B_y[mT],B_z[mT],T_switch[s],LED Color,LED Intensity [0-255],Grad_x,Grad_y,Grad_z
 ,0.5,0,0,10,GREEN,40,1,1,1
@@ -63,20 +64,20 @@
 @,N_cycles,1,,,,,,,
 @,Sequence,,,,,,,,
 #,B_x[mT],B_y[mT],B_z[mT],T_switch[s],LED Color,LED Intensity [0-255],Grad_x,Grad_y,Grad_z
-,0,0,0,5,RED,10,1,1,1
-,0,0,0,5,RED,20,1,1,1
-,0,0,0,5,RED,30,1,1,1
-,0,0,0,5,RED,40,1,1,1
 ,0,0,0,5,RED,50,1,1,1
-,0,0,0,5,GREEN,10,1,1,1
-,0,0,0,5,GREEN,20,1,1,1
-,0,0,0,5,GREEN,30,1,1,1
-,0,0,0,5,GREEN,40,1,1,1
+,0,0,0,5,RED,100,1,1,1
+,0,0,0,5,RED,150,1,1,1
+,0,0,0,5,RED,200,1,1,1
+,0,0,0,5,RED,250,1,1,1
 ,0,0,0,5,GREEN,50,1,1,1
-,0,0,0,5,BLUE,10,1,1,1
-,0,0,0,5,BLUE,20,1,1,1
-,0,0,0,5,BLUE,30,1,1,1
-,0,0,0,5,BLUE,40,1,1,1
+,0,0,0,5,GREEN,100,1,1,1
+,0,0,0,5,GREEN,150,1,1,1
+,0,0,0,5,GREEN,200,1,1,1
+,0,0,0,5,GREEN,250,1,1,1
 ,0,0,0,5,BLUE,50,1,1,1
+,0,0,0,5,BLUE,100,1,1,1
+,0,0,0,5,BLUE,150,1,1,1
+,0,0,0,5,BLUE,200,1,1,1
+,0,0,0,5,BLUE,250,1,1,1
 @,EndSequence,,,,,,,,
 @,EndRecipe,,,,,,,,

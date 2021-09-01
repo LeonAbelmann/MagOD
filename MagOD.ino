@@ -125,7 +125,7 @@ dataPoint nextData = {0,0,0};   /* Next datapoint from buffer */
 diodes Vdiodes = {0,0,0};       /* Photodetector signals [V] */
 double Temperature = 0;         /*Temperature estimated from
 				  temperature sensor*/
-references Vrefs = {1,1,1,1};   /* Reference values of photodector
+references Vrefs = {1,1,1,1,PDOFFSET}; /* Reference values of photodector
 				  signals. Current value and three
 				  different colors. Initialize to 1 to
 				  get meaningful OD */
@@ -489,9 +489,9 @@ bool processButtonPress(){
 double calcOD(struct references Vrefs, double Vdiode)
 {
 #if defined(_MAGOD1)
-  int detector=1; // MagOD1 has a detector that has higher signal for higher intensity
+  int sign=1; // MagOD1 has a detector that has higher signal for higher intensity
 #elif defined(_MAGOD2)
-  int detector=-1; //MagOD2 has a detector that has lower signal for higher intensity
+  int sign=-1; //MagOD2 has a detector that has lower signal for higher intensity.
 #endif
 
   if(Vdiode<=0){return 0;}    //Vdiode has to be positive
@@ -504,8 +504,9 @@ double calcOD(struct references Vrefs, double Vdiode)
       {
 	return 0; //Vref has to be positive
       }
-    else {
-      return detector*log10(Vrefs.Vref/Vdiode);  //otherwise, return correct OD value
+    else {//otherwise, return correct OD value
+      return log10(Vrefs.offset + sign*Vrefs.Vref) -
+	     log10(Vrefs.offset + sign*Vdiode) ;  
     }
   }
   else
@@ -518,7 +519,9 @@ double calcOD(struct references Vrefs, double Vdiode)
 	}
       else
 	{
-	  return detector*log10(Vrefs.Vred/Vdiode);
+	  return log10(Vrefs.offset + sign*Vrefs.Vred) -
+	         log10(Vrefs.offset + sign*Vdiode) ;  
+
 	}
       break;
     case GREEN:
@@ -528,7 +531,9 @@ double calcOD(struct references Vrefs, double Vdiode)
 	}
       else
 	{
-	  return detector*log10(Vrefs.Vgreen/Vdiode);
+	  return log10(Vrefs.offset + sign*Vrefs.Vgreen) -
+	     log10(Vrefs.offset + sign*Vdiode) ;  
+
 	}
       break;
     case BLUE:
@@ -538,7 +543,8 @@ double calcOD(struct references Vrefs, double Vdiode)
 	}
       else
 	{
-	  return detector*log10(Vrefs.Vblue/Vdiode);
+	  return log10(Vrefs.offset + sign*Vrefs.Vblue) -
+	         log10(Vrefs.offset + sign*Vdiode) ;  
 	}
       break;
     default:

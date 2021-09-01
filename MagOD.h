@@ -8,11 +8,11 @@
 #define _MagOD_h
 
 /* Define which system you compile for, outcomment only one */
-#define _CEA
+//#define _CEA
 //#define _BAYREUTH
 //#define _ASTON
-//#define _KIST_1
-//#define _KIST
+#define _KIST
+//#define _KIST_1 // MagOD1 system
 #include "calibration/calibration.h"
 
 
@@ -46,6 +46,7 @@ struct references {
   double Vred;   // Voltage for red LED
   double Vgreen; // Voltage for green LED
   double Vblue;  // Voltage for blue LED
+  double offset; // Offset voltage of electronics (MagOD2)
 };
 
 /* Current feedback loop voltages */
