@@ -93,17 +93,12 @@ void fileandserial::saveSettingsFile(char fName_char[]){
 	 recipes::serialRecipesPrint */
       f.print("# Vref=");
       f.print(Vrefs.Vref,5);
-      //store also all references for the specific colors if required
-      if (ref_all_wavelength == 1)
-	{
-	  f.print(",Vrefred=");
-	  f.print(Vrefs.Vred,5);
-	  f.print(",Vrefgreen=");
-	  f.print(Vrefs.Vgreen,5);
-	  f.print(",Vrefblue=");
-	  f.print(Vrefs.Vblue,5);
-	}
-      f.println();
+      f.print(",Vrefred=");
+      f.print(Vrefs.Vred,5);
+      f.print(",Vrefgreen=");
+      f.print(Vrefs.Vgreen,5);
+      f.print(",Vrefblue=");
+      f.println(Vrefs.Vblue,5);
       f.print("# Prg=");f.println(program_cnt);
       f.print("# B_nr_set=");f.println(B_nr_set); 
       f.print("# Nr_cycles=");f.println(Nr_cycles);

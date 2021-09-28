@@ -135,6 +135,42 @@ void screen::updateGraph(dataPlot *graphArray,
     tft.textMode();/*Go back to default textMode */
 }
 
+/**************************************************************/
+/* updateCmag */
+/* Update the status line with the most recent OD and Cmag data*/
+/* recArray   : list of recipes to calculate time info */
+/* program    : currently selected program */
+/**************************************************************/
+void screen::updateCmag(cmagStruc Cmag,recipe recArray[], int program) {
+  
+  /* clear Cmag line */
+  tft.fillRect(g_x+1,g_y+2,g_w-2,2*locText_vSpace+1, TFTCOLOR_BLUE);
+
+  /* Write line with OD and Cmag values */
+  tft.textMode();
+  tft.textTransparent(TFTCOLOR_YELLOW);
+ 
+  char string[15];
+  int spacing = round(g_w/4);
+  int xpos = 1;
+  /* cycle through the four measurements */
+  for (int i=0;i<4;i++) {
+    /* write OD */
+    xpos = g_x +i*spacing;
+    tft.textSetCursor(xpos,g_y);
+    tft.textWrite("OD  :", 5);
+    dtostrf((double)Cmag.ODC[i].OD, 5, 2, string);
+    tft.textSetCursor(xpos + 30, g_y);
+    tft.textWrite(string, 5);
+    /* Write Cmag on line below*/
+    tft.textSetCursor(xpos,g_y + locText_vSpace);
+    tft.textWrite("Cmag:", 5);
+    dtostrf((double)Cmag.ODC[i].Cmag, 5, 2, string);
+    tft.textSetCursor(xpos + 30 ,g_y + locText_vSpace);
+    tft.textWrite(string, 5);
+  }
+}
+
 //sets button to indicate whether the program is running
 void screen::setRecButton(bool active)
 {
@@ -241,6 +277,11 @@ void screen::graphAutoScale(dataPlot *graphArray,
 	g_maxVal = value;}
     }
   }
+  /* Don't scale to the edges of the graph, but to 70% */
+  double center = (g_minVal + g_maxVal)/2;
+  double height = g_maxVal - g_minVal;
+  g_minVal = center - height*0.8;
+  g_maxVal = center + height*0.8;
   Serial.print(g_minVal);Serial.print(" to ");Serial.println(g_maxVal);
   /* Clear graph and update scale */
   clearGraph(recArray, program);
@@ -293,7 +334,7 @@ void screen::setupScreen(double t_min, double t_max,
   tft.textMode();
   tft.textSetCursor(text0_x,text0_y);
   tft.textTransparent(RA8875_BLACK);
-  tft.textWrite("MagOD 2.4");
+  tft.textWrite("MagOD 2.5");
   tft.textSetCursor(text0_x+100, text0_y);
 #if defined(_KIST)
   tft.textWrite("KIST MagOD2");

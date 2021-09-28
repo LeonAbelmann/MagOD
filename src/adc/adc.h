@@ -60,8 +60,8 @@ class adc
   void       initADC(); /* Start the ADCs with correct amplification,etc */
   bool       bufferEmpty();//Check if ADC0 buffer has data
   dataPoint  getDataPoint(); /* Get datapoint and convert*/
-  //measure reference voltage:
-  void       set_vrefs(references &Vref, bool ref_all_wavelength, led myled); 
+
+  /* void       set_vrefs(references &Vref, bool ref_all_wavelength, led myled);  */
   /* diodes     readDiodes(); // Read the signals from the photodiodes */
   /* double     readTemp(); //Read the temperature sensor */
   /* feedbacks  readFeedbacks();//Read the currents to the coils */

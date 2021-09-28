@@ -63,6 +63,26 @@ struct dataPoint {
   double        val;    // What is its value
 };
 
+struct ODCmag{
+  double Vdiode_0; /* average diode voltages of both steps */
+  double Vdiode_1;
+  double OD;       /* resulting OD */
+  double Cmag;     /* and Cmag */
+};
+
+#define CMAGARRAY 30 /* Length of Cmag values array */
+struct cmagStruc{
+  double values[CMAGARRAY]; /* Values of the ;ast Vdiode measurements
+			of this looppar */
+  int index;         /* Current index in that array */
+  int oldLoopPar;    /* previous value of Looppar */
+  double Vref;       /* current Vref value */
+  double averages[8]; /* There can be maximum 8 sequences in a
+			 AutoCmag recipe */
+  ODCmag ODC[4]; /* Resulting calculate OD and Cmag (one per set of
+		       two sequences) */
+};
+
 #define GRAPH_LENGTH SCRN_HOR //Maximum plotlength does not have to be
 			     //bigger than the number of screen pixels.
 struct dataPlot {
@@ -142,7 +162,7 @@ extern bool ref_all_wavelength; //Set this to 1 for specific programs where you 
 extern recipe recipes_array[]; //List of recipes. 
 extern int program_nmb; //Length of recipes array [0..program_nmb].
 extern int program_cnt; //Current recipe
-
+extern bool autoCmag; //The current recipe is in automatic Cmag format
 
 /* Declare variables to define the field sequence */
 #define B_NR_MAX 24 //Max number of elements

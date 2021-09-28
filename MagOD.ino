@@ -1,4 +1,4 @@
-/* MagOD veresion 2.4 */
+/* MagOD veresion 2.5 */
 /* Jan 2021 */
 /* Tijmen Hageman, Jordi Hendrix, Hans Keizer, Leon Abelmann, Marcel
    Welleweerd, Dave van As, Ruthvik Bandaru, Rob Krawinkel */
@@ -71,7 +71,7 @@ bool Exit_program_1    = HIGH;  //The program should end
 bool isRecording       = false; //We are measuring
 bool SDpresent         = false; //There is a readable SD card in the slot
 uint8_t prevButton     = 0;     //Status of the button
-
+bool autoCmag          = false; //Recipe in in automatic Cmag format
 
 /* Extra control parameters, kind of obsolete */
 bool sendToSerial      = 0;     /*Do we send files during the
@@ -143,6 +143,7 @@ long lengthTimeAxis = 200000; /* x-axis ranges from 0..lengthTimeAxis (ms)
 /* Calculated parameters */
 double OD = 0;                 /*Optical Density. Calculated in
 				 CaldOD() */
+cmagStruc Cmag = {0};  /* Cmag calculation parameters */
 
 /* Time parameters */
 unsigned long time_of_start = millis(); /*Time at which the
@@ -157,7 +158,7 @@ int LEDs[3] = {RED, GREEN, BLUE};
 int LED_intensity[3] = {15,65,95};//Values that don't saturate the photodiode
 #endif
 // OBSOLETE? LEON
-bool ref_all_wavelength = 0; //Set this to 1 for specific programs where you work with multiple wavelengths in a single measurement (such that it stores the reference value of all 3 wavelengths. Can be removed, but you need to rewrite set_vrefs in adc.cpp
+bool ref_all_wavelength = 0; //Only MagOD1. Set this to 1 for specific programs where you work with multiple wavelengths in a single measurement (such that it stores the reference value of all 3 wavelengths. Can be removed, but you need to rewrite set_vrefs
 
 /* Declare variables to define the field sequence */
 int B_nr_set = 1; //the length of the field sequence array [0..B_nr_set];
@@ -308,7 +309,7 @@ void startRec()
     //Set parameters for the graph display.
     startTime       = time_of_start; /* Time at which the measurement
 					started */
-    /*Calculate total length of graph time axis from length of recipe
+    /* Calculate total length of graph time axis from length of recipe
       step:*/
     Serial.print("Emptying buffer");
     while (not myadc.bufferEmpty()) {
@@ -319,7 +320,12 @@ void startRec()
     graphCount = 0; // Clear data array
 
     myscreen.clearGraph(recipes_array, program_cnt);; //Clear graph
-    
+
+    // Clear Cmag buffer if recipe is autoCmag.
+    if (autoCmag) {
+      Cmag.index = 0;
+      Cmag.oldLoopPar = 0;
+    } 
     //Activate recording mode
     isRecording = true;
   }
@@ -333,6 +339,8 @@ void stopRec()
   // reset loop counters
   Looppar_2 = 0;
   Looppar_1 = 0;
+  Cmag.index = 0; /* in case you stop in the middle of the recipe */
+  Cmag.oldLoopPar = 0;
   // Switch off field
   myfield.Reset_Bfield();
   // Close file
@@ -369,10 +377,10 @@ bool processButtonPress(){
     if (buttonPress==BUTTON_LEFT ){
       if (!isRecording){
 #if defined(_MAGOD1)
-	myadc.set_vrefs(Vrefs,ref_all_wavelength,myled);
+	set_vrefs(Vrefs,ref_all_wavelength,myled);
 	myled.Set_LED_color(LEDColor_array[Looppar_1]);
 #elif defined(_MAGOD2)
-	myadc.set_vrefs(Vrefs,false,myled);
+	set_vrefs(Vrefs,false,myled);
 	myled.Set_LED_color(LEDColor_array[Looppar_1],
 			    LEDInt_array[Looppar_1]);
 #endif
@@ -553,6 +561,27 @@ double calcOD(struct references Vrefs, double Vdiode)
   }
 }
 
+ODCmag calcODandCmag(double Vref, double av_0, double av_1){
+  ODCmag result;
+  /* first calculate corrected voltages */
+  double I90  = Vrefs.offset - av_0; // y-field, perpendicular
+  double I0   = Vrefs.offset - av_1; // x-field, paralllel
+  double Iref = Vrefs.offset - Vref;
+  /* using 1-sin(alpha) model we can calculated OD from intensities of
+     both orientations (see paper by Welleweerd) */
+  double g0 = 0.2146;
+  double Iav = g0*I0 + (1-g0)*I90;
+  double OD = log10(Iref/Iav);
+  /* Calculate Cmag */
+  double OD90 = log10(Iref/I90);
+  double OD0  = log10(Iref/I0);
+  double Cmag = OD0/OD90;
+  result.Vdiode_0 = av_0;
+  result.Vdiode_1 = av_1;
+  result.OD = OD;
+  result.Cmag = Cmag;
+  return result;
+}
 
 
 void writeDataPointToFile(File datfile, dataPoint data){
@@ -561,6 +590,113 @@ void writeDataPointToFile(File datfile, dataPoint data){
   /* update file length */
   //myfile.SD_file_length_count = myfile.SD_file_length_count + 1;
 } 
+
+
+void calculateCmag(dataPoint data, cmagStruc &Cmag){
+  /* if the dataPoint is Vdiode, store it in an array */
+  if (data.channel == DIODE) {
+    // Serial.print("calculateCmag: Viode : ");
+    // Serial.println(data.val);
+    // Serial.print("Cmag.index : ");Serial.println(Cmag.index);
+    Cmag.values[Cmag.index] = data.val;
+    if (Cmag.index < CMAGARRAY-1) {
+      Cmag.index = Cmag.index +1;
+    }
+    else {
+      Serial.println("MagOD.ino: Cmag buffer overrun");
+    }
+  }
+  /* check if the Looppar has incremented. If so, average 2/3 of the
+     stored diode voltages and store the result*/
+  //  Serial.print("Looppar_1: ");Serial.println(Looppar_1);
+  //  Serial.print("oldLoopPar: ");Serial.println(Cmag.oldLoopPar);
+  if (Looppar_1 > Cmag.oldLoopPar) {
+      double average = 0;
+      int startindex = trunc(Cmag.index/3);
+      Serial.print("MagOD.ino: Cmag.values: ");
+      if (Cmag.index > startindex) {
+	double sum = 0;
+	for (int i = startindex; i<Cmag.index; i++){
+	  sum = sum + Cmag.values[i];
+	  Serial.print(", ");Serial.print(Cmag.values[i]);
+	}
+	Serial.println();
+	Cmag.averages[Cmag.oldLoopPar] = sum/(Cmag.index-startindex);
+      }
+      Serial.print("MagOD.ino: Cmag.averages: ");
+      Serial.print(Cmag.averages[0]);Serial.print(", ");
+      Serial.print(Cmag.averages[1]);Serial.print(", ");
+      Serial.print(Cmag.averages[2]);Serial.print(", ");
+      Serial.print(Cmag.averages[3]);Serial.print(", ");
+      Serial.print(Cmag.averages[4]);Serial.print(", ");
+      Serial.print(Cmag.averages[5]);Serial.print(", ");
+      Serial.print(Cmag.averages[6]);Serial.print(", ");
+      Serial.println(Cmag.averages[7]);
+      /* The recipe is such that for Looppar_1 = */
+      /* 0: Field parallel for led color, field value */
+      /* 1: Field perpendicular for same conditions*/
+      /* 2: Field paralle lfor new led or field value */
+      /* etc */
+      /* So every second step we can calculate OD and Cmag */
+      switch (Cmag.oldLoopPar) { 
+      case 1:
+	Cmag.ODC[0] = calcODandCmag(Cmag.Vref,
+				    Cmag.averages[0],Cmag.averages[1]);
+	Serial.print("Cmag.ODC[0].Vdiode_0 : ");
+	Serial.println(Cmag.ODC[0].Vdiode_0);
+	Serial.print("Cmag.ODC[0].Vdiode_1 : ");
+	Serial.println(Cmag.ODC[0].Vdiode_1);
+	Serial.print("Cmag.ODC[0].OD : ");
+	Serial.println(Cmag.ODC[0].OD);
+	Serial.print("Cmag.ODC[0].Cmag : ");
+	Serial.println(Cmag.ODC[0].Cmag);
+	break;
+      case 3:
+	Cmag.ODC[1] = calcODandCmag(Cmag.Vref,
+				    Cmag.averages[2],Cmag.averages[3]);
+	Serial.print("Cmag.ODC[1].Vdiode_0 : ");
+	Serial.println(Cmag.ODC[1].Vdiode_0);
+	Serial.print("Cmag.ODC[1].Vdiode_1 : ");
+	Serial.println(Cmag.ODC[1].Vdiode_1);
+	Serial.print("Cmag.ODC[1].OD : ");
+	Serial.println(Cmag.ODC[1].OD);
+	Serial.print("Cmag.ODC[1].Cmag : ");
+	Serial.println(Cmag.ODC[1].Cmag);
+	break;
+      case 5:
+	Cmag.ODC[2] = calcODandCmag(Cmag.Vref,
+				    Cmag.averages[4],Cmag.averages[5]);
+	Serial.print("Cmag.ODC[2].Vdiode_0 : ");
+	Serial.println(Cmag.ODC[2].Vdiode_0);
+	Serial.print("Cmag.ODC[2].Vdiode_1 : ");
+	Serial.println(Cmag.ODC[2].Vdiode_1);
+	Serial.print("Cmag.ODC[2].OD : ");
+	Serial.println(Cmag.ODC[2].OD);
+	Serial.print("Cmag.ODC[2].Cmag : ");
+	Serial.println(Cmag.ODC[2].Cmag);
+	break;
+      case 7:
+	Cmag.ODC[3] = calcODandCmag(Cmag.Vref,
+				    Cmag.averages[6],Cmag.averages[7]);
+	Serial.print("Cmag.ODC[3].Vdiode_0 : ");
+	Serial.println(Cmag.ODC[3].Vdiode_0);
+	Serial.print("Cmag.ODC[3].Vdiode_1 : ");
+	Serial.println(Cmag.ODC[3].Vdiode_1);
+	Serial.print("Cmag.ODC[3].OD : ");
+	Serial.println(Cmag.ODC[3].OD);
+	Serial.print("Cmag.ODC[3].Cmag : ");
+	Serial.println(Cmag.ODC[3].Cmag);
+	break;
+      }
+
+      /* Start collecting new datapoints */
+      Cmag.oldLoopPar = Looppar_1;
+      Cmag.index = 0;
+      /* Update new Vref value */
+      Cmag.Vref = Vrefs.Vref;
+    }
+} 
+
 
 //Initialization of all the timers used in the program
 void Init_timers()
@@ -577,6 +713,154 @@ void Init_timers()
   mytimer.initTimer(4,long(1000000/freq_screen));
   mytimer.attachInterrupt(4, screenUpdateEvent);
 }
+
+/* Average the Vdiode values */
+/* averaging : how many samples should be taken for average */
+double averageVdiode(int averaging) {
+  Serial.print("Emptying buffer");
+  while (not myadc.bufferEmpty()) {
+    dataPoint trash = myadc.getDataPoint();
+    Serial.print(".");
+  }
+  /* A "averaging" readings */
+  int j = 0; double sum = 0;
+  while (j<averaging) {
+    if (not myadc.bufferEmpty()) {
+      /* get the next datapoint */
+      nextData = myadc.getDataPoint();
+      updateValues(nextData, Vdiodes, OD, Currents, Temperature);
+      if (nextData.channel == DIODE) {
+	Serial.print("Vdiodes.Vdiode: ");Serial.println(Vdiodes.Vdiode);
+	sum = sum + Vdiodes.Vdiode;
+	j = j + 1;
+      }
+    }
+  }
+  return sum/averaging;
+};
+
+
+// Read diode values for all LED colors and assing to Vrefs
+void set_vrefs(references &Vrefs, bool ref_all_wavelength, led theled)
+{
+#if defined(_MAGOD1)
+//Measure reference diode voltage. If ref_all_wavelength true, than cycle over all led colours
+//  struct references Vrefs;
+  double _Vref;
+  double _adc2, _adc3;
+  if (ref_all_wavelength == 0)
+    {//Average 10 times
+      _adc2 = 0;
+      _adc3 = 0;
+      for (int i=0; i<10; i++){
+	_adc2 += double(ads.readADC_SingleEnded(2));//It would make sense to define the port so ADC2 instead of 2. Leon
+	_adc3 += double(ads.readADC_SingleEnded(3));
+      }
+      _Vref = _adc2/20 + _adc3/20;
+      _Vref = _Vref/32768*adsMaxV;
+      Vrefs.Vref=_Vref;
+      //For debug by Leon
+      Serial.print("Updated Vref = ");Serial.println(_Vref);
+    }
+  else
+    {// Red
+      theled.Set_LED_color(RED);
+      delay(5000);
+      _adc2 = 0;
+      _adc3 = 0;
+      for (int i=0; i<10; i++){
+	_adc2 += double(ads.readADC_SingleEnded(2));
+	_adc3 += double(ads.readADC_SingleEnded(3));
+      }
+      _Vref = _adc2/20 + _adc3/20;
+      _Vref = _Vref/32768*adsMaxV;
+      Vrefs.Vred=_Vref;
+      Serial.print("Updated Vref.red = ");Serial.println(_Vref);
+      // Green
+      theled.Set_LED_color(GREEN);
+      delay(5000);
+      _adc2 = 0;
+      _adc3 = 0;
+      for (int i=0; i<10; i++){
+	_adc2 += double(ads.readADC_SingleEnded(2));
+	_adc3 += double(ads.readADC_SingleEnded(3));
+      }
+      _Vref = _adc2/20 + _adc3/20;
+      _Vref = _Vref/32768*adsMaxV;
+      Vrefs.Vgreen=_Vref;
+      Serial.print("Updated Vref.red = ");Serial.println(_Vref);
+      // Blue
+      theled.Set_LED_color(BLUE);
+      delay(5000);
+      _adc2 = 0;
+      _adc3 = 0;
+      for (int i=0; i<10; i++){
+	_adc2 += double(ads.readADC_SingleEnded(2));
+	_adc3 += double(ads.readADC_SingleEnded(3));
+      }
+      _Vref = _adc2/20 + _adc3/20;
+      _Vref = _Vref/32768*adsMaxV;
+      Vrefs.Vblue = _Vref;
+      Serial.print("Updated Vref.red = ");Serial.println(_Vref);
+    }
+#elif defined(_MAGOD2)
+  /* The LED color and intensity to determine Vref is set by taking the
+     first appearance in the recipe. */
+  int index_red   = -1; // -1 means not found yet (0 is first array element)
+  int index_green = -1;
+  int index_blue  = -1;
+  Serial.print("B_nr_set: ");Serial.println(B_nr_set);
+  for (int i = 0;i < B_nr_set ;i++) {
+    //Serial.print("Color found: ");Serial.println(LEDColor_array[i]);
+    if ((index_red < 0) and (LEDColor_array[i]==RED)) {
+      index_red = i;
+      Serial.println("Setting Vref for Red LED");
+      theled.Set_LED_color(LEDColor_array[i], LEDInt_array[i]);
+      delay(2000);//Wait for the LED to stabilize
+      Vrefs.Vred   = averageVdiode(10);
+      Serial.print("Vrefs.Vred = ");
+      Serial.println(Vrefs.Vred);
+    }
+    if ((index_green < 0) and (LEDColor_array[i]==GREEN)) {
+      index_green = i;
+      Serial.println("Setting Vref for Green LED");
+      theled.Set_LED_color(LEDColor_array[i], LEDInt_array[i]);
+      delay(2000);//Wait for the LED to stabilize
+      Vrefs.Vgreen   = averageVdiode(10);
+      Serial.print("Vrefs.Vgreen = ");
+      Serial.println(Vrefs.Vgreen);
+    }
+    if ((index_blue < 0) and (LEDColor_array[i]==BLUE)) {
+      index_blue = i;
+      Serial.println("Setting Vref for Blue LED");
+      theled.Set_LED_color(LEDColor_array[i], LEDInt_array[i]);
+      delay(2000);//Wait for the LED to stabilize
+      Vrefs.Vblue   = averageVdiode(10);
+      Serial.print("Vref.Vblue = ");
+      Serial.println(Vrefs.Vblue);
+    }
+  }
+
+
+  /* The current Vref is the first color in the array */
+  switch(LEDColor_array[0]) {
+  case RED   :
+    Serial.println("Setting Vrefs.Vref to Vrefs.Vred");
+    Vrefs.Vref=Vrefs.Vred;
+    break;
+  case GREEN : 
+    Serial.println("Setting Vrefs.Vref to Vrefs.Vgreen");
+    Vrefs.Vref=Vrefs.Vgreen;
+    break;
+  case BLUE : 
+    Serial.println("Setting Vrefs.Vref to Vrefs.Vblue");
+    Vrefs.Vref=Vrefs.Vblue;
+    break;
+  }
+#endif 
+}
+
+
 
 // Update the values in the datafields from the datapoint in nextData
 void updateValues(dataPoint data, diodes &V, double &OD,
@@ -712,7 +996,7 @@ void setup()
 {
   delay(1000);//Give serial monitor time
 
-  /* ######################### Initialize boards ########################### */
+  /* ##### Initialize boards ########################### */
   // A lot of this should be done in the libraries. LEON. TODO.
   //starts the serial connection for debugging and file transfer
   Serial.begin(115200);
@@ -958,8 +1242,13 @@ void loop()
       /* Write datapoint to file */
       if (not dataFile) {Serial.println("loop: file not open!!!");};
       writeDataPointToFile(dataFile, nextData);
-      /* open file at beginning of recipe step, close it after step or
-	 every minute or so */
+      /* LEON:File is opened file at beginning of recipe step, which might
+	 be long. Safer to close it after step or every minute or so */
+      /* If recipe has automatic Cmag calculation, average Vdiode
+	 datapoints so that you can calculate OD */
+      if (autoCmag) {
+	calculateCmag(nextData, Cmag);
+      }
     }
   }
 
@@ -1026,7 +1315,11 @@ void loop()
       			   recipes_array, program_cnt);
       //Update program status:
       myscreen.updateInfo(Looppar_1, Looppar_2, program_cnt,
-      			  LEDColor_array[Looppar_1], myfile.fName_char); 
+      			  LEDColor_array[Looppar_1], myfile.fName_char);
+      //If we have an automatic Cmag program, update the status line
+      if (autoCmag) {
+	myscreen.updateCmag(Cmag,recipes_array,program_cnt);
+      }
       return;/* Jump to start of loop to make sure we don't miss
 		datapoints */
     }

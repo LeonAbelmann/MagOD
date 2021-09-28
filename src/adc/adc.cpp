@@ -254,21 +254,21 @@ double convertCurrent(uint16_t value, int coil)
   double result;
   /* Every coil system has a slightly different calibration. */
   /* adc4Offset, adc4SlopePos and adc4SlopeNeg are defined in calibration.h */
-  Serial.print("convertCurrent : adc = ");Serial.print(value);
+  //Serial.print("convertCurrent : adc = ");Serialln.print(value);
   switch (coil) {
   case IX: // X-coils on adc4
     if (value-adc4Offset < 0)
       { result=(value-adc4Offset)*adc4SlopeNeg;}
     else
       { result=(value-adc4Offset)*adc4SlopePos;}
-    Serial.print(", current X: ");Serial.println(result);
+    //Serial.print(", current X: ");Serial.println(result);
     return result;
   case IY: // Y-coils on adc6 !!!!!
     if (value-adc6Offset < 0)
       { result=(value-adc6Offset)*adc6SlopeNeg;}
     else
       { result=(value-adc6Offset)*adc6SlopePos;}
-    Serial.print(", current Y: ");Serial.println(result);
+    //Serial.print(", current Y: ");Serial.println(result);
     return result;
   case IZ: // Z-coils on adc5 !!!!!
     if (value-adc5Offset < 0)
@@ -378,95 +378,4 @@ double readTemp(){
   return Temperature_degrees;
 }
 
-
-/* Maybe this routine should be in MagOD.ino. It is a measurement, after all.... Leon */
-void adc::set_vrefs(references &Vrefs, bool ref_all_wavelength, led theled)
-{
-#if defined(_MAGOD1)
-//Measure reference diode voltage. If ref_all_wavelength true, than cycle over all led colours
-//  struct references Vrefs;
-  double _Vref;
-  double _adc2, _adc3;
-  if (ref_all_wavelength == 0)
-    {//Average 10 times
-      _adc2 = 0;
-      _adc3 = 0;
-      for (int i=0; i<10; i++){
-	_adc2 += double(ads.readADC_SingleEnded(2));//It would make sense to define the port so ADC2 instead of 2. Leon
-	_adc3 += double(ads.readADC_SingleEnded(3));
-      }
-      _Vref = _adc2/20 + _adc3/20;
-      _Vref = _Vref/32768*adsMaxV;
-      Vrefs.Vref=_Vref;
-      //For debug by Leon
-      Serial.print("Updated Vref = ");Serial.println(_Vref);
-    }
-  else
-    {// Red
-      theled.Set_LED_color(RED);
-      delay(5000);
-      _adc2 = 0;
-      _adc3 = 0;
-      for (int i=0; i<10; i++){
-	_adc2 += double(ads.readADC_SingleEnded(2));
-	_adc3 += double(ads.readADC_SingleEnded(3));
-      }
-      _Vref = _adc2/20 + _adc3/20;
-      _Vref = _Vref/32768*adsMaxV;
-      Vrefs.Vred=_Vref;
-      // Green
-      theled.Set_LED_color(GREEN);
-      delay(5000);
-      _adc2 = 0;
-      _adc3 = 0;
-      for (int i=0; i<10; i++){
-	_adc2 += double(ads.readADC_SingleEnded(2));
-	_adc3 += double(ads.readADC_SingleEnded(3));
-      }
-      _Vref = _adc2/20 + _adc3/20;
-      _Vref = _Vref/32768*adsMaxV;
-      Vrefs.Vgreen=_Vref;
-      // Blue
-      theled.Set_LED_color(BLUE);
-      delay(5000);
-      _adc2 = 0;
-      _adc3 = 0;
-      for (int i=0; i<10; i++){
-	_adc2 += double(ads.readADC_SingleEnded(2));
-	_adc3 += double(ads.readADC_SingleEnded(3));
-      }
-      _Vref = _adc2/20 + _adc3/20;
-      _Vref = _Vref/32768*adsMaxV;
-      Vrefs.Vblue = _Vref;
-    }
-#elif defined(_MAGOD2)
-  /* The LED color and intensity is set by taking the
-     first step in the recipe. So we can only calculate Vref for the
-     first setting in the recipe file. TODO? */
-  /* Debug: */
-  Serial.println("Set_vrefs : LEDColor, LED Int : ");
-  Serial.print(LEDColor_array[0]);Serial.print(" ");
-  Serial.println(LEDInt_array[0]);
-
-  theled.Set_LED_color(LEDColor_array[0],
-		      LEDInt_array[0]);
-  delay(3000);//Wait for the LED to stabilize
-  Serial.print("Vref for ");
-  /* Assign to the correct reference */
-  switch(LEDColor_array[0]) {
-  case RED   : Vrefs.Vred   =Vdiodes.Vdiode;
-    Serial.print("Red :");
-    break;
-  case GREEN : Vrefs.Vgreen =Vdiodes.Vdiode;
-    Serial.print("Green :");
-    break;
-  case BLUE  : Vrefs.Vblue  =Vdiodes.Vdiode;
-    Serial.print("Blue :");
-    break;
-  }
-  Serial.println(Vdiodes.Vdiode);
-  /* And remember the last one */
-  Vrefs.Vref=Vdiodes.Vdiode;
-#endif 
-}
 

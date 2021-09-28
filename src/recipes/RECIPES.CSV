@@ -6,7 +6,26 @@
 ,B_x,B_y,B_z,T_switch,LED_Color,LED_Intensity,Grad_x,Grad_y,Grad_z
 ,,,,,,,,,
 #,"Programs are listed below, maximum number is 8 (defined in recipes.h)",,,,,,,,
+#,Maximum number of steps per recipe is 20 (defined in recipes.h),,,,,,,,
 ,,,,,,,,,
+#,"The Recipe with AutoCmag is special, the order of fields and led colors is fixed so that OD and Cmag can be calculated automatically afterwards. Last step used to force calculation of Cmag.",,,,,,,,
+@,Recipe,AutoCmag,,,,,,,
+#,For Cmag measurement at 1 and 0.5 mT,,,,,,,,
+#,"If N_cycles = 0, run indefinitely",,,,,,,,
+@,N_cycles,1,,,,,,,
+@,Sequence,,,,,,,,
+#,B_x[mT],B_y[mT],B_z[mT],T_switch[s],LED Color,LED Intensity [0-255],Grad_x,Grad_y,Grad_z
+,0,0.5,0,15,RED,20,1,1,1
+,0.5,0,0,15,RED,20,1,1,1
+,0,1,0,15,RED,20,1,1,1
+,1,0,0,15,RED,20,1,1,1
+,0,0.5,0,15,GREEN,40,1,1,1
+,0.5,0,0,15,GREEN,40,1,1,1
+,0,1,0,15,GREEN,40,1,1,1
+,1,0,0,15,GREEN,40,1,1,1
+,0,0,0,1,RED,20,1,1,1
+@,EndSequence,,,,,,,,
+@,EndRecipe,,,,,,,,
 ,,,,,,,,,
 @,Recipe,Cmag Green,,,,,,,
 #,For Cmag measurement at 1 and 0.5 mT,,,,,,,,

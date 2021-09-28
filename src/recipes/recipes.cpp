@@ -484,6 +484,16 @@ void recipes::program_init(recipe recipes_array[],int recipe_num)
   myIO->serialPrintln((char*)"Starting program_init");
   myIO->serialPrint((char*)"Loading recipe number: ");
   myIO->serialPrintln(recipe_num);
+  myIO->serialPrint((char*)"With name: ");
+  myIO->serialPrintln(recipes_array[recipe_num].name);
+  
+  /* If the recipe name is AutoCmag, than switch on toggle so that
+     Cmag is determined from the measured date automatically*/
+  autoCmag = (strcmp(recipes_array[recipe_num].name, "AutoCmag") == 0);
+  Serial.print("autoCmag: ");Serial.println(autoCmag);
+  if (autoCmag) {
+       myIO->serialPrint((char*)"Automatic Cmag measurement on: ");
+    }
   
   /* Reset all arrays,default to do nothing for 1 second */
   B_nr_set = 1; // [0..1]

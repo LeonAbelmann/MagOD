@@ -69,6 +69,8 @@ class screen{
 		      int graphCount, int graphLength,
 		      recipe recArray[], int program);
   void graphRecipeLines(recipe recArray[], int program);
+  void updateCmag(cmagStruc Cmag,recipe recArray[], int program);
+
 
   int16_t screenSiz_x = SCRN_HOR; //Size of screen
   int16_t screenSiz_h = SCRN_VERT;
