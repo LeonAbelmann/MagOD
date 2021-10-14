@@ -152,7 +152,7 @@ const double PDOFFSET = 4.096; // Photodetector offset
 
 #if defined(_BAYREUTH)
 /* Mirror TFT screen (determines what is the front of the controller) */
-const bool mirror_tft = true;
+const bool mirror_tft = false;
 
 /* RA8875 Touchscreen calibration. Run adapted ts_calibration.ino (Testfunctions/MagOD2/TestTFT50/ts_calibration/)*/
 

@@ -41,7 +41,8 @@ void setup()
   }
   
   Serial.println("RA8875 found");
-  
+  //tft.softReset();
+  //tft.begin(RA8875_480x272);
   tft.displayOn(true);
   tft.GPIOX(true);      // Enable TFT - display enable tied to GPIOX
   tft.PWM1config(true, RA8875_PWM_CLK_DIV1024); // PWM output for backlight

@@ -7,6 +7,8 @@
 /* Graph x-axis now matching time of recipe sequence,
    lines indicating the transition between steps, autoscale, previous
    measurement in brown. */
+/* Sep 2021, version 2.5 */
+/* AutoCmag: calculate Cmag and display on screen */
 
 #include "Arduino.h"
 
@@ -313,27 +315,42 @@ void screen::setupScreen(double t_min, double t_max,
   Serial.println("RA8875 Found");
 
   // Initiliaze display
+  //tft.softReset();
+  //delay(100);
+  //Serial.println("DisplayON");delay(2000);
   tft.displayOn(true);
+  //Serial.println("GPIOX");delay(2000);
   tft.GPIOX(true);      // Enable TFT - display enable tied to GPIOX
+  //Serial.println("PWM1config");delay(2000);
   tft.PWM1config(true, RA8875_PWM_CLK_DIV1024); // PWM output for backlight
+  //Serial.println("PWM1out");delay(2000);
   tft.PWM1out(255);
-  tft.fillScreen(RA8875_WHITE);
+  //Serial.println("Fillscreen");delay(2000);
+  tft.fillScreen(RA8875_BLACK);
   if (mirror_tft) {
     /* Mirror, defined in calibration.h */
     /* https://cdn-shop.adafruit.com/datasheets/RA8875_DS_V12_Eng.pdf
        table 5.3 reg[20 h]. Bit 3 (0x08): mirror HDIR, Bit 2 (0x04): mirror
        VDIR. Both is sum: 0x0C */
+    Serial.println("Mirroring TFT");delay(2000);
+    //tft.writeReg(0x20, 0x08);
+    //tft.writeReg(0x20, 0x04);
     tft.writeReg(0x20, 0x0C);
   }
+  else {
+    tft.writeReg(0x20,0x00);
+    }
 
   delay(100);
   /* Switch to text mode */  
-  Serial.println("Screen in Textmode");
+  //Serial.println("Screen in Textmode");delay(2000);
   int text0_x=10;
   int text0_y=10;
   tft.textMode();
   tft.textSetCursor(text0_x,text0_y);
-  tft.textTransparent(RA8875_BLACK);
+  //Serial.println("textTransparent");delay(2000);
+  tft.fillScreen(RA8875_BLACK);
+  tft.textTransparent(RA8875_WHITE);
   tft.textWrite("MagOD 2.5");
   tft.textSetCursor(text0_x+100, text0_y);
 #if defined(_KIST)
@@ -364,6 +381,8 @@ void screen::setupScreen(double t_min, double t_max,
     delay(2000);
   }
   delay(2000);
+  Serial.println("Setting up screen");
+
   tft.fillScreen(RA8875_BLACK);
 
   /* Color of all text labels */
@@ -422,6 +441,7 @@ void screen::setupScreen(double t_min, double t_max,
   this->updateV(Vdiodes,Vrefs,0,Currents);
   this->updateInfo(0,0,0,0,"MAGOD2");
 
+  Serial.println("Initialising graph");
   /* Graph */
   //Draw rectangle for graph
   tft.drawRect(g_x, g_y, g_w, g_h, TFTCOLOR_WHITE);
