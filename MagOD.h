@@ -9,9 +9,9 @@
 
 /* Define which system you compile for, outcomment only one */
 //#define _CEA
-//#define _BAYREUTH
+#define _BAYREUTH
 //#define _ASTON
-#define _KIST
+//#define _KIST
 //#define _KIST_1 // MagOD1 system
 #include "calibration/calibration.h"
 

@@ -166,9 +166,7 @@ File fileandserial::file_init(struct references Vref, bool ref_all_wavelength, b
     if (not datfile) {
       Serial.println("Fileandserial::file_init:file is not open anymore!");
     }
-    else {
-      return datfile;
-    }
+    return datfile;
 }
 
 // How to write the datafile lines. Used for SD card as well as serial

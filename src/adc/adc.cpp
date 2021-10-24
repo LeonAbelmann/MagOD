@@ -364,18 +364,16 @@ dataPoint adc::getDataPoint() { /* Get datapoint and convert to units*/
 
 
 
+#if defined(_MAGOD1)
 double readTemp(){
   double Temperature_voltage, Temperature_degrees;
-#if defined(_MAGOD1)
   Temperature_voltage = analogRead(Temp_read)*5.0/1024.0;
     //calculates the temperature from datasheet calibration
   Temperature_degrees = 3.4328*pow(Temperature_voltage,3)
     -25.099*pow(Temperature_voltage,2)
     +76.047*Temperature_voltage-61.785;
-  
-#elif defined(_MAGOD2)
-#endif 
   return Temperature_degrees;
 }
+#endif 
 
 
