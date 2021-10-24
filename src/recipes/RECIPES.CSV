@@ -6,7 +6,26 @@
 ,B_x,B_y,B_z,T_switch,LED_Color,LED_Intensity,Grad_x,Grad_y,Grad_z
 ,,,,,,,,,
 #,"Programs are listed below, maximum number is 8 (defined in recipes.h)",,,,,,,,
+#,Maximum number of steps per recipe is 20 (defined in recipes.h),,,,,,,,
 ,,,,,,,,,
+#,"The Recipe with AutoCmag is special, the order of fields and led colors is fixed so that OD and Cmag can be calculated automatically afterwards. Last step used to force calculation of Cmag.",,,,,,,,
+@,Recipe,AutoCmag,,,,,,,
+#,For Cmag measurement at 1 and 0.5 mT,,,,,,,,
+#,"If N_cycles = 0, run indefinitely",,,,,,,,
+@,N_cycles,1,,,,,,,
+@,Sequence,,,,,,,,
+#,B_x[mT],B_y[mT],B_z[mT],T_switch[s],LED Color,LED Intensity [0-255],Grad_x,Grad_y,Grad_z
+,0,0.5,0,15,RED,20,1,1,1
+,0.5,0,0,15,RED,20,1,1,1
+,0,1,0,15,RED,20,1,1,1
+,1,0,0,15,RED,20,1,1,1
+,0,0.5,0,15,GREEN,40,1,1,1
+,0.5,0,0,15,GREEN,40,1,1,1
+,0,1,0,15,GREEN,40,1,1,1
+,1,0,0,15,GREEN,40,1,1,1
+,0,0,0,1,RED,20,1,1,1
+@,EndSequence,,,,,,,,
+@,EndRecipe,,,,,,,,
 ,,,,,,,,,
 @,Recipe,Cmag Green,,,,,,,
 #,For Cmag measurement at 1 and 0.5 mT,,,,,,,,
@@ -28,11 +47,11 @@
 @,N_cycles,0,,,,,,,
 @,Sequence,,,,,,,,
 #,B_x[mT],B_y[mT],B_z[mT],T_switch[s],LED Color,LED Intensity [0-255],Grad_x,Grad_y,Grad_z
-,0.5,0,0,10,RED,5,1,1,1
-,0,1,0,20,RED,5,1,1,1
-,1,0,0,20,RED,5,1,1,1
-,0,0.5,0,30,RED,5,1,1,1
-,0.5,0,0,30,RED,5,1,1,1
+,0.5,0,0,10,RED,20,1,1,1
+,0,1,0,20,RED,20,1,1,1
+,1,0,0,20,RED,20,1,1,1
+,0,0.5,0,30,RED,20,1,1,1
+,0.5,0,0,30,RED,20,1,1,1
 @,EndSequence,,,,,,,,
 @,EndRecipe,,,,,,,,
 ,,,,,,,,,
@@ -41,11 +60,11 @@
 @,N_cycles,0,,,,,,,
 @,Sequence,,,,,,,,
 #,B_x[mT],B_y[mT],B_z[mT],T_switch[s],LED Color,LED Intensity [0-255],Grad_x,Grad_y,Grad_z
-,0.5,0,0,10,BLUE,20,1,1,1
-,0,1,0,20,BLUE,20,1,1,1
-,1,0,0,20,BLUE,20,1,1,1
-,0,0.5,0,30,BLUE,20,1,1,1
-,0.5,0,0,30,BLUE,20,1,1,1
+,0.5,0,0,10,BLUE,5,1,1,1
+,0,1,0,20,BLUE,5,1,1,1
+,1,0,0,20,BLUE,5,1,1,1
+,0,0.5,0,30,BLUE,5,1,1,1
+,0.5,0,0,30,BLUE,5,1,1,1
 @,EndSequence,,,,,,,,
 @,EndRecipe,,,,,,,,
 ,,,,,,,,,
@@ -64,20 +83,20 @@
 @,N_cycles,1,,,,,,,
 @,Sequence,,,,,,,,
 #,B_x[mT],B_y[mT],B_z[mT],T_switch[s],LED Color,LED Intensity [0-255],Grad_x,Grad_y,Grad_z
-,0,0,0,5,RED,50,1,1,1
-,0,0,0,5,RED,100,1,1,1
-,0,0,0,5,RED,150,1,1,1
-,0,0,0,5,RED,200,1,1,1
-,0,0,0,5,RED,250,1,1,1
+,0,0,0,5,RED,5,1,1,1
+,0,0,0,5,RED,10,1,1,1
+,0,0,0,5,RED,15,1,1,1
+,0,0,0,5,RED,20,1,1,1
+,0,0,0,5,RED,25,1,1,1
+,0,0,0,5,GREEN,10,1,1,1
+,0,0,0,5,GREEN,20,1,1,1
+,0,0,0,5,GREEN,30,1,1,1
+,0,0,0,5,GREEN,40,1,1,1
 ,0,0,0,5,GREEN,50,1,1,1
-,0,0,0,5,GREEN,100,1,1,1
-,0,0,0,5,GREEN,150,1,1,1
-,0,0,0,5,GREEN,200,1,1,1
-,0,0,0,5,GREEN,250,1,1,1
+,0,0,0,5,BLUE,10,1,1,1
+,0,0,0,5,BLUE,20,1,1,1
+,0,0,0,5,BLUE,30,1,1,1
+,0,0,0,5,BLUE,40,1,1,1
 ,0,0,0,5,BLUE,50,1,1,1
-,0,0,0,5,BLUE,100,1,1,1
-,0,0,0,5,BLUE,150,1,1,1
-,0,0,0,5,BLUE,200,1,1,1
-,0,0,0,5,BLUE,250,1,1,1
 @,EndSequence,,,,,,,,
 @,EndRecipe,,,,,,,,

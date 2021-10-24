@@ -164,7 +164,7 @@ void screen::setRecButton(bool active)
 
 /****************************************************************/
 /* graphUpdateScale(t_min,t_max,g_min,g_max) */
-/* Update the labels on the vertical axis
+/* Update the labels on the vertical axis */
 /****************************************************************/
 void screen::graphUpdateScale(double g_minVal, double g_maxVal){
   /* clear text areas */
@@ -183,7 +183,7 @@ void screen::graphUpdateScale(double g_minVal, double g_maxVal){
 
 /****************************************************************/
 /* graphRecipeLines() */
-/* Plot vertical lines at the transition times of the recipe sequences
+/* Plot vertical lines at the transition times of the recipe sequences */
 /****************************************************************/
 void screen::graphRecipeLines(recipe recArray[], int program){
   /* Get number of steps */
@@ -263,6 +263,13 @@ void screen::setupScreen(double t_min, double t_max,
   g_minVal = g_min;
   g_maxVal = g_max;
 
+  /* Reset screen by pulling RST low */
+  Serial.println("Resetting RA8875 TFT screen...");
+  pinMode(TFT_RST, OUTPUT);
+  digitalWrite(TFT_RST, LOW);
+  delay(1);
+  digitalWrite(TFT_RST, HIGH);
+  
   Serial.println("Trying to find RA8875 screen...");
   /* Initialise the display using 'RA8875_480x272' or 'RA8875_800x480' */
   if (!tft.begin(RA8875_480x272)) {
@@ -272,6 +279,18 @@ void screen::setupScreen(double t_min, double t_max,
   Serial.println("RA8875 Found");
 
   // Initiliaze display
+  /* Software reset */
+  /* https://cdn-shop.adafruit.com/datasheets/RA8875_DS_V12_Eng.pdf
+     table 5.2 reg[01 h]. Bit 0 (0x00): software reset */
+  Serial.println("RA8875 Software reset");
+  // tft.writeReg(0x01, 0x01);
+  // delay(10);
+  // tft.writeReg(0x01, 0x00);
+  // delay(10);
+  tft.softReset();
+  // Somehow you need to start the screen again
+  tft.begin(RA8875_480x272);
+  
   tft.displayOn(true);
   tft.GPIOX(true);      // Enable TFT - display enable tied to GPIOX
   tft.PWM1config(true, RA8875_PWM_CLK_DIV1024); // PWM output for backlight

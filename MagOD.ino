@@ -38,9 +38,6 @@ float freq_meas = 1; /* Measurement frequency for ADC1 (currents,
 #endif
 float freq_screen = 4; //Screen update frequency in Hz
 
-/* Do you want Wifi :). Make sure password.h is present, see under FTP
-   server for details */
-bool wifi = true;
 
 /* Program menu settings */
 recipe recipes_array[MaxRecipes]; // Array of recipes
@@ -138,7 +135,7 @@ int graphCount      = 0; // Index counting datapoints in graph
 int graphLength     = GRAPH_LENGTH; // Total lengt. <= GRAPH_LENGTH
 long startTime      = millis(); /* Time at which the measurement
 				   started */
-long lengthTimeAxis = 200000; /* x-axis ranges from 0..lengthTimeAxis (ms)
+long lengthTimeAxis = 200000; /* x-axis ranges from 0..lengthTimeAxis (ms)*/
 
 /* Calculated parameters */
 double OD = 0;                 /*Optical Density. Calculated in
@@ -648,7 +645,7 @@ int updateGraphArray(dataPoint data,
     Serial.print(", length: ");
     Serial.print(length);
     Serial.print(", index: ");
-    Serial.println(index);
+    Serial.println(index); */
     /* End debug: */
     /* index should be between 0 and GRAPH_LENGTH. Panic if that is
        not the case */
@@ -849,7 +846,7 @@ void setup()
       Serial.println(" OK");
       // Print local IP address and start ftp server
       Serial.println("WiFi connected.");
-      Serial.print("IP address: ");
+      Serial.print("IP ad dress: ");
       Serial.println(WiFi.localIP());
       
       ftpSrv.begin("esp32","esp32"); /* username, password for ftp.

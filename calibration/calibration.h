@@ -6,6 +6,10 @@
 #if defined(_CEA)
 /* Mirror TFT screen (determines what is the front of the controller) */
 const bool mirror_tft = true;
+/* Do you want Wifi :). Make sure password.h is present, see under FTP
+   server for details */
+const bool wifi = true;
+
 
 /* RA8875 Touchscreen calibration. Run adapted ts_calibration.ino (Testfunctions/MagOD2/TestTFT50/)*/
 # define TOUCH_DIVIDER -339148
@@ -78,6 +82,10 @@ const double PDOFFSET = 4.096; // Photodetector offset
 #if defined(_KIST)
 /* Mirror TFT screen (determines what is the front of the controller) */
 const bool mirror_tft = true;
+/* Do you want Wifi:). Make sure password.h is present, see under FTP
+   server for details */
+const bool wifi = true;
+
 
 /* RA8875 Touchscreen calibration. Run adapted ts_calibration.ino (Testfunctions/MagOD2/TestTFT50/)*/
 # define TOUCH_DIVIDER -342554
@@ -92,7 +100,7 @@ const bool mirror_tft = true;
 /* B>0:PWM_value=abs(Ax_pos_TPWM * Val_Bmag_x + Bx_pos_TPWM)
    B<0 PWM_value=abs(Ax_neg_TPWM * Val_Bmag_x + Bx_neg_TPWM)
    same for Ay, Az etc.
-   /*
+*/
 /* In first order 3.1V gives 1A gives 1.5 mT. 12/3.1 V is PWM of
    25%.  So 0.25/1.5*2^resolution PWM/mT = 42 bits/mT (resolution 8
    bit). 42 is always a good number :) */
@@ -153,6 +161,10 @@ const double PDOFFSET = 4.096; // Photodetector offset
 #if defined(_BAYREUTH)
 /* Mirror TFT screen (determines what is the front of the controller) */
 const bool mirror_tft = true;
+/* Do you want Wifi :). Make sure password.h is present, see under FTP
+   server for details */
+const bool wifi = false;
+
 
 /* RA8875 Touchscreen calibration. Run adapted ts_calibration.ino (Testfunctions/MagOD2/TestTFT50/ts_calibration/)*/
 
@@ -224,6 +236,9 @@ const double PDOFFSET = 4.096; // Photodetector offset
 #if defined(_ASTON)
 /* Mirror TFT screen (determines what is the front of the controller) */
 const bool mirror_tft = true;
+/* Do you want Wifi :). Make sure password.h is present, see under FTP
+   server for details */
+const bool wifi = false;
 
 /* RA8875 Touchscreen calibration. Run adapted ts_calibration.ino (Testfunctions/MagOD2/TestTFT50/ts_calibration/)*/
 # define TOUCH_DIVIDER -353559
