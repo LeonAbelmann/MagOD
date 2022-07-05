@@ -1,6 +1,6 @@
 /* MagOD.h
  MagOD libary 
- Feb 2021
+ Nov 2021
  Struct definitions, global (external) variables
  Leon Abelmann 
 */
@@ -21,8 +21,7 @@
 #define _MAGOD1 // Version with Arduino MEGA and ST7735 1.8" 128x160 screen with joystick button
 #endif
 #if (defined(_KIST) || defined(_CEA) || defined(_BAYREUTH) || defined(_ASTON))
-#define _MAGOD2 /*Version with ESP32 Devkit and TFTM050 5" 480x272
-screen and capacitive touch */
+#define _MAGOD2 /*Version with ESP32 Devkit */
 #endif
 
 /* Declaration of stuctures */

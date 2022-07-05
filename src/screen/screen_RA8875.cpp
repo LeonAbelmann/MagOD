@@ -315,7 +315,8 @@ void screen::setupScreen(double t_min, double t_max,
   
   Serial.println("Trying to find RA8875 screen...");
   /* Initialise the display using 'RA8875_480x272' or 'RA8875_800x480' */
-  if (!tft.begin(RA8875_480x272)) {
+  /* screensize defined in calibration.h */
+  if (!tft.begin(screensize)) {
     Serial.println("RA8875 Not Found!");
    while (1);
   }
@@ -332,7 +333,7 @@ void screen::setupScreen(double t_min, double t_max,
   // delay(10);
   tft.softReset();
   // Somehow you need to start the screen again
-  tft.begin(RA8875_480x272);
+  tft.begin(screensize);
   
   tft.displayOn(true);
   //Serial.println("GPIOX");delay(2000);

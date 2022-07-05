@@ -1,0 +1,1689 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<export version="D">
+  <design>
+    <source>/Users/abn/Dropbox/ProjectODMeter/BoardMagOD2.1/ODMeter.sch</source>
+    <date>2019 June 21, Friday 14:03:09</date>
+    <tool>Eeschema (5.1.0-0)</tool>
+    <sheet number="1" name="/" tstamps="/">
+      <title_block>
+        <title/>
+        <company/>
+        <rev/>
+        <date/>
+        <source>ODMeter.sch</source>
+        <comment number="1" value=""/>
+        <comment number="2" value=""/>
+        <comment number="3" value=""/>
+        <comment number="4" value=""/>
+      </title_block>
+    </sheet>
+  </design>
+  <components>
+    <comp ref="U2">
+      <value>ADS1115</value>
+      <footprint>Housings_SSOP_custom:VSSOP-10_3.1x3.1mm_Pitch0.5mm</footprint>
+      <datasheet>http://nl.farnell.com/w/search?st=ads1115&amp;adc-dac-case-style=vssop</datasheet>
+      <fields>
+        <field name="Article number">ADS1115IDGST</field>
+      </fields>
+      <libsource lib="Analog_ADC" part="ADS1115IDGS" description="Ultra-Small, Low-Power, I2C-Compatible, 860-SPS, 16-Bit ADCs With Internal Reference, Oscillator, and Programmable Comparator, VSSOP-10"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5AECA04D</tstamp>
+    </comp>
+    <comp ref="R7">
+      <value>R</value>
+      <footprint>Resistors_SMD:R_0805</footprint>
+      <datasheet>https://uk.farnell.com/te-connectivity/crgcq0805j3k3/res-3k3-5-0805-thick-film/dp/2861910</datasheet>
+      <fields>
+        <field name="Article number">CRGCQ0805J3K3</field>
+      </fields>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5AECB1D3</tstamp>
+    </comp>
+    <comp ref="R10">
+      <value>R</value>
+      <footprint>Resistors_SMD:R_0805</footprint>
+      <datasheet>https://uk.farnell.com/te-connectivity/crgcq0805j3k3/res-3k3-5-0805-thick-film/dp/2861910</datasheet>
+      <fields>
+        <field name="Article number">CRGCQ0805J3K3</field>
+      </fields>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5AECB2D9</tstamp>
+    </comp>
+    <comp ref="C1">
+      <value>100n</value>
+      <footprint>Capacitors_SMD:C_0805</footprint>
+      <libsource lib="Device" part="C" description="Unpolarized capacitor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5AECBC6A</tstamp>
+    </comp>
+    <comp ref="R14">
+      <value>R</value>
+      <footprint>Resistors_SMD:R_0805</footprint>
+      <datasheet>https://uk.farnell.com/te-connectivity/crgcq0805j3k3/res-3k3-5-0805-thick-film/dp/2861910</datasheet>
+      <fields>
+        <field name="Article number">CRGCQ0805J3K3</field>
+      </fields>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5AECC4A4</tstamp>
+    </comp>
+    <comp ref="R5">
+      <value>R</value>
+      <footprint>Resistors_SMD:R_0805</footprint>
+      <datasheet>https://uk.farnell.com/te-connectivity/crgcq0805j3k3/res-3k3-5-0805-thick-film/dp/2861910</datasheet>
+      <fields>
+        <field name="Article number">CRGCQ0805J3K3</field>
+      </fields>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5AECC56A</tstamp>
+    </comp>
+    <comp ref="J2">
+      <value>Conn_01x03</value>
+      <footprint>Pin_Headers:Pin_Header_Straight_1x03_Pitch2.54mm</footprint>
+      <datasheet>https://nl.farnell.com/multicomp/2212s-03sg-85/socket-pcb-1-row-3way/dp/1593459</datasheet>
+      <fields>
+        <field name="Article number">2212S-03SG-85</field>
+      </fields>
+      <libsource lib="ODMeter-rescue" part="Conn_01x03-conn" description=""/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5AF1F66F</tstamp>
+    </comp>
+    <comp ref="J4">
+      <value>Conn_01x03</value>
+      <footprint>Pin_Headers:Pin_Header_Straight_1x03_Pitch2.54mm</footprint>
+      <datasheet>https://nl.farnell.com/multicomp/2212s-03sg-85/socket-pcb-1-row-3way/dp/1593459</datasheet>
+      <fields>
+        <field name="Article number">2212S-03SG-85</field>
+      </fields>
+      <libsource lib="ODMeter-rescue" part="Conn_01x03-conn" description=""/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5AF1F720</tstamp>
+    </comp>
+    <comp ref="J6">
+      <value>Conn_01x03</value>
+      <footprint>Pin_Headers:Pin_Header_Straight_1x03_Pitch2.54mm</footprint>
+      <datasheet>https://nl.farnell.com/multicomp/2212s-03sg-85/socket-pcb-1-row-3way/dp/1593459</datasheet>
+      <fields>
+        <field name="Article number">2212S-03SG-85</field>
+      </fields>
+      <libsource lib="ODMeter-rescue" part="Conn_01x03-conn" description=""/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5AF1F7C3</tstamp>
+    </comp>
+    <comp ref="R26">
+      <value>R</value>
+      <footprint>Resistors_SMD:R_0805</footprint>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5B30D4C1</tstamp>
+    </comp>
+    <comp ref="U3">
+      <value>NodeMCU(ESP-32)</value>
+      <footprint>ESP-32:NodeMCU(ESP-32)</footprint>
+      <libsource lib="ODMeter-rescue" part="NodeMCU(ESP-32)-ESP-32" description=""/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5BF1EFDB</tstamp>
+    </comp>
+    <comp ref="U5">
+      <value>ADS1115</value>
+      <footprint>Housings_SSOP_custom:VSSOP-10_3.1x3.1mm_Pitch0.5mm</footprint>
+      <datasheet>http://nl.farnell.com/w/search?st=ads1115&amp;adc-dac-case-style=vssop</datasheet>
+      <fields>
+        <field name="Article number">ADS1115IDGST</field>
+      </fields>
+      <libsource lib="Analog_ADC" part="ADS1115IDGS" description="Ultra-Small, Low-Power, I2C-Compatible, 860-SPS, 16-Bit ADCs With Internal Reference, Oscillator, and Programmable Comparator, VSSOP-10"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5BF244B1</tstamp>
+    </comp>
+    <comp ref="C11">
+      <value>100n</value>
+      <footprint>Capacitors_SMD:C_0805</footprint>
+      <libsource lib="Device" part="C" description="Unpolarized capacitor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5BF244D0</tstamp>
+    </comp>
+    <comp ref="R31">
+      <value>R</value>
+      <footprint>Resistors_SMD:R_0805</footprint>
+      <datasheet>https://uk.farnell.com/te-connectivity/crgcq0805j3k3/res-3k3-5-0805-thick-film/dp/2861910</datasheet>
+      <fields>
+        <field name="Article number">CRGCQ0805J3K3</field>
+      </fields>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5BF244E0</tstamp>
+    </comp>
+    <comp ref="J15">
+      <value>A1</value>
+      <footprint>TestPoint_custom:TestPoint-Harwin-S2761-46R</footprint>
+      <datasheet>https://nl.mouser.com/ProductDetail/Harwin/S2761-46R?qs=%2fha2pyFadujhSB1Bg2gGN4DhlPyYLKDS8L9Oo%252bx4zjG4Wc0%2fwzrqNw%3d%3d</datasheet>
+      <fields>
+        <field name="Article number">S2761-46R</field>
+      </fields>
+      <libsource lib="ODMeter-rescue" part="TEST_1P-conn" description=""/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5BF599A8</tstamp>
+    </comp>
+    <comp ref="J16">
+      <value>A0</value>
+      <footprint>TestPoint_custom:TestPoint-Harwin-S2761-46R</footprint>
+      <datasheet>https://nl.mouser.com/ProductDetail/Harwin/S2761-46R?qs=%2fha2pyFadujhSB1Bg2gGN4DhlPyYLKDS8L9Oo%252bx4zjG4Wc0%2fwzrqNw%3d%3d</datasheet>
+      <fields>
+        <field name="Article number">S2761-46R</field>
+      </fields>
+      <libsource lib="ODMeter-rescue" part="TEST_1P-conn" description=""/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5BF59AB4</tstamp>
+    </comp>
+    <comp ref="J17">
+      <value>5V_a</value>
+      <footprint>TestPoint_custom:TestPoint-Harwin-S2761-46R</footprint>
+      <datasheet>https://nl.mouser.com/ProductDetail/Harwin/S2761-46R?qs=%2fha2pyFadujhSB1Bg2gGN4DhlPyYLKDS8L9Oo%252bx4zjG4Wc0%2fwzrqNw%3d%3d</datasheet>
+      <libsource lib="ODMeter-rescue" part="TEST_1P-conn" description=""/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5BF59B84</tstamp>
+    </comp>
+    <comp ref="J13">
+      <value>A2</value>
+      <footprint>TestPoint_custom:TestPoint-Harwin-S2761-46R</footprint>
+      <datasheet>https://nl.mouser.com/ProductDetail/Harwin/S2761-46R?qs=%2fha2pyFadujhSB1Bg2gGN4DhlPyYLKDS8L9Oo%252bx4zjG4Wc0%2fwzrqNw%3d%3d</datasheet>
+      <fields>
+        <field name="Article number">S2761-46R</field>
+      </fields>
+      <libsource lib="ODMeter-rescue" part="TEST_1P-conn" description=""/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5BF59C1A</tstamp>
+    </comp>
+    <comp ref="J12">
+      <value>A3</value>
+      <footprint>TestPoint_custom:TestPoint-Harwin-S2761-46R</footprint>
+      <datasheet>https://nl.mouser.com/ProductDetail/Harwin/S2761-46R?qs=%2fha2pyFadujhSB1Bg2gGN4DhlPyYLKDS8L9Oo%252bx4zjG4Wc0%2fwzrqNw%3d%3d</datasheet>
+      <fields>
+        <field name="Article number">S2761-46R </field>
+      </fields>
+      <libsource lib="ODMeter-rescue" part="TEST_1P-conn" description=""/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5BF59CAE</tstamp>
+    </comp>
+    <comp ref="J10">
+      <value>A7</value>
+      <footprint>TestPoint_custom:TestPoint-Harwin-S2761-46R</footprint>
+      <datasheet>https://nl.mouser.com/ProductDetail/Harwin/S2761-46R?qs=%2fha2pyFadujhSB1Bg2gGN4DhlPyYLKDS8L9Oo%252bx4zjG4Wc0%2fwzrqNw%3d%3d</datasheet>
+      <fields>
+        <field name="Article number">S2761-46R</field>
+      </fields>
+      <libsource lib="ODMeter-rescue" part="TEST_1P-conn" description=""/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5BF59D44</tstamp>
+    </comp>
+    <comp ref="J9">
+      <value>Conn_01x06</value>
+      <footprint>Connectors_Molex_custom:KK41791_straight1x6</footprint>
+      <datasheet>https://nl.farnell.com/molex/26-60-4060/connector-header-6pos-1row-3-96mm/dp/1675502?st=KK%2041791</datasheet>
+      <fields>
+        <field name="Article number">26-60-4060</field>
+      </fields>
+      <libsource lib="Connector_Generic" part="Conn_01x06" description="Generic connector, single row, 01x06, script generated (kicad-library-utils/schlib/autogen/connector/)"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5BF20878</tstamp>
+    </comp>
+    <comp ref="U1">
+      <value>Opamp_Quad_Generic</value>
+      <footprint>Package_SO:SOIC-14_3.9x8.7mm_P1.27mm</footprint>
+      <datasheet>https://uk.farnell.com/on-semiconductor/ncs20034dr2g/op-amp-7mhz-8v-us-nsoic-14/dp/2491996</datasheet>
+      <fields>
+        <field name="Article number">NCS20034DR2G </field>
+      </fields>
+      <libsource lib="Device" part="Opamp_Quad_Generic" description="Quad operational amplifier"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5BF2AA60</tstamp>
+    </comp>
+    <comp ref="R4">
+      <value>3.3k</value>
+      <footprint>Resistors_SMD:R_0805</footprint>
+      <datasheet>http://nl.farnell.com/multicomp/mf50-3k3/resistor-0-5w-1-3k3/dp/9340416?ost=9340416&amp;ddkey=http%3Anl-NL%2FElement14_Netherlands%2Fsearch</datasheet>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5BF2AF0F</tstamp>
+    </comp>
+    <comp ref="R8">
+      <value>3.3k</value>
+      <footprint>Resistors_SMD:R_0805</footprint>
+      <datasheet>http://nl.farnell.com/multicomp/mf50-3k3/resistor-0-5w-1-3k3/dp/9340416?ost=9340416&amp;ddkey=http%3Anl-NL%2FElement14_Netherlands%2Fsearch</datasheet>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5BF2B14A</tstamp>
+    </comp>
+    <comp ref="R6">
+      <value>0.05</value>
+      <footprint>CurrentSenseResistor:OAR3</footprint>
+      <datasheet>http://nl.farnell.com/welwyn/oar3-r050fi/resistor-1-0r050/dp/1200372?ost=1200372&amp;ddkey=http%3Anl-NL%2FElement14_Netherlands%2Fsearch</datasheet>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5BF2B204</tstamp>
+    </comp>
+    <comp ref="R9">
+      <value>33k</value>
+      <footprint>Resistors_SMD:R_0805</footprint>
+      <datasheet>http://nl.farnell.com/multicomp/mf50-33k/resistor-0-5w-1-33k/dp/9340424?ost=9340424&amp;ddkey=http%3Anl-NL%2FElement14_Netherlands%2Fsearch</datasheet>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5BF2B2BE</tstamp>
+    </comp>
+    <comp ref="R1">
+      <value>800</value>
+      <footprint>Resistors_SMD:R_0805</footprint>
+      <datasheet>http://nl.farnell.com/multicomp/mf50-820r/resistor-0-5w-1-820r/dp/9340939?ost=9340939&amp;ddkey=http%3Anl-NL%2FElement14_Netherlands%2Fsearch</datasheet>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5BF484F1</tstamp>
+    </comp>
+    <comp ref="R3">
+      <value>33k</value>
+      <footprint>Resistors_SMD:R_0805</footprint>
+      <datasheet>http://nl.farnell.com/multicomp/mf50-33k/resistor-0-5w-1-33k/dp/9340424?ost=9340424&amp;ddkey=http%3Anl-NL%2FElement14_Netherlands%2Fsearch</datasheet>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5BF487B3</tstamp>
+    </comp>
+    <comp ref="R2">
+      <value>800</value>
+      <footprint>Resistors_SMD:R_0805</footprint>
+      <datasheet>http://nl.farnell.com/multicomp/mf50-820r/resistor-0-5w-1-820r/dp/9340939?ost=9340939&amp;ddkey=http%3Anl-NL%2FElement14_Netherlands%2Fsearch</datasheet>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5BF48960</tstamp>
+    </comp>
+    <comp ref="R15">
+      <value>3.3k</value>
+      <footprint>Resistors_SMD:R_0805</footprint>
+      <datasheet>http://nl.farnell.com/multicomp/mf50-3k3/resistor-0-5w-1-3k3/dp/9340416?ost=9340416&amp;ddkey=http%3Anl-NL%2FElement14_Netherlands%2Fsearch</datasheet>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5BF60FC8</tstamp>
+    </comp>
+    <comp ref="R17">
+      <value>3.3k</value>
+      <footprint>Resistors_SMD:R_0805</footprint>
+      <datasheet>http://nl.farnell.com/multicomp/mf50-3k3/resistor-0-5w-1-3k3/dp/9340416?ost=9340416&amp;ddkey=http%3Anl-NL%2FElement14_Netherlands%2Fsearch</datasheet>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5BF60FCF</tstamp>
+    </comp>
+    <comp ref="R16">
+      <value>0.05</value>
+      <footprint>CurrentSenseResistor:OAR3</footprint>
+      <datasheet>http://nl.farnell.com/welwyn/oar3-r050fi/resistor-1-0r050/dp/1200372?ost=1200372&amp;ddkey=http%3Anl-NL%2FElement14_Netherlands%2Fsearch</datasheet>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5BF60FD6</tstamp>
+    </comp>
+    <comp ref="R18">
+      <value>33k</value>
+      <footprint>Resistors_SMD:R_0805</footprint>
+      <datasheet>http://nl.farnell.com/multicomp/mf50-33k/resistor-0-5w-1-33k/dp/9340424?ost=9340424&amp;ddkey=http%3Anl-NL%2FElement14_Netherlands%2Fsearch</datasheet>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5BF60FDD</tstamp>
+    </comp>
+    <comp ref="R11">
+      <value>800</value>
+      <footprint>Resistors_SMD:R_0805</footprint>
+      <datasheet>http://nl.farnell.com/multicomp/mf50-820r/resistor-0-5w-1-820r/dp/9340939?ost=9340939&amp;ddkey=http%3Anl-NL%2FElement14_Netherlands%2Fsearch</datasheet>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5BF60FEB</tstamp>
+    </comp>
+    <comp ref="R13">
+      <value>33k</value>
+      <footprint>Resistors_SMD:R_0805</footprint>
+      <datasheet>http://nl.farnell.com/multicomp/mf50-33k/resistor-0-5w-1-33k/dp/9340424?ost=9340424&amp;ddkey=http%3Anl-NL%2FElement14_Netherlands%2Fsearch</datasheet>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5BF60FF2</tstamp>
+    </comp>
+    <comp ref="R12">
+      <value>800</value>
+      <footprint>Resistors_SMD:R_0805</footprint>
+      <datasheet>http://nl.farnell.com/multicomp/mf50-820r/resistor-0-5w-1-820r/dp/9340939?ost=9340939&amp;ddkey=http%3Anl-NL%2FElement14_Netherlands%2Fsearch</datasheet>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5BF60FF9</tstamp>
+    </comp>
+    <comp ref="R22">
+      <value>3.3k</value>
+      <footprint>Resistors_SMD:R_0805</footprint>
+      <datasheet>http://nl.farnell.com/multicomp/mf50-3k3/resistor-0-5w-1-3k3/dp/9340416?ost=9340416&amp;ddkey=http%3Anl-NL%2FElement14_Netherlands%2Fsearch</datasheet>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5BF6EC8F</tstamp>
+    </comp>
+    <comp ref="R24">
+      <value>3.3k</value>
+      <footprint>Resistors_SMD:R_0805</footprint>
+      <datasheet>http://nl.farnell.com/multicomp/mf50-3k3/resistor-0-5w-1-3k3/dp/9340416?ost=9340416&amp;ddkey=http%3Anl-NL%2FElement14_Netherlands%2Fsearch</datasheet>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5BF6EC96</tstamp>
+    </comp>
+    <comp ref="R23">
+      <value>0.05</value>
+      <footprint>CurrentSenseResistor:OAR3</footprint>
+      <datasheet>http://nl.farnell.com/welwyn/oar3-r050fi/resistor-1-0r050/dp/1200372?ost=1200372&amp;ddkey=http%3Anl-NL%2FElement14_Netherlands%2Fsearch</datasheet>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5BF6EC9D</tstamp>
+    </comp>
+    <comp ref="R25">
+      <value>33k</value>
+      <footprint>Resistors_SMD:R_0805</footprint>
+      <datasheet>http://nl.farnell.com/multicomp/mf50-33k/resistor-0-5w-1-33k/dp/9340424?ost=9340424&amp;ddkey=http%3Anl-NL%2FElement14_Netherlands%2Fsearch</datasheet>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5BF6ECA4</tstamp>
+    </comp>
+    <comp ref="R19">
+      <value>800</value>
+      <footprint>Resistors_SMD:R_0805</footprint>
+      <datasheet>http://nl.farnell.com/multicomp/mf50-820r/resistor-0-5w-1-820r/dp/9340939?ost=9340939&amp;ddkey=http%3Anl-NL%2FElement14_Netherlands%2Fsearch</datasheet>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5BF6ECB2</tstamp>
+    </comp>
+    <comp ref="R21">
+      <value>33k</value>
+      <footprint>Resistors_SMD:R_0805</footprint>
+      <datasheet>http://nl.farnell.com/multicomp/mf50-33k/resistor-0-5w-1-33k/dp/9340424?ost=9340424&amp;ddkey=http%3Anl-NL%2FElement14_Netherlands%2Fsearch</datasheet>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5BF6ECB9</tstamp>
+    </comp>
+    <comp ref="R20">
+      <value>800</value>
+      <footprint>Resistors_SMD:R_0805</footprint>
+      <datasheet>http://nl.farnell.com/multicomp/mf50-820r/resistor-0-5w-1-820r/dp/9340939?ost=9340939&amp;ddkey=http%3Anl-NL%2FElement14_Netherlands%2Fsearch</datasheet>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5BF6ECC0</tstamp>
+    </comp>
+    <comp ref="J1">
+      <value>A4</value>
+      <footprint>TestPoint_custom:TestPoint-Harwin-S2761-46R</footprint>
+      <datasheet>https://nl.mouser.com/ProductDetail/Harwin/S2761-46R?qs=sGAEpiMZZMu0dYp3dYbBlfsw%252bu87xvzRKqYOvNqJUXU%3d</datasheet>
+      <fields>
+        <field name="Article number">S2761-46R</field>
+      </fields>
+      <libsource lib="ODMeter-rescue" part="TEST_1P-conn" description=""/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5BF8DC34</tstamp>
+    </comp>
+    <comp ref="J5">
+      <value>A6</value>
+      <footprint>TestPoint_custom:TestPoint-Harwin-S2761-46R</footprint>
+      <datasheet>https://nl.mouser.com/ProductDetail/Harwin/S2761-46R?qs=%2fha2pyFadujhSB1Bg2gGN4DhlPyYLKDS8L9Oo%252bx4zjG4Wc0%2fwzrqNw%3d%3d</datasheet>
+      <fields>
+        <field name="Article number">S2761-46R</field>
+      </fields>
+      <libsource lib="ODMeter-rescue" part="TEST_1P-conn" description=""/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5BF8DFCC</tstamp>
+    </comp>
+    <comp ref="J8">
+      <value>A5</value>
+      <footprint>TestPoint_custom:TestPoint-Harwin-S2761-46R</footprint>
+      <datasheet>https://nl.mouser.com/ProductDetail/Harwin/S2761-46R?qs=%2fha2pyFadujhSB1Bg2gGN4DhlPyYLKDS8L9Oo%252bx4zjG4Wc0%2fwzrqNw%3d%3d</datasheet>
+      <fields>
+        <field name="Article number">S2761-46R</field>
+      </fields>
+      <libsource lib="ODMeter-rescue" part="TEST_1P-conn" description=""/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5BF8E06A</tstamp>
+    </comp>
+    <comp ref="C2">
+      <value>100n</value>
+      <footprint>Capacitors_SMD:C_0805</footprint>
+      <libsource lib="Device" part="C" description="Unpolarized capacitor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5BF8E9CD</tstamp>
+    </comp>
+    <comp ref="J14">
+      <value>Conn_01x04</value>
+      <footprint>Connectors_Molex_custom:KK41791_straight1x4</footprint>
+      <datasheet>https://uk.farnell.com/molex/26-60-4040/connector-header-4pos-1row-3-96mm/dp/1675500?ost=KK+41791&amp;krypto=SVWds25Yf%2BF6m8BRQZynvLadPZEWy0K1LFAww%2Bu6UOnzXn5uiafdj0nyDP%2FOTIKxQJQ3lfi0uJbxCr1%2BYP5MvTk9EX5DZeoEXgiSukGbFLwBO3a4kKAhCSSpke3c2YFw%2B5whpzcu8Ac1EvMZpgVz%2F9bUzQykV175RSixKcXtTJ%2B9O9dAAiSI5XR3Y0yjXcVE9bvfU2K9sZWigUxb%2BlUUK1WhT168xJqwFMr0KGz%2FjwPzvTdG35Mjp8336WkXk9oRcGfON8ls0bK5zqNDJoZNvviFsrZ59xh477SCRcLGSMfkeL6XBFEJpCAPCfovoCtpzqyLRSTU0u9qzL9WigfxKug0JrDtj%2Bdrx18jucYU7GsCXQOgi0%2FP59Qi%2BkiKjYd9eBpno0E9ENM36AAIZN6ef7Yi0ZrVaM8%2BdNX4405d%2Bwz9x3rob6ACZOldtBAbVGv30LcUYG9t%2FFxHHQxlEI5ua7nNlxFOljC%2Fum9jH6paToaNKy6GLDwYa3Y4kYpxrFGTpUMZ8Tds3aKDkh3HU3FsZRfp%2BM%2Fg8jphJ8v9YKC3Vp3AvJ0xIVvlgJuzYt%2F%2BtWGyFPfECwCLldMOIZfbB3x1FYO8v71SpZMu7qa1EDSYVAu98qFMlIDK%2BO6M5pJQJfAPIFNiOmc7ZIhYV0XNW6bgP9i4RzOkdn9n4Ejs6popXZyeSpKIoZdH8Ykg8Xls72R8LWxrpjb%2BrKy1nk7CMW32S1x0P85f%2F%2Bi%2BSY54gRFXYWhkUgxTG4aw1AXZadQJDsrOVcIzyjnjSvvaIMddWaybvecFSwdUgsWvxnxVeWwZ9sw%3D&amp;ddkey=https%3Aen-GB%2FElement14_United_Kingdom%2Fw%2Fsearch</datasheet>
+      <fields>
+        <field name="Article number">26-60-4040 </field>
+      </fields>
+      <libsource lib="Connector_Generic" part="Conn_01x04" description="Generic connector, single row, 01x04, script generated (kicad-library-utils/schlib/autogen/connector/)"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5BF32485</tstamp>
+    </comp>
+    <comp ref="J18">
+      <value>Conn_01x04</value>
+      <footprint>Connectors_Molex_custom:KK41791_straight1x4</footprint>
+      <datasheet>https://uk.farnell.com/molex/26-60-4040/connector-header-4pos-1row-3-96mm/dp/1675500?ost=KK+41791&amp;krypto=SVWds25Yf%2BF6m8BRQZynvLadPZEWy0K1LFAww%2Bu6UOnzXn5uiafdj0nyDP%2FOTIKxQJQ3lfi0uJbxCr1%2BYP5MvTk9EX5DZeoEXgiSukGbFLwBO3a4kKAhCSSpke3c2YFw%2B5whpzcu8Ac1EvMZpgVz%2F9bUzQykV175RSixKcXtTJ%2B9O9dAAiSI5XR3Y0yjXcVE9bvfU2K9sZWigUxb%2BlUUK1WhT168xJqwFMr0KGz%2FjwPzvTdG35Mjp8336WkXk9oRcGfON8ls0bK5zqNDJoZNvviFsrZ59xh477SCRcLGSMfkeL6XBFEJpCAPCfovoCtpzqyLRSTU0u9qzL9WigfxKug0JrDtj%2Bdrx18jucYU7GsCXQOgi0%2FP59Qi%2BkiKjYd9eBpno0E9ENM36AAIZN6ef7Yi0ZrVaM8%2BdNX4405d%2Bwz9x3rob6ACZOldtBAbVGv30LcUYG9t%2FFxHHQxlEI5ua7nNlxFOljC%2Fum9jH6paToaNKy6GLDwYa3Y4kYpxrFGTpUMZ8Tds3aKDkh3HU3FsZRfp%2BM%2Fg8jphJ8v9YKC3Vp3AvJ0xIVvlgJuzYt%2F%2BtWGyFPfECwCLldMOIZfbB3x1FYO8v71SpZMu7qa1EDSYVAu98qFMlIDK%2BO6M5pJQJfAPIFNiOmc7ZIhYV0XNW6bgP9i4RzOkdn9n4Ejs6popXZyeSpKIoZdH8Ykg8Xls72R8LWxrpjb%2BrKy1nk7CMW32S1x0P85f%2F%2Bi%2BSY54gRFXYWhkUgxTG4aw1AXZadQJDsrOVcIzyjnjSvvaIMddWaybvecFSwdUgsWvxnxVeWwZ9sw%3D&amp;ddkey=https%3Aen-GB%2FElement14_United_Kingdom%2Fw%2Fsearch</datasheet>
+      <fields>
+        <field name="Article number">26-60-4040 </field>
+      </fields>
+      <libsource lib="Connector_Generic" part="Conn_01x04" description="Generic connector, single row, 01x04, script generated (kicad-library-utils/schlib/autogen/connector/)"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5BF32667</tstamp>
+    </comp>
+    <comp ref="J19">
+      <value>Conn_01x04</value>
+      <footprint>Connectors_Molex_custom:KK41791_straight1x4</footprint>
+      <datasheet>https://uk.farnell.com/molex/26-60-4040/connector-header-4pos-1row-3-96mm/dp/1675500?ost=KK+41791&amp;krypto=SVWds25Yf%2BF6m8BRQZynvLadPZEWy0K1LFAww%2Bu6UOnzXn5uiafdj0nyDP%2FOTIKxQJQ3lfi0uJbxCr1%2BYP5MvTk9EX5DZeoEXgiSukGbFLwBO3a4kKAhCSSpke3c2YFw%2B5whpzcu8Ac1EvMZpgVz%2F9bUzQykV175RSixKcXtTJ%2B9O9dAAiSI5XR3Y0yjXcVE9bvfU2K9sZWigUxb%2BlUUK1WhT168xJqwFMr0KGz%2FjwPzvTdG35Mjp8336WkXk9oRcGfON8ls0bK5zqNDJoZNvviFsrZ59xh477SCRcLGSMfkeL6XBFEJpCAPCfovoCtpzqyLRSTU0u9qzL9WigfxKug0JrDtj%2Bdrx18jucYU7GsCXQOgi0%2FP59Qi%2BkiKjYd9eBpno0E9ENM36AAIZN6ef7Yi0ZrVaM8%2BdNX4405d%2Bwz9x3rob6ACZOldtBAbVGv30LcUYG9t%2FFxHHQxlEI5ua7nNlxFOljC%2Fum9jH6paToaNKy6GLDwYa3Y4kYpxrFGTpUMZ8Tds3aKDkh3HU3FsZRfp%2BM%2Fg8jphJ8v9YKC3Vp3AvJ0xIVvlgJuzYt%2F%2BtWGyFPfECwCLldMOIZfbB3x1FYO8v71SpZMu7qa1EDSYVAu98qFMlIDK%2BO6M5pJQJfAPIFNiOmc7ZIhYV0XNW6bgP9i4RzOkdn9n4Ejs6popXZyeSpKIoZdH8Ykg8Xls72R8LWxrpjb%2BrKy1nk7CMW32S1x0P85f%2F%2Bi%2BSY54gRFXYWhkUgxTG4aw1AXZadQJDsrOVcIzyjnjSvvaIMddWaybvecFSwdUgsWvxnxVeWwZ9sw%3D&amp;ddkey=https%3Aen-GB%2FElement14_United_Kingdom%2Fw%2Fsearch</datasheet>
+      <fields>
+        <field name="Article number">26-60-4040 </field>
+      </fields>
+      <libsource lib="Connector_Generic" part="Conn_01x04" description="Generic connector, single row, 01x04, script generated (kicad-library-utils/schlib/autogen/connector/)"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5BF3270D</tstamp>
+    </comp>
+    <comp ref="J7">
+      <value>GND</value>
+      <footprint>TestPoint_custom:TestPoint-Harwin-S2761-46R</footprint>
+      <datasheet>https://nl.mouser.com/ProductDetail/Harwin/S2761-46R?qs=%2fha2pyFadujhSB1Bg2gGN4DhlPyYLKDS8L9Oo%252bx4zjG4Wc0%2fwzrqNw%3d%3d</datasheet>
+      <fields>
+        <field name="Article number">S2761-46R </field>
+      </fields>
+      <libsource lib="ODMeter-rescue" part="TEST_1P-conn" description=""/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5BF40BC8</tstamp>
+    </comp>
+    <comp ref="J20">
+      <value>Conn_01x02</value>
+      <footprint>Connectors_Molex_custom:KK396RPC171813_Straight_1x2</footprint>
+      <datasheet>~</datasheet>
+      <fields>
+        <field name="Article number">26-60-4020 </field>
+      </fields>
+      <libsource lib="Connector_Generic" part="Conn_01x02" description="Generic connector, single row, 01x02, script generated (kicad-library-utils/schlib/autogen/connector/)"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5BF4259F</tstamp>
+    </comp>
+    <comp ref="R28">
+      <value>R</value>
+      <footprint>Resistors_SMD:R_0805</footprint>
+      <datasheet>https://uk.farnell.com/te-connectivity/crgcq0805j3k3/res-3k3-5-0805-thick-film/dp/2861910</datasheet>
+      <fields>
+        <field name="Article number">CRGCQ0805J3K3</field>
+      </fields>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5BF244E7</tstamp>
+    </comp>
+    <comp ref="U4">
+      <value>LMR33630ADDA</value>
+      <footprint>HSOIC:HSOIC-8</footprint>
+      <datasheet>https://nl.farnell.com/texas-instruments/lmr33630adda/dc-dc-conv-400khz-so-powerpad/dp/2855642?ost=LMR33630ADDA&amp;scope=partnumberlookahead&amp;searchref=searchlookahead&amp;krypto=uIEg5IXcgvcU3rXyx4wUoNaX5581C0V3xLUUwoV4t5W0SB7grNNyHNoOO31FQ7HOzNoj%2F7CPsKkp9me%2F%2B5F87X2gTYvdko1xJBYodwmEve95WUah%2FU16SwQ%2Fm5zvZmydfftx%2FkVF43YFSyt4q%2Fac6mnOA%2BDj6I1XjYI1lSn1BFmReaRWU85tnK1OA5clomSIGxo50M%2B7MwX9TCD8gFs%2BJ%2BMPQFt6M%2F2x7eICPKYTHYnkty0Q9Ebxz9SSUVRde3RCqv6noIqMwxFgMNvSG5ScgcBcaj7KKcuWpZCGNvNyXRZcYDgcJaNPR25FZbO05LH0J0NZHi7En6Fo34rUNFzZVQX2WJ%2FsJ5dsxhygsM7osoWQUN3La%2FRvMAgH6ifbGgb2xcBMoft0FC17wvGLUfyoqjHe6q%2FKe6AhBkuzMcxU1hS2IUBrWassAFThPsvq698INeqAT0%2FDwijVJf5bQpYXKvuhfnJAtZqo3z3GEGKTWNWJe%2BX99rF4Hl1QgIUoWeZ0ubrx96%2BfdjHiuGENtKnYMypQjbyCfEWogCb0IEwjlrb6nlWrET1Mb2hUPkHq4cE5BoT0wz3QZ0YKfMsTq%2Fs9Hj4nYiSsoTWBbjljD30lnFE%3D&amp;ddkey=https%3Anl-NL%2FElement14_Netherlands%2Fw%2Fsearch</datasheet>
+      <fields>
+        <field name="Article number">LMR33630ADDA </field>
+      </fields>
+      <libsource lib="ODMeter-rescue" part="LMR33630ADDA-lmr33630adda" description=""/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5B153CDB</tstamp>
+    </comp>
+    <comp ref="C7">
+      <value>220n</value>
+      <footprint>Capacitors_SMD:C_0805</footprint>
+      <datasheet>http://nl.farnell.com/tdk/cga4j2x7r1h224k125aa/cap-mlcc-x7r-0-22uf-50v-0805/dp/2435482?st=CGA4J2X7R1H224K125AA</datasheet>
+      <fields>
+        <field name="Article number">CGA4J2X7R1H224K125AA</field>
+        <field name="Resistance">0.017Ohm</field>
+      </fields>
+      <libsource lib="Device" part="C" description="Unpolarized capacitor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5B153DEA</tstamp>
+    </comp>
+    <comp ref="C6">
+      <value>10u</value>
+      <footprint>Capacitors_SMD:C_1210</footprint>
+      <datasheet>https://nl.farnell.com/murata/gcm32er71e106ka57l/cap-10-f-25v-10-x7r-1210/dp/2470445</datasheet>
+      <fields>
+        <field name="Article number">2470445</field>
+        <field name="Resistance">2.237mOhm</field>
+      </fields>
+      <libsource lib="Device" part="C" description="Unpolarized capacitor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5B153E86</tstamp>
+    </comp>
+    <comp ref="C3">
+      <value>100n</value>
+      <footprint>Capacitors_SMD:C_0805</footprint>
+      <datasheet>http://nl.farnell.com/kemet/c0805j104m5racauto/cap-mlcc-auto-x7r-0-1uf-0805/dp/2673150?st=0805 [2012 Metric], 1 µF, 50 V x7r</datasheet>
+      <fields>
+        <field name="Article number">C0805J104M5RACAUTO </field>
+        <field name="Resistance">1mOhm</field>
+      </fields>
+      <libsource lib="Device" part="C" description="Unpolarized capacitor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5B153F39</tstamp>
+    </comp>
+    <comp ref="C8">
+      <value>1u</value>
+      <footprint>Capacitors_SMD:C_0603</footprint>
+      <datasheet>http://nl.farnell.com/kemet/c0603c105z8vactu/cap-mlcc-y5v-1uf-10v-0603/dp/2522398?st=c0603c105z8</datasheet>
+      <fields>
+        <field name="Article number">C0603C105Z8VACTU</field>
+        <field name="Resistance">1mOhm</field>
+      </fields>
+      <libsource lib="Device" part="C" description="Unpolarized capacitor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5B153FD8</tstamp>
+    </comp>
+    <comp ref="R29">
+      <value>100k</value>
+      <footprint>Resistors_SMD:R_0805</footprint>
+      <datasheet>http://nl.farnell.com/multicomp/mcwr08x1003ftl/res-thick-film-100k-1-0-125w-0805/dp/2447551</datasheet>
+      <fields>
+        <field name="Article number">MCWR08X1003FTL</field>
+      </fields>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5B154129</tstamp>
+    </comp>
+    <comp ref="R30">
+      <value>24.9k</value>
+      <footprint>Resistors_SMD:R_0805</footprint>
+      <datasheet>https://nl.farnell.com/multicomp/mcwr08x2492ftl/res-24k9-1-0-125w-0805-thick-film/dp/2447614</datasheet>
+      <fields>
+        <field name="Article number">MCWR08X2492FTL</field>
+      </fields>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5B1542B4</tstamp>
+    </comp>
+    <comp ref="R27">
+      <value>100k</value>
+      <footprint>Resistors_SMD:R_0805</footprint>
+      <datasheet>http://nl.farnell.com/multicomp/mcwr08x1003ftl/res-thick-film-100k-1-0-125w-0805/dp/2447551</datasheet>
+      <fields>
+        <field name="Article number">MCWR08X1003FTL</field>
+      </fields>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5B154390</tstamp>
+    </comp>
+    <comp ref="L1">
+      <value>10u</value>
+      <footprint>Bourns_inductor:ssr1260</footprint>
+      <datasheet>http://nl.farnell.com/bourns/srr1260-100m/inductor-10uh-power-shielded-smd/dp/2212501?st=SRR1260-100M</datasheet>
+      <fields>
+        <field name="Article number">SRR1260-100M</field>
+        <field name="Resistance">0.020Ohm</field>
+      </fields>
+      <libsource lib="Device" part="L" description="Inductor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5B1546B6</tstamp>
+    </comp>
+    <comp ref="C4">
+      <value>68u</value>
+      <footprint>Capacitors_Tantalum_SMD:CP_Tantalum_Case-D_EIA-7343-31_Hand</footprint>
+      <datasheet>http://nl.farnell.com/panasonic-electronic-components/10tpe68m/cap-tant-68uf-10v-case-d2e/dp/2354869?st=10TPE68M</datasheet>
+      <fields>
+        <field name="Article number">10TPE68M</field>
+        <field name="Resistance">0.025Ohm</field>
+      </fields>
+      <libsource lib="Device" part="C" description="Unpolarized capacitor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5B154C80</tstamp>
+    </comp>
+    <comp ref="C5">
+      <value>1u</value>
+      <footprint>Capacitors_SMD:C_0805</footprint>
+      <datasheet>http://nl.farnell.com/murata/grm21br71c105ka01l/cap-mlcc-x7r-1uf-16v-0805/dp/9527710?st=GRM21BR71C105KA01L</datasheet>
+      <fields>
+        <field name="Article number">GRM21BR71C105KA01L</field>
+        <field name="Resistance">5.59mOhm</field>
+      </fields>
+      <libsource lib="Device" part="C" description="Unpolarized capacitor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5B154CF3</tstamp>
+    </comp>
+    <comp ref="J11">
+      <value>Conn_01x19</value>
+      <footprint>Connectors_Molex_custom:HDMI-RightAngle-47151-1051</footprint>
+      <datasheet>https://uk.farnell.com/molex/47151-1051/hdmi-connector-rcpt-19pos-smt/dp/2614936</datasheet>
+      <fields>
+        <field name="Article number">47151-1051</field>
+      </fields>
+      <libsource lib="Connector_Generic" part="Conn_01x19" description="Generic connector, single row, 01x19, script generated (kicad-library-utils/schlib/autogen/connector/)"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5BF44AB7</tstamp>
+    </comp>
+    <comp ref="Q1">
+      <value>Q_NMOS_GSD</value>
+      <footprint>TO_SOT_Packages_SMD:SOT-23</footprint>
+      <datasheet>https://nl.farnell.com/diodes-inc/zxmn3a01f/mosfet-n-sot-23/dp/9525734</datasheet>
+      <fields>
+        <field name="Article number">ZXMN3A01F</field>
+      </fields>
+      <libsource lib="Device" part="Q_NMOS_GSD" description="N-MOSFET transistor, gate/source/drain"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5BF95A79</tstamp>
+    </comp>
+    <comp ref="Q2">
+      <value>Q_NMOS_GSD</value>
+      <footprint>TO_SOT_Packages_SMD:SOT-23</footprint>
+      <datasheet>https://nl.farnell.com/diodes-inc/zxmn3a01f/mosfet-n-sot-23/dp/9525734</datasheet>
+      <fields>
+        <field name="Article number">ZXMN3A01F</field>
+      </fields>
+      <libsource lib="Device" part="Q_NMOS_GSD" description="N-MOSFET transistor, gate/source/drain"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5BF95BE0</tstamp>
+    </comp>
+    <comp ref="Q3">
+      <value>Q_NMOS_GSD</value>
+      <footprint>TO_SOT_Packages_SMD:SOT-23</footprint>
+      <datasheet>https://nl.farnell.com/diodes-inc/zxmn3a01f/mosfet-n-sot-23/dp/9525734</datasheet>
+      <fields>
+        <field name="Article number">ZXMN3A01F</field>
+      </fields>
+      <libsource lib="Device" part="Q_NMOS_GSD" description="N-MOSFET transistor, gate/source/drain"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5BF95C8E</tstamp>
+    </comp>
+    <comp ref="J3">
+      <value>Conn_01x08</value>
+      <footprint>Pin_Headers:Pin_Header_Straight_1x08_Pitch2.54mm</footprint>
+      <datasheet>https://nl.farnell.com/multicomp/2212s-08sg-85/socket-pcb-1-row-8way/dp/1593463</datasheet>
+      <fields>
+        <field name="Article number">2212S-08SG-85</field>
+      </fields>
+      <libsource lib="Connector_Generic" part="Conn_01x08" description="Generic connector, single row, 01x08, script generated (kicad-library-utils/schlib/autogen/connector/)"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5BF96944</tstamp>
+    </comp>
+    <comp ref="U6">
+      <value>ADM7150</value>
+      <footprint>HSOIC:HSOIC-8</footprint>
+      <datasheet>https://nl.farnell.com/analog-devices/adm7150ardz-5-0/voltage-reg-fixed-5v-0-8a-nsoic/dp/2377358?ost=ADM7150ARDZ-5.0&amp;scope=partnumberlookahead&amp;searchref=searchlookahead&amp;krypto=JrkavYuOZj53DGn2Omdi673p7%2Br%2BUY1UweHOEi2Ie6duJ%2FPy92LjZK7EH3jSCmHe%2FBYunYSekTKKDFzSlbeDdfyVz3oeRi2v%2FOCAZLxJOe2xRjh2pxrW0q9A%2FJaNku09gD6PkNHiruDV8u1BwHyjy9HDz3Uxbh4ODRPLlKz7dqIur40y9z0%2FJ2dmABiz3VlCM4bGuMlf1lhuPePSvQVjOAAmBOV40BF9GUHzbSVwCjznMPHIVGmwVkCTgWQtl9EiTM%2B8y6jp%2FaGJku5U36MdaoPR0uECZRNDfxQGEmbMU0Q4A3v5G0%2BadMORyu3aYRE91Yg%2FACTQVvqVBmkpwlxc%2FyI70EY4%2BljAxAQo3d%2FRDhCG5UIr16bjvAadO2S8Cwscaf%2Bt3YD8%2FaQTSpr3yT%2BU03ZN8mhh8dk7Ahfs%2FnnFkKUun4QP92E6zZDuGmFxGCoxLhq74GDBff%2BUo%2FnoC7kAD0M5fczdhSLCJtRIjJMNd%2BnYGdgLpGJpKApSGQmJf05EU6c11tvn6qV2ukp%2BM4FDpusXx0jQn5kzqKdLTaDO8FwMvkFZZwFEDqjPalpCcvUZc2wXzCimVBYd1WfaXHtPOus%2BuQEchNDX3G6e5C48630%3D&amp;ddkey=https%3Anl-NL%2FElement14_Netherlands%2Fw%2Fsearch</datasheet>
+      <fields>
+        <field name="Article number">ADM7150ARDZ-5.0 </field>
+      </fields>
+      <libsource lib="ODMeter-rescue" part="ADM7150-Linear_Regulator" description=""/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5BF98F83</tstamp>
+    </comp>
+    <comp ref="C12">
+      <value>10u</value>
+      <footprint>Capacitors_SMD:C_1210</footprint>
+      <datasheet>https://nl.farnell.com/murata/gcm32er71e106ka57l/cap-10-f-25v-10-x7r-1210/dp/2470445</datasheet>
+      <fields>
+        <field name="Article number">2470445</field>
+        <field name="Resistance">2.237mOhm</field>
+      </fields>
+      <libsource lib="Device" part="C" description="Unpolarized capacitor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5BFAD953</tstamp>
+    </comp>
+    <comp ref="C9">
+      <value>10u</value>
+      <footprint>Capacitors_SMD:C_1210</footprint>
+      <datasheet>https://nl.farnell.com/murata/gcm32er71e106ka57l/cap-10-f-25v-10-x7r-1210/dp/2470445</datasheet>
+      <fields>
+        <field name="Article number">2470445</field>
+        <field name="Resistance">2.237mOhm</field>
+      </fields>
+      <libsource lib="Device" part="C" description="Unpolarized capacitor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5BFADC1E</tstamp>
+    </comp>
+    <comp ref="C10">
+      <value>10u</value>
+      <footprint>Capacitors_SMD:C_1210</footprint>
+      <datasheet>https://nl.farnell.com/murata/gcm32er71e106ka57l/cap-10-f-25v-10-x7r-1210/dp/2470445</datasheet>
+      <fields>
+        <field name="Article number">2470445</field>
+        <field name="Resistance">2.237mOhm</field>
+      </fields>
+      <libsource lib="Device" part="C" description="Unpolarized capacitor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5BFADDE7</tstamp>
+    </comp>
+    <comp ref="C15">
+      <value>1u</value>
+      <footprint>Capacitors_SMD:C_0603</footprint>
+      <datasheet>http://nl.farnell.com/kemet/c0603c105z8vactu/cap-mlcc-y5v-1uf-10v-0603/dp/2522398?st=c0603c105z8</datasheet>
+      <fields>
+        <field name="Article number">C0603C105Z8VACTU</field>
+        <field name="Resistance">1mOhm</field>
+      </fields>
+      <libsource lib="Device" part="C" description="Unpolarized capacitor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5BFB139E</tstamp>
+    </comp>
+    <comp ref="C14">
+      <value>1u</value>
+      <footprint>Capacitors_SMD:C_0603</footprint>
+      <datasheet>http://nl.farnell.com/kemet/c0603c105z8vactu/cap-mlcc-y5v-1uf-10v-0603/dp/2522398?st=c0603c105z8</datasheet>
+      <fields>
+        <field name="Article number">C0603C105Z8VACTU</field>
+        <field name="Resistance">1mOhm</field>
+      </fields>
+      <libsource lib="Device" part="C" description="Unpolarized capacitor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5BFB25A6</tstamp>
+    </comp>
+    <comp ref="C13">
+      <value>68u</value>
+      <footprint>Capacitors_Tantalum_SMD:CP_Tantalum_Case-D_EIA-7343-31_Hand</footprint>
+      <datasheet>http://nl.farnell.com/panasonic-electronic-components/10tpe68m/cap-tant-68uf-10v-case-d2e/dp/2354869?st=10TPE68M</datasheet>
+      <fields>
+        <field name="Article number">10TPE68M</field>
+        <field name="Resistance">0.025Ohm</field>
+      </fields>
+      <libsource lib="Device" part="C" description="Unpolarized capacitor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5BFB29D1</tstamp>
+    </comp>
+    <comp ref="J21">
+      <value>5V_b</value>
+      <footprint>TestPoint_custom:TestPoint-Harwin-S2761-46R</footprint>
+      <datasheet>https://nl.mouser.com/ProductDetail/Harwin/S2761-46R?qs=%2fha2pyFadujhSB1Bg2gGN4DhlPyYLKDS8L9Oo%252bx4zjG4Wc0%2fwzrqNw%3d%3d</datasheet>
+      <fields>
+        <field name="Article number">S2761-46R</field>
+      </fields>
+      <libsource lib="ODMeter-rescue" part="TEST_1P-conn" description=""/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5BFD9136</tstamp>
+    </comp>
+    <comp ref="J22">
+      <value>3V3</value>
+      <footprint>TestPoint_custom:TestPoint-Harwin-S2761-46R</footprint>
+      <datasheet>https://nl.mouser.com/ProductDetail/Harwin/S2761-46R?qs=%2fha2pyFadujhSB1Bg2gGN4DhlPyYLKDS8L9Oo%252bx4zjG4Wc0%2fwzrqNw%3d%3d</datasheet>
+      <fields>
+        <field name="Article number">S2761-46R</field>
+      </fields>
+      <libsource lib="ODMeter-rescue" part="TEST_1P-conn" description=""/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5BFB25EF</tstamp>
+    </comp>
+    <comp ref="J23">
+      <value>12V</value>
+      <footprint>TestPoint_custom:TestPoint-Harwin-S2761-46R</footprint>
+      <datasheet>https://nl.mouser.com/ProductDetail/Harwin/S2761-46R?qs=%2fha2pyFadujhSB1Bg2gGN4DhlPyYLKDS8L9Oo%252bx4zjG4Wc0%2fwzrqNw%3d%3d</datasheet>
+      <fields>
+        <field name="Article number">S2761-46R</field>
+      </fields>
+      <libsource lib="ODMeter-rescue" part="TEST_1P-conn" description=""/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5BFB2C46</tstamp>
+    </comp>
+    <comp ref="J24">
+      <value>Micro_SD_Card</value>
+      <footprint>MicroSDSocket:MEM2075-00-140-01-A</footprint>
+      <datasheet>http://katalog.we-online.de/em/datasheet/693072010801.pdf</datasheet>
+      <libsource lib="ODMeter-rescue" part="Micro_SD_Card-conn" description=""/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5C164FAA</tstamp>
+    </comp>
+    <comp ref="C16">
+      <value>100n</value>
+      <footprint>Capacitors_SMD:C_0805</footprint>
+      <libsource lib="Device" part="C" description="Unpolarized capacitor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5C16997B</tstamp>
+    </comp>
+    <comp ref="U7">
+      <value>74LVC125</value>
+      <footprint>SMD_Packages:SSOP-14</footprint>
+      <datasheet>http://www.ti.com/lit/gpn/sn74LVC125</datasheet>
+      <fields>
+        <field name="Article number">2845012</field>
+      </fields>
+      <libsource lib="74xx" part="74LVC125" description="Quad buffer 3-State outputs"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5CEAE7BB</tstamp>
+    </comp>
+    <comp ref="C17">
+      <value>100n</value>
+      <footprint>Capacitors_SMD:C_0805</footprint>
+      <libsource lib="Device" part="C" description="Unpolarized capacitor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5CEBE7EE</tstamp>
+    </comp>
+  </components>
+  <libparts>
+    <libpart lib="74xx" part="74LS125">
+      <aliases>
+        <alias>74LVC125</alias>
+      </aliases>
+      <description>Quad buffer 3-State outputs</description>
+      <docs>http://www.ti.com/lit/gpn/sn74LS125</docs>
+      <footprints>
+        <fp>DIP?14*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">74LS125</field>
+      </fields>
+      <pins>
+        <pin num="1" name="~" type="input"/>
+        <pin num="2" name="~" type="input"/>
+        <pin num="3" name="~" type="3state"/>
+        <pin num="4" name="~" type="input"/>
+        <pin num="5" name="~" type="input"/>
+        <pin num="6" name="~" type="3state"/>
+        <pin num="7" name="GND" type="power_in"/>
+        <pin num="8" name="~" type="3state"/>
+        <pin num="9" name="~" type="input"/>
+        <pin num="10" name="~" type="input"/>
+        <pin num="11" name="~" type="3state"/>
+        <pin num="12" name="~" type="input"/>
+        <pin num="13" name="~" type="input"/>
+        <pin num="14" name="VCC" type="power_in"/>
+      </pins>
+    </libpart>
+    <libpart lib="Analog_ADC" part="ADS1015IDGS">
+      <aliases>
+        <alias>ADS1115IDGS</alias>
+      </aliases>
+      <description>Ultra-Small, Low-Power, I2C-Compatible, 3.3-kSPS, 12-Bit ADCs With Internal Reference, Oscillator, and Programmable Comparator, VSSOP-10</description>
+      <docs>http://www.ti.com/lit/ds/symlink/ads1015.pdf</docs>
+      <footprints>
+        <fp>TSSOP*3x3mm*P0.5mm*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">ADS1015IDGS</field>
+        <field name="Footprint">Package_SO:TSSOP-10_3x3mm_P0.5mm</field>
+      </fields>
+      <pins>
+        <pin num="1" name="ADDR" type="input"/>
+        <pin num="2" name="ALERT/RDY" type="output"/>
+        <pin num="3" name="GND" type="power_in"/>
+        <pin num="4" name="AIN0" type="input"/>
+        <pin num="5" name="AIN1" type="input"/>
+        <pin num="6" name="AIN2" type="input"/>
+        <pin num="7" name="AIN3" type="input"/>
+        <pin num="8" name="VDD" type="power_in"/>
+        <pin num="9" name="SDA" type="BiDi"/>
+        <pin num="10" name="SCL" type="input"/>
+      </pins>
+    </libpart>
+    <libpart lib="Connector_Generic" part="Conn_01x02">
+      <description>Generic connector, single row, 01x02, script generated (kicad-library-utils/schlib/autogen/connector/)</description>
+      <docs>~</docs>
+      <footprints>
+        <fp>Connector*:*_1x??_*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">J</field>
+        <field name="Value">Conn_01x02</field>
+      </fields>
+      <pins>
+        <pin num="1" name="Pin_1" type="passive"/>
+        <pin num="2" name="Pin_2" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="Connector_Generic" part="Conn_01x04">
+      <description>Generic connector, single row, 01x04, script generated (kicad-library-utils/schlib/autogen/connector/)</description>
+      <docs>~</docs>
+      <footprints>
+        <fp>Connector*:*_1x??_*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">J</field>
+        <field name="Value">Conn_01x04</field>
+      </fields>
+      <pins>
+        <pin num="1" name="Pin_1" type="passive"/>
+        <pin num="2" name="Pin_2" type="passive"/>
+        <pin num="3" name="Pin_3" type="passive"/>
+        <pin num="4" name="Pin_4" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="Connector_Generic" part="Conn_01x06">
+      <description>Generic connector, single row, 01x06, script generated (kicad-library-utils/schlib/autogen/connector/)</description>
+      <docs>~</docs>
+      <footprints>
+        <fp>Connector*:*_1x??_*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">J</field>
+        <field name="Value">Conn_01x06</field>
+      </fields>
+      <pins>
+        <pin num="1" name="Pin_1" type="passive"/>
+        <pin num="2" name="Pin_2" type="passive"/>
+        <pin num="3" name="Pin_3" type="passive"/>
+        <pin num="4" name="Pin_4" type="passive"/>
+        <pin num="5" name="Pin_5" type="passive"/>
+        <pin num="6" name="Pin_6" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="Connector_Generic" part="Conn_01x08">
+      <description>Generic connector, single row, 01x08, script generated (kicad-library-utils/schlib/autogen/connector/)</description>
+      <docs>~</docs>
+      <footprints>
+        <fp>Connector*:*_1x??_*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">J</field>
+        <field name="Value">Conn_01x08</field>
+      </fields>
+      <pins>
+        <pin num="1" name="Pin_1" type="passive"/>
+        <pin num="2" name="Pin_2" type="passive"/>
+        <pin num="3" name="Pin_3" type="passive"/>
+        <pin num="4" name="Pin_4" type="passive"/>
+        <pin num="5" name="Pin_5" type="passive"/>
+        <pin num="6" name="Pin_6" type="passive"/>
+        <pin num="7" name="Pin_7" type="passive"/>
+        <pin num="8" name="Pin_8" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="Connector_Generic" part="Conn_01x19">
+      <description>Generic connector, single row, 01x19, script generated (kicad-library-utils/schlib/autogen/connector/)</description>
+      <docs>~</docs>
+      <footprints>
+        <fp>Connector*:*_1x??_*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">J</field>
+        <field name="Value">Conn_01x19</field>
+      </fields>
+      <pins>
+        <pin num="1" name="Pin_1" type="passive"/>
+        <pin num="2" name="Pin_2" type="passive"/>
+        <pin num="3" name="Pin_3" type="passive"/>
+        <pin num="4" name="Pin_4" type="passive"/>
+        <pin num="5" name="Pin_5" type="passive"/>
+        <pin num="6" name="Pin_6" type="passive"/>
+        <pin num="7" name="Pin_7" type="passive"/>
+        <pin num="8" name="Pin_8" type="passive"/>
+        <pin num="9" name="Pin_9" type="passive"/>
+        <pin num="10" name="Pin_10" type="passive"/>
+        <pin num="11" name="Pin_11" type="passive"/>
+        <pin num="12" name="Pin_12" type="passive"/>
+        <pin num="13" name="Pin_13" type="passive"/>
+        <pin num="14" name="Pin_14" type="passive"/>
+        <pin num="15" name="Pin_15" type="passive"/>
+        <pin num="16" name="Pin_16" type="passive"/>
+        <pin num="17" name="Pin_17" type="passive"/>
+        <pin num="18" name="Pin_18" type="passive"/>
+        <pin num="19" name="Pin_19" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="Device" part="C">
+      <description>Unpolarized capacitor</description>
+      <docs>~</docs>
+      <footprints>
+        <fp>C_*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">C</field>
+        <field name="Value">C</field>
+      </fields>
+      <pins>
+        <pin num="1" name="~" type="passive"/>
+        <pin num="2" name="~" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="Device" part="L">
+      <description>Inductor</description>
+      <docs>~</docs>
+      <footprints>
+        <fp>Choke_*</fp>
+        <fp>*Coil*</fp>
+        <fp>Inductor_*</fp>
+        <fp>L_*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">L</field>
+        <field name="Value">L</field>
+      </fields>
+      <pins>
+        <pin num="1" name="1" type="passive"/>
+        <pin num="2" name="2" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="Device" part="Opamp_Quad_Generic">
+      <description>Quad operational amplifier</description>
+      <docs>~</docs>
+      <footprints>
+        <fp>SOIC*3.9x8.7mm*P1.27mm*</fp>
+        <fp>DIP*W7.62mm*</fp>
+        <fp>TSSOP*4.4x5mm*P0.65mm*</fp>
+        <fp>SSOP*5.3x6.2mm*P0.65mm*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">Opamp_Quad_Generic</field>
+      </fields>
+      <pins>
+        <pin num="1" name="~" type="output"/>
+        <pin num="2" name="-" type="input"/>
+        <pin num="3" name="+" type="input"/>
+        <pin num="4" name="V+" type="power_in"/>
+        <pin num="5" name="+" type="input"/>
+        <pin num="6" name="-" type="input"/>
+        <pin num="7" name="~" type="output"/>
+        <pin num="8" name="~" type="output"/>
+        <pin num="9" name="-" type="input"/>
+        <pin num="10" name="+" type="input"/>
+        <pin num="11" name="V-" type="power_in"/>
+        <pin num="12" name="+" type="input"/>
+        <pin num="13" name="-" type="input"/>
+        <pin num="14" name="~" type="output"/>
+      </pins>
+    </libpart>
+    <libpart lib="Device" part="Q_NMOS_GSD">
+      <description>N-MOSFET transistor, gate/source/drain</description>
+      <docs>~</docs>
+      <fields>
+        <field name="Reference">Q</field>
+        <field name="Value">Q_NMOS_GSD</field>
+      </fields>
+      <pins>
+        <pin num="1" name="G" type="input"/>
+        <pin num="2" name="S" type="passive"/>
+        <pin num="3" name="D" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="Device" part="R">
+      <description>Resistor</description>
+      <docs>~</docs>
+      <footprints>
+        <fp>R_*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">R</field>
+        <field name="Value">R</field>
+      </fields>
+      <pins>
+        <pin num="1" name="~" type="passive"/>
+        <pin num="2" name="~" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="ODMeter-rescue" part="ADM7150-Linear_Regulator">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">ADM7150-Linear_Regulator</field>
+      </fields>
+      <pins>
+        <pin num="1" name="Vreg" type="input"/>
+        <pin num="2" name="Vout" type="input"/>
+        <pin num="3" name="Byp" type="input"/>
+        <pin num="4" name="GND" type="input"/>
+        <pin num="5" name="Ref_Sense" type="input"/>
+        <pin num="6" name="Ref" type="input"/>
+        <pin num="7" name="EN" type="input"/>
+        <pin num="8" name="Vin" type="input"/>
+        <pin num="9" name="Thermal" type="input"/>
+      </pins>
+    </libpart>
+    <libpart lib="ODMeter-rescue" part="Conn_01x03-conn">
+      <footprints>
+        <fp>Connector*:*_??x*mm*</fp>
+        <fp>Connector*:*1x??x*mm*</fp>
+        <fp>Pin?Header?Straight?1X*</fp>
+        <fp>Pin?Header?Angled?1X*</fp>
+        <fp>Socket?Strip?Straight?1X*</fp>
+        <fp>Socket?Strip?Angled?1X*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">J</field>
+        <field name="Value">Conn_01x03-conn</field>
+      </fields>
+      <pins>
+        <pin num="1" name="Pin_1" type="passive"/>
+        <pin num="2" name="Pin_2" type="passive"/>
+        <pin num="3" name="Pin_3" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="ODMeter-rescue" part="LMR33630ADDA-lmr33630adda">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">LMR33630ADDA-lmr33630adda</field>
+      </fields>
+      <pins>
+        <pin num="1" name="PGND" type="input"/>
+        <pin num="2" name="Vin" type="input"/>
+        <pin num="3" name="EN" type="input"/>
+        <pin num="4" name="PG" type="input"/>
+        <pin num="5" name="FB" type="input"/>
+        <pin num="6" name="Vcc" type="input"/>
+        <pin num="7" name="BOOT" type="input"/>
+        <pin num="8" name="SW" type="input"/>
+        <pin num="9" name="Thermal" type="input"/>
+      </pins>
+    </libpart>
+    <libpart lib="ODMeter-rescue" part="Micro_SD_Card-conn">
+      <fields>
+        <field name="Reference">J</field>
+        <field name="Value">Micro_SD_Card-conn</field>
+      </fields>
+      <pins>
+        <pin num="1" name="DAT2" type="BiDi"/>
+        <pin num="2" name="DAT3/CD" type="BiDi"/>
+        <pin num="3" name="CMD" type="input"/>
+        <pin num="4" name="VDD" type="power_in"/>
+        <pin num="5" name="CLK" type="input"/>
+        <pin num="6" name="VSS" type="power_in"/>
+        <pin num="7" name="DAT0" type="input"/>
+        <pin num="8" name="DAT1" type="input"/>
+        <pin num="9" name="SHIELD" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="ODMeter-rescue" part="NodeMCU(ESP-32)-ESP-32">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">NodeMCU(ESP-32)-ESP-32</field>
+      </fields>
+      <pins>
+        <pin num="1" name="EN" type="input"/>
+        <pin num="2" name="VP" type="input"/>
+        <pin num="3" name="VN" type="input"/>
+        <pin num="4" name="D34" type="input"/>
+        <pin num="5" name="D35" type="input"/>
+        <pin num="6" name="D32" type="input"/>
+        <pin num="7" name="D33" type="input"/>
+        <pin num="8" name="D25" type="input"/>
+        <pin num="9" name="D26" type="input"/>
+        <pin num="10" name="D27" type="input"/>
+        <pin num="11" name="D14" type="input"/>
+        <pin num="12" name="D12" type="input"/>
+        <pin num="13" name="D13" type="input"/>
+        <pin num="14" name="GND" type="input"/>
+        <pin num="15" name="VIN" type="input"/>
+        <pin num="16" name="3V3" type="input"/>
+        <pin num="17" name="GND" type="input"/>
+        <pin num="18" name="D15" type="input"/>
+        <pin num="19" name="D2" type="input"/>
+        <pin num="20" name="D4" type="input"/>
+        <pin num="21" name="RX2" type="input"/>
+        <pin num="22" name="TX2" type="input"/>
+        <pin num="23" name="D5" type="input"/>
+        <pin num="24" name="D18" type="input"/>
+        <pin num="25" name="D19" type="input"/>
+        <pin num="26" name="D21" type="input"/>
+        <pin num="27" name="RX0" type="input"/>
+        <pin num="28" name="TX0" type="input"/>
+        <pin num="29" name="D22" type="input"/>
+        <pin num="30" name="D23" type="input"/>
+      </pins>
+    </libpart>
+    <libpart lib="ODMeter-rescue" part="TEST_1P-conn">
+      <fields>
+        <field name="Reference">J</field>
+        <field name="Value">TEST_1P-conn</field>
+      </fields>
+      <pins>
+        <pin num="1" name="1" type="passive"/>
+      </pins>
+    </libpart>
+  </libparts>
+  <libraries>
+    <library logical="74xx">
+      <uri>/Library/Application Support/kicad/library/74xx.lib</uri>
+    </library>
+    <library logical="Analog_ADC">
+      <uri>/Library/Application Support/kicad/library/Analog_ADC.lib</uri>
+    </library>
+    <library logical="Connector_Generic">
+      <uri>/Library/Application Support/kicad/library/Connector_Generic.lib</uri>
+    </library>
+    <library logical="Device">
+      <uri>/Library/Application Support/kicad/library/Device.lib</uri>
+    </library>
+    <library logical="ODMeter-rescue">
+      <uri>/Users/abn/Dropbox/ProjectODMeter/BoardMagOD2.1/ODMeter-rescue.lib</uri>
+    </library>
+  </libraries>
+  <nets>
+    <net code="1" name="GND">
+      <node ref="U2" pin="3"/>
+      <node ref="C17" pin="2"/>
+      <node ref="U7" pin="7"/>
+      <node ref="C16" pin="1"/>
+      <node ref="C1" pin="1"/>
+      <node ref="J24" pin="9"/>
+      <node ref="R5" pin="1"/>
+      <node ref="J24" pin="6"/>
+      <node ref="J2" pin="1"/>
+      <node ref="J4" pin="1"/>
+      <node ref="J6" pin="1"/>
+      <node ref="C13" pin="2"/>
+      <node ref="C14" pin="2"/>
+      <node ref="C15" pin="2"/>
+      <node ref="C10" pin="1"/>
+      <node ref="C9" pin="1"/>
+      <node ref="C12" pin="1"/>
+      <node ref="R2" pin="2"/>
+      <node ref="U6" pin="9"/>
+      <node ref="R26" pin="2"/>
+      <node ref="U6" pin="4"/>
+      <node ref="J3" pin="2"/>
+      <node ref="Q3" pin="2"/>
+      <node ref="Q2" pin="2"/>
+      <node ref="Q1" pin="2"/>
+      <node ref="R12" pin="2"/>
+      <node ref="U3" pin="14"/>
+      <node ref="J11" pin="8"/>
+      <node ref="U3" pin="17"/>
+      <node ref="J11" pin="5"/>
+      <node ref="J11" pin="2"/>
+      <node ref="R20" pin="2"/>
+      <node ref="J11" pin="11"/>
+      <node ref="C5" pin="2"/>
+      <node ref="C4" pin="2"/>
+      <node ref="U5" pin="3"/>
+      <node ref="R30" pin="2"/>
+      <node ref="C8" pin="2"/>
+      <node ref="C6" pin="2"/>
+      <node ref="C7" pin="2"/>
+      <node ref="U4" pin="9"/>
+      <node ref="U4" pin="1"/>
+      <node ref="C11" pin="1"/>
+      <node ref="J20" pin="2"/>
+      <node ref="J7" pin="1"/>
+      <node ref="J19" pin="3"/>
+      <node ref="J18" pin="3"/>
+      <node ref="J14" pin="3"/>
+      <node ref="U1" pin="11"/>
+      <node ref="C2" pin="1"/>
+    </net>
+    <net code="2" name="/Ain0">
+      <node ref="J11" pin="9"/>
+      <node ref="U2" pin="4"/>
+      <node ref="J16" pin="1"/>
+    </net>
+    <net code="3" name="/Ain1">
+      <node ref="J11" pin="6"/>
+      <node ref="U2" pin="5"/>
+      <node ref="J15" pin="1"/>
+    </net>
+    <net code="4" name="/Ain2">
+      <node ref="J11" pin="16"/>
+      <node ref="U2" pin="6"/>
+      <node ref="J13" pin="1"/>
+    </net>
+    <net code="5" name="/Ain3">
+      <node ref="J11" pin="15"/>
+      <node ref="U2" pin="7"/>
+      <node ref="J12" pin="1"/>
+    </net>
+    <net code="6" name="/Alert">
+      <node ref="U3" pin="13"/>
+      <node ref="R14" pin="1"/>
+      <node ref="U2" pin="2"/>
+    </net>
+    <net code="7" name="Net-(R5-Pad2)">
+      <node ref="U2" pin="1"/>
+      <node ref="R5" pin="2"/>
+    </net>
+    <net code="8" name="/PWM_X">
+      <node ref="J2" pin="2"/>
+      <node ref="U3" pin="7"/>
+    </net>
+    <net code="9" name="/DIR_X">
+      <node ref="J2" pin="3"/>
+      <node ref="U3" pin="8"/>
+    </net>
+    <net code="10" name="/PWM_Y">
+      <node ref="J4" pin="2"/>
+      <node ref="U3" pin="9"/>
+    </net>
+    <net code="11" name="/DIR_Y">
+      <node ref="J4" pin="3"/>
+      <node ref="U3" pin="10"/>
+    </net>
+    <net code="12" name="/PWM_Z">
+      <node ref="J6" pin="2"/>
+      <node ref="U3" pin="11"/>
+    </net>
+    <net code="13" name="/DIR_Z">
+      <node ref="J6" pin="3"/>
+      <node ref="U3" pin="12"/>
+    </net>
+    <net code="14" name="Net-(C17-Pad1)">
+      <node ref="U3" pin="1"/>
+      <node ref="C17" pin="1"/>
+    </net>
+    <net code="15" name="/5V_b">
+      <node ref="J3" pin="1"/>
+      <node ref="U3" pin="15"/>
+      <node ref="C5" pin="1"/>
+      <node ref="C4" pin="1"/>
+      <node ref="R29" pin="2"/>
+      <node ref="R27" pin="1"/>
+      <node ref="J21" pin="1"/>
+      <node ref="L1" pin="1"/>
+    </net>
+    <net code="16" name="/3V3">
+      <node ref="C2" pin="2"/>
+      <node ref="U5" pin="8"/>
+      <node ref="U2" pin="8"/>
+      <node ref="C1" pin="2"/>
+      <node ref="R28" pin="1"/>
+      <node ref="C11" pin="2"/>
+      <node ref="R19" pin="1"/>
+      <node ref="R14" pin="2"/>
+      <node ref="R31" pin="2"/>
+      <node ref="U7" pin="14"/>
+      <node ref="J24" pin="4"/>
+      <node ref="J22" pin="1"/>
+      <node ref="R11" pin="1"/>
+      <node ref="C16" pin="2"/>
+      <node ref="R10" pin="2"/>
+      <node ref="R1" pin="1"/>
+      <node ref="U1" pin="4"/>
+      <node ref="R7" pin="1"/>
+      <node ref="U3" pin="16"/>
+    </net>
+    <net code="17" name="/CS2">
+      <node ref="U3" pin="18"/>
+      <node ref="J24" pin="2"/>
+    </net>
+    <net code="18" name="/LED_R">
+      <node ref="U3" pin="19"/>
+      <node ref="Q1" pin="1"/>
+    </net>
+    <net code="19" name="Net-(U3-Pad2)">
+      <node ref="U3" pin="2"/>
+    </net>
+    <net code="20" name="/LED_B">
+      <node ref="Q3" pin="1"/>
+      <node ref="U3" pin="20"/>
+    </net>
+    <net code="21" name="/INT">
+      <node ref="U3" pin="21"/>
+      <node ref="J3" pin="8"/>
+    </net>
+    <net code="22" name="/RST">
+      <node ref="U7" pin="9"/>
+      <node ref="U3" pin="22"/>
+    </net>
+    <net code="23" name="/CS">
+      <node ref="U7" pin="10"/>
+      <node ref="U7" pin="4"/>
+      <node ref="J3" pin="6"/>
+      <node ref="U7" pin="1"/>
+      <node ref="U7" pin="13"/>
+      <node ref="U3" pin="23"/>
+    </net>
+    <net code="24" name="/SCK">
+      <node ref="U7" pin="12"/>
+      <node ref="J24" pin="5"/>
+      <node ref="U3" pin="24"/>
+    </net>
+    <net code="25" name="/MISO">
+      <node ref="U3" pin="25"/>
+      <node ref="J24" pin="7"/>
+      <node ref="U7" pin="6"/>
+    </net>
+    <net code="26" name="/SDA">
+      <node ref="U2" pin="9"/>
+      <node ref="U3" pin="26"/>
+      <node ref="R7" pin="2"/>
+      <node ref="U5" pin="9"/>
+    </net>
+    <net code="27" name="Net-(U3-Pad27)">
+      <node ref="U3" pin="27"/>
+    </net>
+    <net code="28" name="Net-(U3-Pad28)">
+      <node ref="U3" pin="28"/>
+    </net>
+    <net code="29" name="/SCL">
+      <node ref="U5" pin="10"/>
+      <node ref="U2" pin="10"/>
+      <node ref="U3" pin="29"/>
+      <node ref="R10" pin="1"/>
+    </net>
+    <net code="30" name="Net-(U3-Pad3)">
+      <node ref="U3" pin="3"/>
+    </net>
+    <net code="31" name="/MOSI">
+      <node ref="U7" pin="2"/>
+      <node ref="U3" pin="30"/>
+      <node ref="J24" pin="3"/>
+    </net>
+    <net code="32" name="Net-(U3-Pad4)">
+      <node ref="U3" pin="4"/>
+    </net>
+    <net code="33" name="Net-(U3-Pad5)">
+      <node ref="U3" pin="5"/>
+    </net>
+    <net code="34" name="/LED_G">
+      <node ref="U3" pin="6"/>
+      <node ref="Q2" pin="1"/>
+    </net>
+    <net code="35" name="Net-(R28-Pad2)">
+      <node ref="U5" pin="1"/>
+      <node ref="R28" pin="2"/>
+    </net>
+    <net code="36" name="/A4">
+      <node ref="U5" pin="4"/>
+      <node ref="U1" pin="1"/>
+      <node ref="J1" pin="1"/>
+      <node ref="R9" pin="1"/>
+    </net>
+    <net code="37" name="/A5">
+      <node ref="J8" pin="1"/>
+      <node ref="U5" pin="5"/>
+      <node ref="R25" pin="1"/>
+      <node ref="U1" pin="14"/>
+    </net>
+    <net code="38" name="/A6">
+      <node ref="U1" pin="7"/>
+      <node ref="U5" pin="6"/>
+      <node ref="J5" pin="1"/>
+      <node ref="R18" pin="1"/>
+    </net>
+    <net code="39" name="/Ain7">
+      <node ref="J11" pin="3"/>
+      <node ref="J10" pin="1"/>
+      <node ref="U5" pin="7"/>
+      <node ref="R26" pin="1"/>
+    </net>
+    <net code="40" name="Net-(R31-Pad1)">
+      <node ref="R31" pin="1"/>
+      <node ref="U5" pin="2"/>
+    </net>
+    <net code="41" name="/B">
+      <node ref="Q3" pin="3"/>
+      <node ref="J11" pin="14"/>
+    </net>
+    <net code="42" name="/G">
+      <node ref="Q2" pin="3"/>
+      <node ref="J11" pin="12"/>
+    </net>
+    <net code="43" name="/R">
+      <node ref="Q1" pin="3"/>
+      <node ref="J11" pin="10"/>
+    </net>
+    <net code="44" name="/5V_a">
+      <node ref="J17" pin="1"/>
+      <node ref="U6" pin="2"/>
+      <node ref="C12" pin="2"/>
+      <node ref="J11" pin="1"/>
+      <node ref="J11" pin="13"/>
+      <node ref="J11" pin="4"/>
+      <node ref="J11" pin="7"/>
+    </net>
+    <net code="45" name="Net-(U1-Pad10)">
+      <node ref="U1" pin="10"/>
+    </net>
+    <net code="46" name="Net-(U1-Pad8)">
+      <node ref="U1" pin="8"/>
+    </net>
+    <net code="47" name="Net-(U1-Pad9)">
+      <node ref="U1" pin="9"/>
+    </net>
+    <net code="48" name="/I_sense1">
+      <node ref="R8" pin="2"/>
+      <node ref="R6" pin="1"/>
+      <node ref="J9" pin="6"/>
+    </net>
+    <net code="49" name="Net-(R8-Pad1)">
+      <node ref="R8" pin="1"/>
+      <node ref="U1" pin="2"/>
+      <node ref="R9" pin="2"/>
+    </net>
+    <net code="50" name="Net-(R1-Pad2)">
+      <node ref="R3" pin="2"/>
+      <node ref="R1" pin="2"/>
+      <node ref="R2" pin="1"/>
+    </net>
+    <net code="51" name="Net-(R3-Pad1)">
+      <node ref="U1" pin="3"/>
+      <node ref="R3" pin="1"/>
+      <node ref="R4" pin="1"/>
+    </net>
+    <net code="52" name="/I_sense2">
+      <node ref="J9" pin="4"/>
+      <node ref="R16" pin="1"/>
+      <node ref="R17" pin="2"/>
+    </net>
+    <net code="53" name="Net-(R17-Pad1)">
+      <node ref="R18" pin="2"/>
+      <node ref="R17" pin="1"/>
+      <node ref="U1" pin="6"/>
+    </net>
+    <net code="54" name="Net-(R11-Pad2)">
+      <node ref="R13" pin="2"/>
+      <node ref="R11" pin="2"/>
+      <node ref="R12" pin="1"/>
+    </net>
+    <net code="55" name="Net-(R13-Pad1)">
+      <node ref="R13" pin="1"/>
+      <node ref="R15" pin="1"/>
+      <node ref="U1" pin="5"/>
+    </net>
+    <net code="56" name="/I_sense3">
+      <node ref="J9" pin="2"/>
+      <node ref="R24" pin="2"/>
+      <node ref="R23" pin="1"/>
+    </net>
+    <net code="57" name="Net-(R24-Pad1)">
+      <node ref="R24" pin="1"/>
+      <node ref="R25" pin="2"/>
+      <node ref="U1" pin="13"/>
+    </net>
+    <net code="58" name="Net-(R19-Pad2)">
+      <node ref="R19" pin="2"/>
+      <node ref="R21" pin="2"/>
+      <node ref="R20" pin="1"/>
+    </net>
+    <net code="59" name="Net-(R21-Pad1)">
+      <node ref="R21" pin="1"/>
+      <node ref="R22" pin="1"/>
+      <node ref="U1" pin="12"/>
+    </net>
+    <net code="60" name="/12V">
+      <node ref="C6" pin="1"/>
+      <node ref="J19" pin="4"/>
+      <node ref="U6" pin="7"/>
+      <node ref="U6" pin="8"/>
+      <node ref="J14" pin="4"/>
+      <node ref="J18" pin="4"/>
+      <node ref="C10" pin="2"/>
+      <node ref="C7" pin="1"/>
+      <node ref="J23" pin="1"/>
+      <node ref="J20" pin="1"/>
+      <node ref="U4" pin="3"/>
+      <node ref="U4" pin="2"/>
+    </net>
+    <net code="61" name="/I1_A">
+      <node ref="R6" pin="2"/>
+      <node ref="R4" pin="2"/>
+      <node ref="J14" pin="2"/>
+    </net>
+    <net code="62" name="/I1_B">
+      <node ref="J9" pin="5"/>
+      <node ref="J14" pin="1"/>
+    </net>
+    <net code="63" name="/I2_A">
+      <node ref="R15" pin="2"/>
+      <node ref="J18" pin="2"/>
+      <node ref="R16" pin="2"/>
+    </net>
+    <net code="64" name="/I2_B">
+      <node ref="J9" pin="3"/>
+      <node ref="J18" pin="1"/>
+    </net>
+    <net code="65" name="/I3_A">
+      <node ref="R22" pin="2"/>
+      <node ref="R23" pin="2"/>
+      <node ref="J19" pin="2"/>
+    </net>
+    <net code="66" name="/I3_B">
+      <node ref="J9" pin="1"/>
+      <node ref="J19" pin="1"/>
+    </net>
+    <net code="67" name="Net-(R29-Pad1)">
+      <node ref="U4" pin="4"/>
+      <node ref="R29" pin="1"/>
+    </net>
+    <net code="68" name="/FB">
+      <node ref="U4" pin="5"/>
+      <node ref="R27" pin="2"/>
+      <node ref="R30" pin="1"/>
+    </net>
+    <net code="69" name="Net-(C3-Pad2)">
+      <node ref="U4" pin="7"/>
+      <node ref="C3" pin="2"/>
+    </net>
+    <net code="70" name="Net-(C8-Pad1)">
+      <node ref="U4" pin="6"/>
+      <node ref="C8" pin="1"/>
+    </net>
+    <net code="71" name="Net-(C3-Pad1)">
+      <node ref="L1" pin="2"/>
+      <node ref="C3" pin="1"/>
+      <node ref="U4" pin="8"/>
+    </net>
+    <net code="73" name="Net-(J11-Pad17)">
+      <node ref="J11" pin="17"/>
+    </net>
+    <net code="74" name="Net-(J11-Pad18)">
+      <node ref="J11" pin="18"/>
+    </net>
+    <net code="75" name="Net-(J11-Pad19)">
+      <node ref="J11" pin="19"/>
+    </net>
+    <net code="76" name="/SCK_con">
+      <node ref="J3" pin="5"/>
+      <node ref="U7" pin="11"/>
+    </net>
+    <net code="77" name="Net-(C9-Pad2)">
+      <node ref="C9" pin="2"/>
+      <node ref="U6" pin="1"/>
+    </net>
+    <net code="78" name="Net-(C15-Pad1)">
+      <node ref="U6" pin="6"/>
+      <node ref="U6" pin="5"/>
+      <node ref="C15" pin="1"/>
+    </net>
+    <net code="79" name="Net-(C13-Pad1)">
+      <node ref="U6" pin="3"/>
+      <node ref="C14" pin="1"/>
+      <node ref="C13" pin="1"/>
+    </net>
+    <net code="80" name="Net-(J24-Pad1)">
+      <node ref="J24" pin="1"/>
+    </net>
+    <net code="81" name="Net-(J24-Pad8)">
+      <node ref="J24" pin="8"/>
+    </net>
+    <net code="82" name="/MOSI_con">
+      <node ref="J3" pin="3"/>
+      <node ref="U7" pin="3"/>
+    </net>
+    <net code="83" name="/MISO_con">
+      <node ref="J3" pin="4"/>
+      <node ref="U7" pin="5"/>
+    </net>
+    <net code="84" name="/RST_con">
+      <node ref="J3" pin="7"/>
+      <node ref="U7" pin="8"/>
+    </net>
+  </nets>
+</export>

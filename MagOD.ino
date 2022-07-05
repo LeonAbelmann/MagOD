@@ -1,4 +1,4 @@
-/* MagOD veresion 2.5 */
+/* MagOD version 2.5 */
 /* Jan 2021 */
 /* Tijmen Hageman, Jordi Hendrix, Hans Keizer, Leon Abelmann, Marcel
    Welleweerd, Dave van As, Ruthvik Bandaru, Rob Krawinkel */

@@ -1,15 +1,18 @@
-/* Calibration parameters */
+/* Calibration parameters, organised per device */
 
-
+#include "Adafruit_RA8875.h" // Definition possible screen sizes
 
 // System that is at CEA Cadarache
 #if defined(_CEA)
+/* Screen type, e.g. RA8875_480x272, RA8875_800x480 */
+const enum RA8875sizes screensize = RA8875_480x272;
+#define SCRN_VERT 272
+#define SCRN_HOR 480
 /* Mirror TFT screen (determines what is the front of the controller) */
 const bool mirror_tft = true;
 /* Do you want Wifi :). Make sure password.h is present, see under FTP
    server for details */
 const bool wifi = true;
-
 
 /* RA8875 Touchscreen calibration. Run adapted ts_calibration.ino (Testfunctions/MagOD2/TestTFT50/)*/
 # define TOUCH_DIVIDER -339148
@@ -80,6 +83,11 @@ const double PDOFFSET = 4.096; // Photodetector offset
 
 // System that is at KIST Europe
 #if defined(_KIST)
+/* Screen type, e.g. RA8875_480x272, RA8875_800x480 */
+const enum RA8875sizes screensize = RA8875_800x480;
+#define SCRN_VERT 480
+#define SCRN_HOR 800
+
 /* Mirror TFT screen (determines what is the front of the controller) */
 const bool mirror_tft = true;
 /* Do you want Wifi:). Make sure password.h is present, see under FTP
@@ -88,13 +96,24 @@ const bool wifi = true;
 
 
 /* RA8875 Touchscreen calibration. Run adapted ts_calibration.ino (Testfunctions/MagOD2/TestTFT50/)*/
-# define TOUCH_DIVIDER -342554
-# define TOUCH_An      187200
-# define TOUCH_Bn      -768
-# define TOUCH_Cn      -182232864
-# define TOUCH_Dn      327
-# define TOUCH_En      114886
-# define TOUCH_Fn      -103861067
+/* Buydisplay 480x277, which I think is broken: */
+/* # define TOUCH_DIVIDER -342554 */
+/* # define TOUCH_An      187200 */
+/* # define TOUCH_Bn      -768 */
+/* # define TOUCH_Cn      -182232864 */
+/* # define TOUCH_Dn      327 */
+/* # define TOUCH_En      114886 */
+/* # define TOUCH_Fn      -103861067 */
+
+/* Adafruit 1596, 800x484 resistive */
+# define TOUCH_DIVIDER -374972
+# define TOUCH_An      -325760
+# define TOUCH_Bn      -640
+# define TOUCH_Cn      17353280
+# define TOUCH_Dn      2496
+# define TOUCH_En      -212160
+# define TOUCH_Fn      20040384
+
 
 /* PWM to current calibration */
 /* B>0:PWM_value=abs(Ax_pos_TPWM * Val_Bmag_x + Bx_pos_TPWM)
@@ -159,8 +178,13 @@ const double PDOFFSET = 4.096; // Photodetector offset
 #endif
 
 #if defined(_BAYREUTH)
+/* Screen type, e.g. RA8875_480x272, RA8875_800x480 */
+const enum RA8875sizes screensize = RA8875_480x272;
+#define SCRN_VERT 272
+#define SCRN_HOR 480
+
 /* Mirror TFT screen (determines what is the front of the controller) */
-const bool mirror_tft = true;
+const bool mirror_tft = false;
 /* Do you want Wifi :). Make sure password.h is present, see under FTP
    server for details */
 const bool wifi = false;
@@ -228,11 +252,16 @@ const double NTCR     = 1.0; /* Ratio between R26=10k and 10 kOhm of
 const double NTCV     = 5.0;  //Drive voltage
 
 /* Offset photodetector */
-const double PDOFFSET = 4.096; // Photodetector offset
+const double PDOFFSET = 3.1; // Photodetector offset
 
 #endif
 
 #if defined(_ASTON)
+/* Screen type, e.g. RA8875_480x272, RA8875_800x480 */
+const enum RA8875sizes screensize = RA8875_480x272;
+#define SCRN_VERT 272
+#define SCRN_HOR 480
+
 /* Mirror TFT screen (determines what is the front of the controller) */
 const bool mirror_tft = true;
 /* Do you want Wifi :). Make sure password.h is present, see under FTP

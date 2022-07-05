@@ -19,8 +19,7 @@
 #define TFT_INT 16
 #define TFT_CS 5
 #define TFT_RST 17
-#define SCRN_VERT 272
-#define SCRN_HOR 480
+
 
 // Color definitions
 //https://wiibrew.org/wiki/U16_colors

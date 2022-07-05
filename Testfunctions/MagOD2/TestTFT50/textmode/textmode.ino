@@ -35,7 +35,8 @@ void setup()
   /* Initialise the display using 'RA8875_480x272' or 'RA8875_800x480' */
   SPI.beginTransaction(SPISettings(1000000, MSBFIRST, SPI_MODE0));
   
-  while (!tft.begin(RA8875_480x272)) {
+  while (!tft.begin(RA8875_800x480)) {
+    //    while (!tft.begin(RA8875_480x272)) {
     Serial.println("RA8875 Not Found!");
     delay(200);
   }
