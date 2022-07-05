@@ -1,0 +1,12 @@
+(sym_lib_table
+  (lib (name ODMeter-rescue)(type Legacy)(uri ${KIPRJMOD}/ODMeter-rescue.lib)(options "")(descr ""))
+  (lib (name power1)(type Legacy)(uri "C:/Program Files/KiCad/share/kicad/library/power.lib")(options "")(descr ""))
+  (lib (name device)(type Legacy)(uri "C:/Program Files/KiCad/share/kicad/library/device.lib")(options "")(descr ""))
+  (lib (name 74xx1)(type Legacy)(uri "C:/Program Files/KiCad/share/kicad/library/74xx.lib")(options "")(descr ""))
+  (lib (name audio)(type Legacy)(uri "C:/Program Files/KiCad/share/kicad/library/audio.lib")(options "")(descr ""))
+  (lib (name interface)(type Legacy)(uri "C:/Program Files/KiCad/share/kicad/library/interface.lib")(options "")(descr ""))
+  (lib (name arduino_shieldsNCL)(type Legacy)(uri ${KIPRJMOD}/arduino_shieldsNCL.lib)(options "")(descr ""))
+  (lib (name jcf-digital)(type Legacy)(uri ${KIPRJMOD}/jcf-digital.lib)(options "")(descr ""))
+  (lib (name 4relaymodule)(type Legacy)(uri ${KIPRJMOD}/4relaymodule.lib)(options "")(descr ""))
+  (lib (name md10cmotordriver)(type Legacy)(uri ${KIPRJMOD}/md10cmotordriver.lib)(options "")(descr ""))
+)

@@ -1,0 +1,1782 @@
+EESchema Schematic File Version 2
+LIBS:power
+LIBS:device
+LIBS:switches
+LIBS:relays
+LIBS:motors
+LIBS:transistors
+LIBS:conn
+LIBS:linear
+LIBS:regul
+LIBS:74xx
+LIBS:cmos4000
+LIBS:adc-dac
+LIBS:memory
+LIBS:xilinx
+LIBS:microcontrollers
+LIBS:dsp
+LIBS:microchip
+LIBS:analog_switches
+LIBS:motorola
+LIBS:texas
+LIBS:intel
+LIBS:audio
+LIBS:interface
+LIBS:digital-audio
+LIBS:philips
+LIBS:display
+LIBS:cypress
+LIBS:siliconi
+LIBS:opto
+LIBS:atmel
+LIBS:contrib
+LIBS:valves
+LIBS:arduino_shieldsNCL
+LIBS:jcf-digital
+LIBS:4relaymodule
+LIBS:md10cmotordriver
+LIBS:ODMeter-cache
+EELAYER 25 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 1 1
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L ARDUINO_MEGA_SHIELD SHIELD1
+U 1 1 5AEB2385
+P 4875 3550
+F 0 "SHIELD1" H 4475 6050 60  0000 C CNN
+F 1 "ARDUINO_MEGA_SHIELD" H 4775 850 60  0000 C CNN
+F 2 "arduino_shields:ARDUINO_MEGA_SHIELD_040pins" H 4875 3550 60  0001 C CNN
+F 3 "" H 4875 3550 60  0001 C CNN
+	1    4875 3550
+	1    0    0    -1  
+$EndComp
+$Comp
+L LM741 U1
+U 1 1 5AEB2628
+P 10525 1350
+F 0 "U1" H 10525 1600 50  0000 L CNN
+F 1 "LM741" H 10525 1500 50  0000 L CNN
+F 2 "Housings_SOIC:SOIC-8_3.9x4.9mm_Pitch1.27mm" H 10575 1400 50  0001 C CNN
+F 3 "http://nl.farnell.com/texas-instruments/ua741cd/ic-op-amp-compensated-soic8-741/dp/1106042?st=ua741" H 10675 1500 50  0001 C CNN
+	1    10525 1350
+	1    0    0    -1  
+$EndComp
+$Comp
+L R R7
+U 1 1 5AEC6F21
+P 10475 1925
+F 0 "R7" V 10555 1925 50  0000 C CNN
+F 1 "33k" V 10475 1925 50  0000 C CNN
+F 2 "Resistors_THT:R_Axial_DIN0411_L9.9mm_D3.6mm_P12.70mm_Horizontal" V 10405 1925 50  0001 C CNN
+F 3 "http://nl.farnell.com/multicomp/mf50-33k/resistor-0-5w-1-33k/dp/9340424?ost=9340424&ddkey=http%3Anl-NL%2FElement14_Netherlands%2Fsearch" H 10475 1925 50  0001 C CNN
+	1    10475 1925
+	0    1    1    0   
+$EndComp
+$Comp
+L R R3
+U 1 1 5AEC706B
+P 9925 1450
+F 0 "R3" V 10005 1450 50  0000 C CNN
+F 1 "3.3k" V 9925 1450 50  0000 C CNN
+F 2 "Resistors_THT:R_Axial_DIN0411_L9.9mm_D3.6mm_P12.70mm_Horizontal" V 9855 1450 50  0001 C CNN
+F 3 "http://nl.farnell.com/multicomp/mf50-3k3/resistor-0-5w-1-3k3/dp/9340416?ost=9340416&ddkey=http%3Anl-NL%2FElement14_Netherlands%2Fsearch" H 9925 1450 50  0001 C CNN
+	1    9925 1450
+	0    1    1    0   
+$EndComp
+$Comp
+L R R2
+U 1 1 5AEC70BF
+P 9925 1250
+F 0 "R2" V 10005 1250 50  0000 C CNN
+F 1 "3.3k" V 9925 1250 50  0000 C CNN
+F 2 "Resistors_THT:R_Axial_DIN0411_L9.9mm_D3.6mm_P12.70mm_Horizontal" V 9855 1250 50  0001 C CNN
+F 3 "http://nl.farnell.com/multicomp/mf50-3k3/resistor-0-5w-1-3k3/dp/9340416?ost=9340416&ddkey=http%3Anl-NL%2FElement14_Netherlands%2Fsearch" H 9925 1250 50  0001 C CNN
+	1    9925 1250
+	0    1    1    0   
+$EndComp
+$Comp
+L R R5
+U 1 1 5AEC70EA
+P 10150 1100
+F 0 "R5" V 10230 1100 50  0000 C CNN
+F 1 "33k" V 10150 1100 50  0000 C CNN
+F 2 "Resistors_THT:R_Axial_DIN0411_L9.9mm_D3.6mm_P12.70mm_Horizontal" V 10080 1100 50  0001 C CNN
+F 3 "http://nl.farnell.com/multicomp/mf50-33k/resistor-0-5w-1-33k/dp/9340424?ost=9340424&ddkey=http%3Anl-NL%2FElement14_Netherlands%2Fsearch" H 10150 1100 50  0001 C CNN
+	1    10150 1100
+	-1   0    0    1   
+$EndComp
+$Comp
+L R R4
+U 1 1 5AEC714A
+P 9975 875
+F 0 "R4" V 10055 875 50  0000 C CNN
+F 1 "800" V 9975 875 50  0000 C CNN
+F 2 "Resistors_THT:R_Axial_DIN0411_L9.9mm_D3.6mm_P12.70mm_Horizontal" V 9905 875 50  0001 C CNN
+F 3 "http://nl.farnell.com/multicomp/mf50-820r/resistor-0-5w-1-820r/dp/9340939?ost=9340939&ddkey=http%3Anl-NL%2FElement14_Netherlands%2Fsearch" H 9975 875 50  0001 C CNN
+	1    9975 875 
+	0    -1   -1   0   
+$EndComp
+$Comp
+L R R6
+U 1 1 5AEC7258
+P 10325 875
+F 0 "R6" V 10405 875 50  0000 C CNN
+F 1 "800" V 10325 875 50  0000 C CNN
+F 2 "Resistors_THT:R_Axial_DIN0411_L9.9mm_D3.6mm_P12.70mm_Horizontal" V 10255 875 50  0001 C CNN
+F 3 "http://nl.farnell.com/multicomp/mf50-820r/resistor-0-5w-1-820r/dp/9340939?ost=9340939&ddkey=http%3Anl-NL%2FElement14_Netherlands%2Fsearch" H 10325 875 50  0001 C CNN
+	1    10325 875 
+	0    -1   -1   0   
+$EndComp
+$Comp
+L R R1
+U 1 1 5AEC72C0
+P 9575 1350
+F 0 "R1" V 9655 1350 50  0000 C CNN
+F 1 "0.05" V 9575 1350 50  0000 C CNN
+F 2 "CurrentSenseResistor:OAR3" V 9505 1350 50  0001 C CNN
+F 3 "http://nl.farnell.com/welwyn/oar3-r050fi/resistor-1-0r050/dp/1200372?ost=1200372&ddkey=http%3Anl-NL%2FElement14_Netherlands%2Fsearch" H 9575 1350 50  0001 C CNN
+	1    9575 1350
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	10125 875  10175 875 
+Wire Wire Line
+	10150 875  10150 950 
+Connection ~ 10150 875 
+Wire Wire Line
+	10075 1250 10225 1250
+Connection ~ 10150 1250
+Wire Wire Line
+	10075 1450 10225 1450
+Wire Wire Line
+	10325 1925 10150 1925
+Wire Wire Line
+	10150 1925 10150 1450
+Connection ~ 10150 1450
+Wire Wire Line
+	10625 1925 10950 1925
+Wire Wire Line
+	9775 1500 9775 1450
+Wire Wire Line
+	9350 1500 9775 1500
+Wire Wire Line
+	9775 1200 9775 1250
+Wire Wire Line
+	9350 1200 9775 1200
+Text Label 9825 875  2    60   ~ 0
++5V
+$Comp
+L GND #PWR01
+U 1 1 5AEC7400
+P 10475 875
+F 0 "#PWR01" H 10475 625 50  0001 C CNN
+F 1 "GND" H 10475 725 50  0000 C CNN
+F 2 "" H 10475 875 50  0001 C CNN
+F 3 "" H 10475 875 50  0001 C CNN
+	1    10475 875 
+	0    -1   -1   0   
+$EndComp
+Text Label 10825 1050 0    60   ~ 0
++12V
+$Comp
+L C C2
+U 1 1 5AEC745C
+P 10750 900
+F 0 "C2" H 10775 1000 50  0000 L CNN
+F 1 "C" H 10775 800 50  0000 L CNN
+F 2 "Capacitors_SMD:C_0805" H 10788 750 50  0001 C CNN
+F 3 "" H 10750 900 50  0001 C CNN
+	1    10750 900 
+	1    0    0    -1  
+$EndComp
+Text Label 10400 1775 2    60   ~ 0
+-12V
+Wire Wire Line
+	10425 1650 10425 1775
+$Comp
+L C C1
+U 1 1 5AEC75C3
+P 10575 1775
+F 0 "C1" H 10600 1875 50  0000 L CNN
+F 1 "C" H 10600 1675 50  0000 L CNN
+F 2 "Capacitors_SMD:C_0805" H 10613 1625 50  0001 C CNN
+F 3 "" H 10575 1775 50  0001 C CNN
+	1    10575 1775
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	10425 1775 10400 1775
+$Comp
+L GND #PWR02
+U 1 1 5AEC773C
+P 10725 1775
+F 0 "#PWR02" H 10725 1525 50  0001 C CNN
+F 1 "GND" H 10725 1625 50  0000 C CNN
+F 2 "" H 10725 1775 50  0001 C CNN
+F 3 "" H 10725 1775 50  0001 C CNN
+	1    10725 1775
+	0    -1   -1   0   
+$EndComp
+$Comp
+L GND #PWR03
+U 1 1 5AEC7768
+P 10750 750
+F 0 "#PWR03" H 10750 500 50  0001 C CNN
+F 1 "GND" H 10750 600 50  0000 C CNN
+F 2 "" H 10750 750 50  0001 C CNN
+F 3 "" H 10750 750 50  0001 C CNN
+	1    10750 750 
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	10950 1925 10950 1350
+Wire Wire Line
+	10950 1350 10825 1350
+Wire Wire Line
+	10425 1050 10825 1050
+Connection ~ 10750 1050
+$Comp
+L LM741 U3
+U 1 1 5AEC7BA7
+P 10525 2750
+F 0 "U3" H 10525 3000 50  0000 L CNN
+F 1 "LM741" H 10525 2900 50  0000 L CNN
+F 2 "Housings_SOIC:SOIC-8_3.9x4.9mm_Pitch1.27mm" H 10575 2800 50  0001 C CNN
+F 3 "http://nl.farnell.com/texas-instruments/ua741cd/ic-op-amp-compensated-soic8-741/dp/1106042?st=ua741" H 10675 2900 50  0001 C CNN
+	1    10525 2750
+	1    0    0    -1  
+$EndComp
+$Comp
+L R R20
+U 1 1 5AEC7BAD
+P 10475 3325
+F 0 "R20" V 10555 3325 50  0000 C CNN
+F 1 "33k" V 10475 3325 50  0000 C CNN
+F 2 "Resistors_THT:R_Axial_DIN0411_L9.9mm_D3.6mm_P12.70mm_Horizontal" V 10405 3325 50  0001 C CNN
+F 3 "http://nl.farnell.com/multicomp/mf50-33k/resistor-0-5w-1-33k/dp/9340424?ost=9340424&ddkey=http%3Anl-NL%2FElement14_Netherlands%2Fsearch" H 10475 3325 50  0001 C CNN
+	1    10475 3325
+	0    1    1    0   
+$EndComp
+$Comp
+L R R11
+U 1 1 5AEC7BB3
+P 9925 2850
+F 0 "R11" V 10005 2850 50  0000 C CNN
+F 1 "3.3k" V 9925 2850 50  0000 C CNN
+F 2 "Resistors_THT:R_Axial_DIN0411_L9.9mm_D3.6mm_P12.70mm_Horizontal" V 9855 2850 50  0001 C CNN
+F 3 "http://nl.farnell.com/multicomp/mf50-3k3/resistor-0-5w-1-3k3/dp/9340416?ost=9340416&ddkey=http%3Anl-NL%2FElement14_Netherlands%2Fsearch" H 9925 2850 50  0001 C CNN
+	1    9925 2850
+	0    1    1    0   
+$EndComp
+$Comp
+L R R10
+U 1 1 5AEC7BB9
+P 9925 2650
+F 0 "R10" V 10005 2650 50  0000 C CNN
+F 1 "3.3k" V 9925 2650 50  0000 C CNN
+F 2 "Resistors_THT:R_Axial_DIN0411_L9.9mm_D3.6mm_P12.70mm_Horizontal" V 9855 2650 50  0001 C CNN
+F 3 "http://nl.farnell.com/multicomp/mf50-3k3/resistor-0-5w-1-3k3/dp/9340416?ost=9340416&ddkey=http%3Anl-NL%2FElement14_Netherlands%2Fsearch" H 9925 2650 50  0001 C CNN
+	1    9925 2650
+	0    1    1    0   
+$EndComp
+$Comp
+L R R16
+U 1 1 5AEC7BBF
+P 10150 2500
+F 0 "R16" V 10230 2500 50  0000 C CNN
+F 1 "33k" V 10150 2500 50  0000 C CNN
+F 2 "Resistors_THT:R_Axial_DIN0411_L9.9mm_D3.6mm_P12.70mm_Horizontal" V 10080 2500 50  0001 C CNN
+F 3 "http://nl.farnell.com/multicomp/mf50-33k/resistor-0-5w-1-33k/dp/9340424?ost=9340424&ddkey=http%3Anl-NL%2FElement14_Netherlands%2Fsearch" H 10150 2500 50  0001 C CNN
+	1    10150 2500
+	-1   0    0    1   
+$EndComp
+$Comp
+L R R14
+U 1 1 5AEC7BC5
+P 9975 2275
+F 0 "R14" V 10055 2275 50  0000 C CNN
+F 1 "800" V 9975 2275 50  0000 C CNN
+F 2 "Resistors_THT:R_Axial_DIN0411_L9.9mm_D3.6mm_P12.70mm_Horizontal" V 9905 2275 50  0001 C CNN
+F 3 "http://nl.farnell.com/multicomp/mf50-820r/resistor-0-5w-1-820r/dp/9340939?ost=9340939&ddkey=http%3Anl-NL%2FElement14_Netherlands%2Fsearch" H 9975 2275 50  0001 C CNN
+	1    9975 2275
+	0    -1   -1   0   
+$EndComp
+$Comp
+L R R18
+U 1 1 5AEC7BCB
+P 10325 2275
+F 0 "R18" V 10405 2275 50  0000 C CNN
+F 1 "800" V 10325 2275 50  0000 C CNN
+F 2 "Resistors_THT:R_Axial_DIN0411_L9.9mm_D3.6mm_P12.70mm_Horizontal" V 10255 2275 50  0001 C CNN
+F 3 "http://nl.farnell.com/multicomp/mf50-820r/resistor-0-5w-1-820r/dp/9340939?ost=9340939&ddkey=http%3Anl-NL%2FElement14_Netherlands%2Fsearch" H 10325 2275 50  0001 C CNN
+	1    10325 2275
+	0    -1   -1   0   
+$EndComp
+$Comp
+L R R8
+U 1 1 5AEC7BD1
+P 9575 2750
+F 0 "R8" V 9655 2750 50  0000 C CNN
+F 1 "0.05" V 9575 2750 50  0000 C CNN
+F 2 "CurrentSenseResistor:OAR3" V 9505 2750 50  0001 C CNN
+F 3 "http://nl.farnell.com/welwyn/oar3-r050fi/resistor-1-0r050/dp/1200372?ost=1200372&ddkey=http%3Anl-NL%2FElement14_Netherlands%2Fsearch" H 9575 2750 50  0001 C CNN
+	1    9575 2750
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	10125 2275 10175 2275
+Wire Wire Line
+	10150 2275 10150 2350
+Connection ~ 10150 2275
+Wire Wire Line
+	10075 2650 10225 2650
+Connection ~ 10150 2650
+Wire Wire Line
+	10075 2850 10225 2850
+Wire Wire Line
+	10325 3325 10150 3325
+Wire Wire Line
+	10150 3325 10150 2850
+Connection ~ 10150 2850
+Wire Wire Line
+	10625 3325 10950 3325
+Wire Wire Line
+	9775 2900 9775 2850
+Wire Wire Line
+	9350 2900 9775 2900
+Wire Wire Line
+	9775 2600 9775 2650
+Wire Wire Line
+	9350 2600 9775 2600
+Text Label 9825 2275 2    60   ~ 0
++5V
+$Comp
+L GND #PWR04
+U 1 1 5AEC7BE6
+P 10475 2275
+F 0 "#PWR04" H 10475 2025 50  0001 C CNN
+F 1 "GND" H 10475 2125 50  0000 C CNN
+F 2 "" H 10475 2275 50  0001 C CNN
+F 3 "" H 10475 2275 50  0001 C CNN
+	1    10475 2275
+	0    -1   -1   0   
+$EndComp
+Text Label 10825 2450 0    60   ~ 0
++12V
+$Comp
+L C C5
+U 1 1 5AEC7BED
+P 10750 2300
+F 0 "C5" H 10775 2400 50  0000 L CNN
+F 1 "C" H 10775 2200 50  0000 L CNN
+F 2 "Capacitors_SMD:C_0805" H 10788 2150 50  0001 C CNN
+F 3 "" H 10750 2300 50  0001 C CNN
+	1    10750 2300
+	1    0    0    -1  
+$EndComp
+Text Label 10400 3175 2    60   ~ 0
+-12V
+Wire Wire Line
+	10425 3050 10425 3175
+$Comp
+L C C3
+U 1 1 5AEC7BF5
+P 10575 3175
+F 0 "C3" H 10600 3275 50  0000 L CNN
+F 1 "C" H 10600 3075 50  0000 L CNN
+F 2 "Capacitors_SMD:C_0805" H 10613 3025 50  0001 C CNN
+F 3 "" H 10575 3175 50  0001 C CNN
+	1    10575 3175
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	10425 3175 10400 3175
+$Comp
+L GND #PWR05
+U 1 1 5AEC7BFC
+P 10725 3175
+F 0 "#PWR05" H 10725 2925 50  0001 C CNN
+F 1 "GND" H 10725 3025 50  0000 C CNN
+F 2 "" H 10725 3175 50  0001 C CNN
+F 3 "" H 10725 3175 50  0001 C CNN
+	1    10725 3175
+	0    -1   -1   0   
+$EndComp
+$Comp
+L GND #PWR06
+U 1 1 5AEC7C02
+P 10750 2150
+F 0 "#PWR06" H 10750 1900 50  0001 C CNN
+F 1 "GND" H 10750 2000 50  0000 C CNN
+F 2 "" H 10750 2150 50  0001 C CNN
+F 3 "" H 10750 2150 50  0001 C CNN
+	1    10750 2150
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	10950 3325 10950 2750
+Wire Wire Line
+	10950 2750 10825 2750
+Wire Wire Line
+	10425 2450 10825 2450
+Connection ~ 10750 2450
+$Comp
+L LM741 U4
+U 1 1 5AEC80DC
+P 10525 4150
+F 0 "U4" H 10525 4400 50  0000 L CNN
+F 1 "LM741" H 10525 4300 50  0000 L CNN
+F 2 "Housings_SOIC:SOIC-8_3.9x4.9mm_Pitch1.27mm" H 10575 4200 50  0001 C CNN
+F 3 "http://nl.farnell.com/texas-instruments/ua741cd/ic-op-amp-compensated-soic8-741/dp/1106042?st=ua741" H 10675 4300 50  0001 C CNN
+	1    10525 4150
+	1    0    0    -1  
+$EndComp
+$Comp
+L R R21
+U 1 1 5AEC80E2
+P 10475 4725
+F 0 "R21" V 10555 4725 50  0000 C CNN
+F 1 "33k" V 10475 4725 50  0000 C CNN
+F 2 "Resistors_THT:R_Axial_DIN0411_L9.9mm_D3.6mm_P12.70mm_Horizontal" V 10405 4725 50  0001 C CNN
+F 3 "http://nl.farnell.com/multicomp/mf50-33k/resistor-0-5w-1-33k/dp/9340424?ost=9340424&ddkey=http%3Anl-NL%2FElement14_Netherlands%2Fsearch" H 10475 4725 50  0001 C CNN
+	1    10475 4725
+	0    1    1    0   
+$EndComp
+$Comp
+L R R13
+U 1 1 5AEC80E8
+P 9925 4250
+F 0 "R13" V 10005 4250 50  0000 C CNN
+F 1 "3.3k" V 9925 4250 50  0000 C CNN
+F 2 "Resistors_THT:R_Axial_DIN0411_L9.9mm_D3.6mm_P12.70mm_Horizontal" V 9855 4250 50  0001 C CNN
+F 3 "http://nl.farnell.com/multicomp/mf50-3k3/resistor-0-5w-1-3k3/dp/9340416?ost=9340416&ddkey=http%3Anl-NL%2FElement14_Netherlands%2Fsearch" H 9925 4250 50  0001 C CNN
+	1    9925 4250
+	0    1    1    0   
+$EndComp
+$Comp
+L R R12
+U 1 1 5AEC80EE
+P 9925 4050
+F 0 "R12" V 10005 4050 50  0000 C CNN
+F 1 "3.3k" V 9925 4050 50  0000 C CNN
+F 2 "Resistors_THT:R_Axial_DIN0411_L9.9mm_D3.6mm_P12.70mm_Horizontal" V 9855 4050 50  0001 C CNN
+F 3 "http://nl.farnell.com/multicomp/mf50-3k3/resistor-0-5w-1-3k3/dp/9340416?ost=9340416&ddkey=http%3Anl-NL%2FElement14_Netherlands%2Fsearch" H 9925 4050 50  0001 C CNN
+	1    9925 4050
+	0    1    1    0   
+$EndComp
+$Comp
+L R R17
+U 1 1 5AEC80F4
+P 10150 3900
+F 0 "R17" V 10230 3900 50  0000 C CNN
+F 1 "33k" V 10150 3900 50  0000 C CNN
+F 2 "Resistors_THT:R_Axial_DIN0411_L9.9mm_D3.6mm_P12.70mm_Horizontal" V 10080 3900 50  0001 C CNN
+F 3 "http://nl.farnell.com/multicomp/mf50-33k/resistor-0-5w-1-33k/dp/9340424?ost=9340424&ddkey=http%3Anl-NL%2FElement14_Netherlands%2Fsearch" H 10150 3900 50  0001 C CNN
+	1    10150 3900
+	-1   0    0    1   
+$EndComp
+$Comp
+L R R15
+U 1 1 5AEC80FA
+P 9975 3675
+F 0 "R15" V 10055 3675 50  0000 C CNN
+F 1 "800" V 9975 3675 50  0000 C CNN
+F 2 "Resistors_THT:R_Axial_DIN0411_L9.9mm_D3.6mm_P12.70mm_Horizontal" V 9905 3675 50  0001 C CNN
+F 3 "http://nl.farnell.com/multicomp/mf50-820r/resistor-0-5w-1-820r/dp/9340939?ost=9340939&ddkey=http%3Anl-NL%2FElement14_Netherlands%2Fsearch" H 9975 3675 50  0001 C CNN
+	1    9975 3675
+	0    -1   -1   0   
+$EndComp
+$Comp
+L R R19
+U 1 1 5AEC8100
+P 10325 3675
+F 0 "R19" V 10405 3675 50  0000 C CNN
+F 1 "800" V 10325 3675 50  0000 C CNN
+F 2 "Resistors_THT:R_Axial_DIN0411_L9.9mm_D3.6mm_P12.70mm_Horizontal" V 10255 3675 50  0001 C CNN
+F 3 "http://nl.farnell.com/multicomp/mf50-820r/resistor-0-5w-1-820r/dp/9340939?ost=9340939&ddkey=http%3Anl-NL%2FElement14_Netherlands%2Fsearch" H 10325 3675 50  0001 C CNN
+	1    10325 3675
+	0    -1   -1   0   
+$EndComp
+$Comp
+L R R9
+U 1 1 5AEC8106
+P 9575 4150
+F 0 "R9" V 9655 4150 50  0000 C CNN
+F 1 "0.05" V 9575 4150 50  0000 C CNN
+F 2 "CurrentSenseResistor:OAR3" V 9505 4150 50  0001 C CNN
+F 3 "http://nl.farnell.com/welwyn/oar3-r050fi/resistor-1-0r050/dp/1200372?ost=1200372&ddkey=http%3Anl-NL%2FElement14_Netherlands%2Fsearch" H 9575 4150 50  0001 C CNN
+	1    9575 4150
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	10125 3675 10175 3675
+Wire Wire Line
+	10150 3675 10150 3750
+Connection ~ 10150 3675
+Wire Wire Line
+	10075 4050 10225 4050
+Connection ~ 10150 4050
+Wire Wire Line
+	10075 4250 10225 4250
+Wire Wire Line
+	10325 4725 10150 4725
+Wire Wire Line
+	10150 4725 10150 4250
+Connection ~ 10150 4250
+Wire Wire Line
+	10625 4725 10950 4725
+Wire Wire Line
+	9775 4300 9775 4250
+Wire Wire Line
+	9350 4300 9775 4300
+Wire Wire Line
+	9775 4000 9775 4050
+Wire Wire Line
+	9350 4000 9775 4000
+Text Label 9825 3675 2    60   ~ 0
++5V
+$Comp
+L GND #PWR07
+U 1 1 5AEC811B
+P 10475 3675
+F 0 "#PWR07" H 10475 3425 50  0001 C CNN
+F 1 "GND" H 10475 3525 50  0000 C CNN
+F 2 "" H 10475 3675 50  0001 C CNN
+F 3 "" H 10475 3675 50  0001 C CNN
+	1    10475 3675
+	0    -1   -1   0   
+$EndComp
+Text Label 10825 3850 0    60   ~ 0
++12V
+$Comp
+L C C6
+U 1 1 5AEC8122
+P 10750 3700
+F 0 "C6" H 10775 3800 50  0000 L CNN
+F 1 "C" H 10775 3600 50  0000 L CNN
+F 2 "Capacitors_SMD:C_0805" H 10788 3550 50  0001 C CNN
+F 3 "" H 10750 3700 50  0001 C CNN
+	1    10750 3700
+	1    0    0    -1  
+$EndComp
+Text Label 10400 4575 2    60   ~ 0
+-12V
+Wire Wire Line
+	10425 4450 10425 4575
+$Comp
+L C C4
+U 1 1 5AEC812A
+P 10575 4575
+F 0 "C4" H 10600 4675 50  0000 L CNN
+F 1 "C" H 10600 4475 50  0000 L CNN
+F 2 "Capacitors_SMD:C_0805" H 10613 4425 50  0001 C CNN
+F 3 "" H 10575 4575 50  0001 C CNN
+	1    10575 4575
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	10425 4575 10400 4575
+$Comp
+L GND #PWR08
+U 1 1 5AEC8131
+P 10725 4575
+F 0 "#PWR08" H 10725 4325 50  0001 C CNN
+F 1 "GND" H 10725 4425 50  0000 C CNN
+F 2 "" H 10725 4575 50  0001 C CNN
+F 3 "" H 10725 4575 50  0001 C CNN
+	1    10725 4575
+	0    -1   -1   0   
+$EndComp
+$Comp
+L GND #PWR09
+U 1 1 5AEC8137
+P 10750 3550
+F 0 "#PWR09" H 10750 3300 50  0001 C CNN
+F 1 "GND" H 10750 3400 50  0000 C CNN
+F 2 "" H 10750 3550 50  0001 C CNN
+F 3 "" H 10750 3550 50  0001 C CNN
+	1    10750 3550
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	10950 4725 10950 4150
+Wire Wire Line
+	10950 4150 10825 4150
+Wire Wire Line
+	10425 3850 10825 3850
+Connection ~ 10750 3850
+Text Label 10950 1350 0    60   ~ 0
+Ain13
+Text Label 10950 2750 0    60   ~ 0
+Ain14
+Text Label 10950 4150 0    60   ~ 0
+Ain15
+Text Label 3875 3600 2    60   ~ 0
+Ain12
+Text Label 3875 3700 2    60   ~ 0
+Ain13
+Text Label 3875 3800 2    60   ~ 0
+Ain14
+$Comp
+L ADS1115 U2
+U 1 1 5AECA04D
+P 1850 1575
+F 0 "U2" H 1500 1875 60  0000 L CNN
+F 1 "ADS1115" H 2100 1875 60  0000 C CNN
+F 2 "Housings_SSOP:TSSOP-10_3x3mm_Pitch0.5mm" H 1850 1575 60  0001 C CNN
+F 3 "http://nl.farnell.com/w/search?st=ads1115&adc-dac-case-style=vssop" H 1850 1575 60  0000 C CNN
+	1    1850 1575
+	1    0    0    -1  
+$EndComp
+Text Label 5775 3600 0    60   ~ 0
+SDA
+Text Label 5775 3700 0    60   ~ 0
+SCL
+$Comp
+L R R24
+U 1 1 5AECB1D3
+P 1250 1275
+F 0 "R24" V 1330 1275 50  0000 C CNN
+F 1 "R" V 1250 1275 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" V 1180 1275 50  0001 C CNN
+F 3 "" H 1250 1275 50  0001 C CNN
+	1    1250 1275
+	1    0    0    -1  
+$EndComp
+$Comp
+L R R22
+U 1 1 5AECB2D9
+P 1025 1675
+F 0 "R22" V 1105 1675 50  0000 C CNN
+F 1 "R" V 1025 1675 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" V 955 1675 50  0001 C CNN
+F 3 "" H 1025 1675 50  0001 C CNN
+	1    1025 1675
+	1    0    0    -1  
+$EndComp
+Text Label 1025 1425 2    60   ~ 0
+SDA
+Text Label 1025 1525 2    60   ~ 0
+SCL
+Wire Wire Line
+	1025 1425 1350 1425
+Connection ~ 1250 1425
+Wire Wire Line
+	1350 1525 1025 1525
+$Comp
+L GND #PWR010
+U 1 1 5AECB885
+P 1850 1975
+F 0 "#PWR010" H 1850 1725 50  0001 C CNN
+F 1 "GND" H 1850 1825 50  0000 C CNN
+F 2 "" H 1850 1975 50  0001 C CNN
+F 3 "" H 1850 1975 50  0001 C CNN
+	1    1850 1975
+	1    0    0    -1  
+$EndComp
+$Comp
+L C C7
+U 1 1 5AECBC6A
+P 2000 1125
+F 0 "C7" H 2025 1225 50  0000 L CNN
+F 1 "C" H 2025 1025 50  0000 L CNN
+F 2 "Capacitors_SMD:C_0805" H 2038 975 50  0001 C CNN
+F 3 "" H 2000 1125 50  0001 C CNN
+	1    2000 1125
+	0    1    1    0   
+$EndComp
+$Comp
+L GND #PWR011
+U 1 1 5AECC070
+P 2150 1125
+F 0 "#PWR011" H 2150 875 50  0001 C CNN
+F 1 "GND" H 2150 975 50  0000 C CNN
+F 2 "" H 2150 1125 50  0001 C CNN
+F 3 "" H 2150 1125 50  0001 C CNN
+	1    2150 1125
+	0    -1   -1   0   
+$EndComp
+Text Label 1850 1125 2    60   ~ 0
++5V
+Wire Wire Line
+	1850 1175 1850 1125
+Text Label 1250 1125 2    60   ~ 0
++5V
+Text Label 1025 1825 3    60   ~ 0
++5V
+$Comp
+L R R25
+U 1 1 5AECC4A4
+P 1350 1875
+F 0 "R25" V 1430 1875 50  0000 C CNN
+F 1 "R" V 1350 1875 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" V 1280 1875 50  0001 C CNN
+F 3 "" H 1350 1875 50  0001 C CNN
+	1    1350 1875
+	1    0    0    -1  
+$EndComp
+$Comp
+L R R23
+U 1 1 5AECC56A
+P 1200 1775
+F 0 "R23" V 1280 1775 50  0000 C CNN
+F 1 "R" V 1200 1775 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" V 1130 1775 50  0001 C CNN
+F 3 "" H 1200 1775 50  0001 C CNN
+	1    1200 1775
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR012
+U 1 1 5AECC605
+P 1200 1925
+F 0 "#PWR012" H 1200 1675 50  0001 C CNN
+F 1 "GND" H 1200 1775 50  0000 C CNN
+F 2 "" H 1200 1925 50  0001 C CNN
+F 3 "" H 1200 1925 50  0001 C CNN
+	1    1200 1925
+	1    0    0    -1  
+$EndComp
+Text Label 1350 2025 3    60   ~ 0
++5V
+Wire Wire Line
+	1350 1625 1200 1625
+$Comp
+L 4RelayModule U5
+U 1 1 5AED8262
+P 7850 1025
+F 0 "U5" H 7850 825 60  0000 C CNN
+F 1 "4RelayModule" H 7850 1225 60  0000 C CNN
+F 2 "4RelayModule:4RelayModule" H 7850 1025 60  0001 C CNN
+F 3 "" H 7850 1025 60  0001 C CNN
+	1    7850 1025
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR013
+U 1 1 5AED8462
+P 5775 1300
+F 0 "#PWR013" H 5775 1050 50  0001 C CNN
+F 1 "GND" H 5775 1150 50  0000 C CNN
+F 2 "" H 5775 1300 50  0001 C CNN
+F 3 "" H 5775 1300 50  0001 C CNN
+	1    5775 1300
+	0    -1   -1   0   
+$EndComp
+$Comp
+L GND #PWR014
+U 1 1 5AED859D
+P 3875 1900
+F 0 "#PWR014" H 3875 1650 50  0001 C CNN
+F 1 "GND" H 3875 1750 50  0000 C CNN
+F 2 "" H 3875 1900 50  0001 C CNN
+F 3 "" H 3875 1900 50  0001 C CNN
+	1    3875 1900
+	0    1    1    0   
+$EndComp
+$Comp
+L GND #PWR015
+U 1 1 5AED86B2
+P 3875 2000
+F 0 "#PWR015" H 3875 1750 50  0001 C CNN
+F 1 "GND" H 3875 1850 50  0000 C CNN
+F 2 "" H 3875 2000 50  0001 C CNN
+F 3 "" H 3875 2000 50  0001 C CNN
+	1    3875 2000
+	0    1    1    0   
+$EndComp
+$Comp
+L GND #PWR016
+U 1 1 5AED877B
+P 3875 4150
+F 0 "#PWR016" H 3875 3900 50  0001 C CNN
+F 1 "GND" H 3875 4000 50  0000 C CNN
+F 2 "" H 3875 4150 50  0001 C CNN
+F 3 "" H 3875 4150 50  0001 C CNN
+	1    3875 4150
+	0    1    1    0   
+$EndComp
+$Comp
+L GND #PWR017
+U 1 1 5AED886A
+P 3875 4250
+F 0 "#PWR017" H 3875 4000 50  0001 C CNN
+F 1 "GND" H 3875 4100 50  0000 C CNN
+F 2 "" H 3875 4250 50  0001 C CNN
+F 3 "" H 3875 4250 50  0001 C CNN
+	1    3875 4250
+	0    1    1    0   
+$EndComp
+$Comp
+L GND #PWR018
+U 1 1 5AED897F
+P 7550 925
+F 0 "#PWR018" H 7550 675 50  0001 C CNN
+F 1 "GND" H 7550 775 50  0000 C CNN
+F 2 "" H 7550 925 50  0001 C CNN
+F 3 "" H 7550 925 50  0001 C CNN
+	1    7550 925 
+	0    1    1    0   
+$EndComp
+Text Label 8150 925  0    60   ~ 0
++5V
+Text Label 3875 3900 2    60   ~ 0
+Ain15
+$Comp
+L Conn_01x03 J1
+U 1 1 5AF1F66F
+P 8425 1675
+F 0 "J1" H 8425 1875 50  0000 C CNN
+F 1 "Conn_01x03" H 8425 1475 50  0000 C CNN
+F 2 "Pin_Headers:Pin_Header_Straight_1x03_Pitch2.54mm" H 8425 1675 50  0001 C CNN
+F 3 "" H 8425 1675 50  0001 C CNN
+	1    8425 1675
+	1    0    0    -1  
+$EndComp
+$Comp
+L Conn_01x03 J2
+U 1 1 5AF1F720
+P 8425 2125
+F 0 "J2" H 8425 2325 50  0000 C CNN
+F 1 "Conn_01x03" H 8425 1925 50  0000 C CNN
+F 2 "Pin_Headers:Pin_Header_Straight_1x03_Pitch2.54mm" H 8425 2125 50  0001 C CNN
+F 3 "" H 8425 2125 50  0001 C CNN
+	1    8425 2125
+	1    0    0    -1  
+$EndComp
+$Comp
+L Conn_01x03 J3
+U 1 1 5AF1F7C3
+P 8425 2575
+F 0 "J3" H 8425 2775 50  0000 C CNN
+F 1 "Conn_01x03" H 8425 2375 50  0000 C CNN
+F 2 "Pin_Headers:Pin_Header_Straight_1x03_Pitch2.54mm" H 8425 2575 50  0001 C CNN
+F 3 "" H 8425 2575 50  0001 C CNN
+	1    8425 2575
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR019
+U 1 1 5AF1F8BA
+P 8225 1575
+F 0 "#PWR019" H 8225 1325 50  0001 C CNN
+F 1 "GND" H 8225 1425 50  0000 C CNN
+F 2 "" H 8225 1575 50  0001 C CNN
+F 3 "" H 8225 1575 50  0001 C CNN
+	1    8225 1575
+	0    1    1    0   
+$EndComp
+$Comp
+L GND #PWR020
+U 1 1 5AF1F943
+P 8225 2025
+F 0 "#PWR020" H 8225 1775 50  0001 C CNN
+F 1 "GND" H 8225 1875 50  0000 C CNN
+F 2 "" H 8225 2025 50  0001 C CNN
+F 3 "" H 8225 2025 50  0001 C CNN
+	1    8225 2025
+	0    1    1    0   
+$EndComp
+$Comp
+L GND #PWR021
+U 1 1 5AF1F9CC
+P 8225 2475
+F 0 "#PWR021" H 8225 2225 50  0001 C CNN
+F 1 "GND" H 8225 2325 50  0000 C CNN
+F 2 "" H 8225 2475 50  0001 C CNN
+F 3 "" H 8225 2475 50  0001 C CNN
+	1    8225 2475
+	0    1    1    0   
+$EndComp
+Text Label 8225 1675 2    60   ~ 0
+PWM_X
+Text Label 8225 2125 2    60   ~ 0
+PWM_Y
+Text Label 8225 2575 2    60   ~ 0
+PWM_Z
+Text Label 8225 1775 2    60   ~ 0
+DIR_X
+Text Label 8225 2225 2    60   ~ 0
+DIR_Y
+Text Label 8225 2675 2    60   ~ 0
+DIR_Z
+Text Label 5775 4500 0    60   ~ 0
+DIR_X
+Text Label 5775 4600 0    60   ~ 0
+DIR_Y
+Text Label 5775 4700 0    60   ~ 0
+DIR_Z
+Text Label 3875 5350 2    60   ~ 0
+PWM_X
+Text Label 3875 5250 2    60   ~ 0
+PWM_Y
+Text Label 3875 5150 2    60   ~ 0
+PWM_Z
+$Comp
+L Conn_01x02 J6
+U 1 1 5AF204FC
+P 9150 1400
+F 0 "J6" H 9150 1500 50  0000 C CNN
+F 1 "Conn_01x02" H 9150 1200 50  0000 C CNN
+F 2 "MOLEX_KK396RPC171813series:Straight_1x2" H 9150 1400 50  0001 C CNN
+F 3 "" H 9150 1400 50  0001 C CNN
+	1    9150 1400
+	-1   0    0    1   
+$EndComp
+$Comp
+L Conn_01x02 J7
+U 1 1 5AF205F1
+P 9150 2800
+F 0 "J7" H 9150 2900 50  0000 C CNN
+F 1 "Conn_01x02" H 9150 2600 50  0000 C CNN
+F 2 "MOLEX_KK396RPC171813series:Straight_1x2" H 9150 2800 50  0001 C CNN
+F 3 "" H 9150 2800 50  0001 C CNN
+	1    9150 2800
+	-1   0    0    1   
+$EndComp
+$Comp
+L Conn_01x02 J8
+U 1 1 5AF206BE
+P 9150 4200
+F 0 "J8" H 9150 4300 50  0000 C CNN
+F 1 "Conn_01x02" H 9150 4000 50  0000 C CNN
+F 2 "MOLEX_KK396RPC171813series:Straight_1x2" H 9150 4200 50  0001 C CNN
+F 3 "" H 9150 4200 50  0001 C CNN
+	1    9150 4200
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	9350 4000 9350 4100
+Connection ~ 9575 4000
+Wire Wire Line
+	9350 4200 9350 4300
+Connection ~ 9575 4300
+Wire Wire Line
+	9350 2800 9350 2900
+Connection ~ 9575 2900
+Wire Wire Line
+	9350 2600 9350 2700
+Connection ~ 9575 2600
+Wire Wire Line
+	9350 1300 9350 1200
+Connection ~ 9575 1200
+Wire Wire Line
+	9350 1400 9350 1500
+Connection ~ 9575 1500
+Text Label 7550 1025 2    60   ~ 0
+Rel_X
+Text Label 7550 1125 2    60   ~ 0
+Rel_Y
+Text Label 8150 1125 0    60   ~ 0
+Rel_Z
+Text Label 5775 5450 0    60   ~ 0
+Rel_X
+Text Label 5775 5550 0    60   ~ 0
+Rel_Y
+Text Label 5775 5650 0    60   ~ 0
+Rel_Z
+$Comp
+L Conn_01x04 J4
+U 1 1 5AF69EB0
+P 8425 3075
+F 0 "J4" H 8425 3275 50  0000 C CNN
+F 1 "Conn_01x04" H 8425 2775 50  0000 C CNN
+F 2 "Connectors_Molex_custom:Sherlock35363series_4x1_2mmpitch_angled" H 8425 3075 50  0001 C CNN
+F 3 "" H 8425 3075 50  0001 C CNN
+	1    8425 3075
+	1    0    0    -1  
+$EndComp
+$Comp
+L R R26
+U 1 1 5AF6A1CA
+P 8075 2975
+F 0 "R26" V 8155 2975 50  0000 C CNN
+F 1 "R" V 8075 2975 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" V 8005 2975 50  0001 C CNN
+F 3 "" H 8075 2975 50  0001 C CNN
+	1    8075 2975
+	0    1    1    0   
+$EndComp
+$Comp
+L R R27
+U 1 1 5AF6A263
+P 8075 3075
+F 0 "R27" V 8155 3075 50  0000 C CNN
+F 1 "R" V 8075 3075 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" V 8005 3075 50  0001 C CNN
+F 3 "" H 8075 3075 50  0001 C CNN
+	1    8075 3075
+	0    1    1    0   
+$EndComp
+$Comp
+L R R28
+U 1 1 5AF6A31B
+P 8075 3175
+F 0 "R28" V 8155 3175 50  0000 C CNN
+F 1 "R" V 8075 3175 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" V 8005 3175 50  0001 C CNN
+F 3 "" H 8075 3175 50  0001 C CNN
+	1    8075 3175
+	0    1    1    0   
+$EndComp
+$Comp
+L GND #PWR022
+U 1 1 5AF6A3C5
+P 8150 3350
+F 0 "#PWR022" H 8150 3100 50  0001 C CNN
+F 1 "GND" H 8150 3200 50  0000 C CNN
+F 2 "" H 8150 3350 50  0001 C CNN
+F 3 "" H 8150 3350 50  0001 C CNN
+	1    8150 3350
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	8225 3275 8150 3275
+Wire Wire Line
+	8150 3275 8150 3350
+Text Label 7925 2975 2    60   ~ 0
+LED_R
+Text Label 7925 3075 2    60   ~ 0
+LED_G
+Text Label 7925 3175 2    60   ~ 0
+LED_B
+Text Label 5775 5050 0    60   ~ 0
+LED_R
+Text Label 5775 5150 0    60   ~ 0
+LED_G
+Text Label 5775 5250 0    60   ~ 0
+LED_B
+$Comp
+L Conn_01x09 J5
+U 1 1 5AF6D1F2
+P 8425 4100
+F 0 "J5" H 8425 4600 50  0000 C CNN
+F 1 "Conn_01x09" H 8425 3600 50  0000 C CNN
+F 2 "Pin_Headers:Pin_Header_Straight_1x09_Pitch2.54mm" H 8425 4100 50  0001 C CNN
+F 3 "" H 8425 4100 50  0001 C CNN
+	1    8425 4100
+	1    0    0    -1  
+$EndComp
+Text Label 8225 3700 2    60   ~ 0
+SD_cs
+Text Label 5775 2400 0    60   ~ 0
+SD_cs
+Text Label 8225 3800 2    60   ~ 0
+TFT_dc
+Text Label 5775 1900 0    60   ~ 0
+TFT_dc
+Text Label 5775 1700 0    60   ~ 0
+TFT_cs
+Text Label 8225 3900 2    60   ~ 0
+TFT_cs
+Text Label 8225 4000 2    60   ~ 0
+DI
+Text Label 3875 4700 2    60   ~ 0
+DI
+Text Label 8225 4100 2    60   ~ 0
+DO
+Text Label 3875 4600 2    60   ~ 0
+DO
+Text Label 8225 4200 2    60   ~ 0
+SCK
+Text Label 3875 4500 2    60   ~ 0
+SCK
+Text Label 8225 4300 2    60   ~ 0
+Joy
+Text Label 3875 2600 2    60   ~ 0
+Joy
+Text Label 8225 4400 2    60   ~ 0
++5V
+$Comp
+L GND #PWR023
+U 1 1 5AF6E9EA
+P 8225 4500
+F 0 "#PWR023" H 8225 4250 50  0001 C CNN
+F 1 "GND" H 8225 4350 50  0000 C CNN
+F 2 "" H 8225 4500 50  0001 C CNN
+F 3 "" H 8225 4500 50  0001 C CNN
+	1    8225 4500
+	0    1    1    0   
+$EndComp
+$Comp
+L Conn_01x02 J9
+U 1 1 5AF6F503
+P 8425 4825
+F 0 "J9" H 8425 4925 50  0000 C CNN
+F 1 "Conn_01x02" H 8425 4625 50  0000 C CNN
+F 2 "MOLEX_KK396RPC171813series:Straight_1x2" H 8425 4825 50  0001 C CNN
+F 3 "" H 8425 4825 50  0001 C CNN
+	1    8425 4825
+	1    0    0    -1  
+$EndComp
+$Comp
+L Conn_01x02 J10
+U 1 1 5AF6F719
+P 8425 5200
+F 0 "J10" H 8425 5300 50  0000 C CNN
+F 1 "Conn_01x02" H 8425 5000 50  0000 C CNN
+F 2 "MOLEX_KK396RPC171813series:Straight_1x2" H 8425 5200 50  0001 C CNN
+F 3 "" H 8425 5200 50  0001 C CNN
+	1    8425 5200
+	1    0    0    -1  
+$EndComp
+$Comp
+L Conn_01x02 J11
+U 1 1 5AF6F7CE
+P 8425 5575
+F 0 "J11" H 8425 5675 50  0000 C CNN
+F 1 "Conn_01x02" H 8425 5375 50  0000 C CNN
+F 2 "MOLEX_KK396RPC171813series:Straight_1x2" H 8425 5575 50  0001 C CNN
+F 3 "" H 8425 5575 50  0001 C CNN
+	1    8425 5575
+	1    0    0    -1  
+$EndComp
+Text Label 8225 4825 2    60   ~ 0
++12V
+Text Label 8225 5200 2    60   ~ 0
++12V
+Text Label 8225 5575 2    60   ~ 0
++12V
+$Comp
+L GND #PWR024
+U 1 1 5AF6FAFF
+P 8225 4925
+F 0 "#PWR024" H 8225 4675 50  0001 C CNN
+F 1 "GND" H 8225 4775 50  0000 C CNN
+F 2 "" H 8225 4925 50  0001 C CNN
+F 3 "" H 8225 4925 50  0001 C CNN
+	1    8225 4925
+	0    1    1    0   
+$EndComp
+$Comp
+L GND #PWR025
+U 1 1 5AF6FBA6
+P 8225 5300
+F 0 "#PWR025" H 8225 5050 50  0001 C CNN
+F 1 "GND" H 8225 5150 50  0000 C CNN
+F 2 "" H 8225 5300 50  0001 C CNN
+F 3 "" H 8225 5300 50  0001 C CNN
+	1    8225 5300
+	0    1    1    0   
+$EndComp
+$Comp
+L GND #PWR026
+U 1 1 5AF6FC4D
+P 8225 5675
+F 0 "#PWR026" H 8225 5425 50  0001 C CNN
+F 1 "GND" H 8225 5525 50  0000 C CNN
+F 2 "" H 8225 5675 50  0001 C CNN
+F 3 "" H 8225 5675 50  0001 C CNN
+	1    8225 5675
+	0    1    1    0   
+$EndComp
+$Comp
+L LM741 U7
+U 1 1 5AF6FF98
+P 2350 5475
+F 0 "U7" H 2350 5725 50  0000 L CNN
+F 1 "LM741" H 2350 5625 50  0000 L CNN
+F 2 "Housings_SOIC:SOIC-8_3.9x4.9mm_Pitch1.27mm" H 2400 5525 50  0001 C CNN
+F 3 "http://nl.farnell.com/texas-instruments/ua741cd/ic-op-amp-compensated-soic8-741/dp/1106042?st=ua741" H 2500 5625 50  0001 C CNN
+	1    2350 5475
+	1    0    0    -1  
+$EndComp
+Text Label 3875 1800 2    60   ~ 0
++5V
+Text Label 5775 3950 0    60   ~ 0
++5V
+Text Label 5775 4050 0    60   ~ 0
++5V
+Text Label 5775 1200 0    60   ~ 0
++5V
+Text Label 2250 5900 2    60   ~ 0
+-5V
+$Comp
+L C C15
+U 1 1 5AF7DAA4
+P 2400 5075
+F 0 "C15" H 2425 5175 50  0000 L CNN
+F 1 "C" H 2425 4975 50  0000 L CNN
+F 2 "Capacitors_SMD:C_0805" H 2438 4925 50  0001 C CNN
+F 3 "" H 2400 5075 50  0001 C CNN
+	1    2400 5075
+	0    1    1    0   
+$EndComp
+Text Label 2250 5075 2    60   ~ 0
++5V
+$Comp
+L C C17
+U 1 1 5AF7E106
+P 2400 5900
+F 0 "C17" H 2425 6000 50  0000 L CNN
+F 1 "C" H 2425 5800 50  0000 L CNN
+F 2 "Capacitors_SMD:C_0805" H 2438 5750 50  0001 C CNN
+F 3 "" H 2400 5900 50  0001 C CNN
+	1    2400 5900
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	2250 5775 2250 5900
+Wire Wire Line
+	2250 5175 2250 5075
+$Comp
+L GND #PWR027
+U 1 1 5AF7E87B
+P 2550 5900
+F 0 "#PWR027" H 2550 5650 50  0001 C CNN
+F 1 "GND" H 2550 5750 50  0000 C CNN
+F 2 "" H 2550 5900 50  0001 C CNN
+F 3 "" H 2550 5900 50  0001 C CNN
+	1    2550 5900
+	0    -1   -1   0   
+$EndComp
+$Comp
+L GND #PWR028
+U 1 1 5AF7EB5D
+P 2550 5075
+F 0 "#PWR028" H 2550 4825 50  0001 C CNN
+F 1 "GND" H 2550 4925 50  0000 C CNN
+F 2 "" H 2550 5075 50  0001 C CNN
+F 3 "" H 2550 5075 50  0001 C CNN
+	1    2550 5075
+	0    -1   -1   0   
+$EndComp
+$Comp
+L C C18
+U 1 1 5AF7EC0D
+P 2175 6100
+F 0 "C18" H 2200 6200 50  0000 L CNN
+F 1 "0.068u" H 2200 6000 50  0000 L CNN
+F 2 "Capacitors_SMD:C_0805" H 2213 5950 50  0001 C CNN
+F 3 "" H 2175 6100 50  0001 C CNN
+	1    2175 6100
+	0    1    1    0   
+$EndComp
+$Comp
+L R R37
+U 1 1 5AF7EF2D
+P 2175 6275
+F 0 "R37" V 2255 6275 50  0000 C CNN
+F 1 "82k" V 2175 6275 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" V 2105 6275 50  0001 C CNN
+F 3 "" H 2175 6275 50  0001 C CNN
+	1    2175 6275
+	0    1    1    0   
+$EndComp
+$Comp
+L R R36
+U 1 1 5AF7F1D1
+P 1850 5575
+F 0 "R36" V 1930 5575 50  0000 C CNN
+F 1 "10k" V 1850 5575 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" V 1780 5575 50  0001 C CNN
+F 3 "" H 1850 5575 50  0001 C CNN
+	1    1850 5575
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	2000 5575 2050 5575
+Wire Wire Line
+	2025 5575 2025 6275
+Connection ~ 2025 5575
+Connection ~ 2025 6100
+Wire Wire Line
+	2325 6100 2325 6275
+Wire Wire Line
+	2325 6100 2750 6100
+Wire Wire Line
+	2750 6100 2750 5475
+Wire Wire Line
+	2750 5475 2650 5475
+$Comp
+L GND #PWR029
+U 1 1 5AF7F69B
+P 2050 5375
+F 0 "#PWR029" H 2050 5125 50  0001 C CNN
+F 1 "GND" H 2050 5225 50  0000 C CNN
+F 2 "" H 2050 5375 50  0001 C CNN
+F 3 "" H 2050 5375 50  0001 C CNN
+	1    2050 5375
+	0    1    1    0   
+$EndComp
+$Comp
+L C C16
+U 1 1 5AF7F754
+P 1700 5725
+F 0 "C16" H 1725 5825 50  0000 L CNN
+F 1 "0.68u" H 1725 5625 50  0000 L CNN
+F 2 "Capacitors_SMD:C_0805" H 1738 5575 50  0001 C CNN
+F 3 "" H 1700 5725 50  0001 C CNN
+	1    1700 5725
+	-1   0    0    1   
+$EndComp
+$Comp
+L R R35
+U 1 1 5AF7FACD
+P 1525 5575
+F 0 "R35" V 1605 5575 50  0000 C CNN
+F 1 "10k" V 1525 5575 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" V 1455 5575 50  0001 C CNN
+F 3 "" H 1525 5575 50  0001 C CNN
+	1    1525 5575
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	1675 5575 1700 5575
+$Comp
+L GND #PWR030
+U 1 1 5AF7FC3A
+P 1700 5875
+F 0 "#PWR030" H 1700 5625 50  0001 C CNN
+F 1 "GND" H 1700 5725 50  0000 C CNN
+F 2 "" H 1700 5875 50  0001 C CNN
+F 3 "" H 1700 5875 50  0001 C CNN
+	1    1700 5875
+	1    0    0    -1  
+$EndComp
+$Comp
+L LM741 U6
+U 1 1 5AF80079
+P 2350 4025
+F 0 "U6" H 2350 4275 50  0000 L CNN
+F 1 "LM741" H 2350 4175 50  0000 L CNN
+F 2 "Housings_SOIC:SOIC-8_3.9x4.9mm_Pitch1.27mm" H 2400 4075 50  0001 C CNN
+F 3 "http://nl.farnell.com/texas-instruments/ua741cd/ic-op-amp-compensated-soic8-741/dp/1106042?st=ua741" H 2500 4175 50  0001 C CNN
+	1    2350 4025
+	1    0    0    -1  
+$EndComp
+Text Label 2250 4450 2    60   ~ 0
+-5V
+$Comp
+L C C11
+U 1 1 5AF80080
+P 2400 3625
+F 0 "C11" H 2425 3725 50  0000 L CNN
+F 1 "C" H 2425 3525 50  0000 L CNN
+F 2 "Capacitors_SMD:C_0805" H 2438 3475 50  0001 C CNN
+F 3 "" H 2400 3625 50  0001 C CNN
+	1    2400 3625
+	0    1    1    0   
+$EndComp
+Text Label 2250 3625 2    60   ~ 0
++5V
+$Comp
+L C C13
+U 1 1 5AF80087
+P 2400 4450
+F 0 "C13" H 2425 4550 50  0000 L CNN
+F 1 "C" H 2425 4350 50  0000 L CNN
+F 2 "Capacitors_SMD:C_0805" H 2438 4300 50  0001 C CNN
+F 3 "" H 2400 4450 50  0001 C CNN
+	1    2400 4450
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	2250 4325 2250 4450
+Wire Wire Line
+	2250 3725 2250 3625
+$Comp
+L GND #PWR031
+U 1 1 5AF8008F
+P 2550 4450
+F 0 "#PWR031" H 2550 4200 50  0001 C CNN
+F 1 "GND" H 2550 4300 50  0000 C CNN
+F 2 "" H 2550 4450 50  0001 C CNN
+F 3 "" H 2550 4450 50  0001 C CNN
+	1    2550 4450
+	0    -1   -1   0   
+$EndComp
+$Comp
+L GND #PWR032
+U 1 1 5AF80095
+P 2550 3625
+F 0 "#PWR032" H 2550 3375 50  0001 C CNN
+F 1 "GND" H 2550 3475 50  0000 C CNN
+F 2 "" H 2550 3625 50  0001 C CNN
+F 3 "" H 2550 3625 50  0001 C CNN
+	1    2550 3625
+	0    -1   -1   0   
+$EndComp
+$Comp
+L C C14
+U 1 1 5AF8009B
+P 2175 4650
+F 0 "C14" H 2200 4750 50  0000 L CNN
+F 1 "0.068u" H 2200 4550 50  0000 L CNN
+F 2 "Capacitors_SMD:C_0805" H 2213 4500 50  0001 C CNN
+F 3 "" H 2175 4650 50  0001 C CNN
+	1    2175 4650
+	0    1    1    0   
+$EndComp
+$Comp
+L R R34
+U 1 1 5AF800A1
+P 2175 4825
+F 0 "R34" V 2255 4825 50  0000 C CNN
+F 1 "82k" V 2175 4825 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" V 2105 4825 50  0001 C CNN
+F 3 "" H 2175 4825 50  0001 C CNN
+	1    2175 4825
+	0    1    1    0   
+$EndComp
+$Comp
+L R R33
+U 1 1 5AF800A7
+P 1850 4125
+F 0 "R33" V 1930 4125 50  0000 C CNN
+F 1 "10k" V 1850 4125 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" V 1780 4125 50  0001 C CNN
+F 3 "" H 1850 4125 50  0001 C CNN
+	1    1850 4125
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	2000 4125 2050 4125
+Wire Wire Line
+	2025 4125 2025 4825
+Connection ~ 2025 4125
+Connection ~ 2025 4650
+Wire Wire Line
+	2325 4650 2325 4825
+Wire Wire Line
+	2325 4650 2750 4650
+Wire Wire Line
+	2750 4650 2750 4025
+Wire Wire Line
+	2750 4025 2650 4025
+$Comp
+L GND #PWR033
+U 1 1 5AF800B5
+P 2050 3925
+F 0 "#PWR033" H 2050 3675 50  0001 C CNN
+F 1 "GND" H 2050 3775 50  0000 C CNN
+F 2 "" H 2050 3925 50  0001 C CNN
+F 3 "" H 2050 3925 50  0001 C CNN
+	1    2050 3925
+	0    1    1    0   
+$EndComp
+$Comp
+L C C12
+U 1 1 5AF800BB
+P 1700 4275
+F 0 "C12" H 1725 4375 50  0000 L CNN
+F 1 "0.68u" H 1725 4175 50  0000 L CNN
+F 2 "Capacitors_SMD:C_0805" H 1738 4125 50  0001 C CNN
+F 3 "" H 1700 4275 50  0001 C CNN
+	1    1700 4275
+	-1   0    0    1   
+$EndComp
+$Comp
+L R R32
+U 1 1 5AF800C1
+P 1525 4125
+F 0 "R32" V 1605 4125 50  0000 C CNN
+F 1 "10k" V 1525 4125 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" V 1455 4125 50  0001 C CNN
+F 3 "" H 1525 4125 50  0001 C CNN
+	1    1525 4125
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	1675 4125 1700 4125
+$Comp
+L GND #PWR034
+U 1 1 5AF800C8
+P 1700 4425
+F 0 "#PWR034" H 1700 4175 50  0001 C CNN
+F 1 "GND" H 1700 4275 50  0000 C CNN
+F 2 "" H 1700 4425 50  0001 C CNN
+F 3 "" H 1700 4425 50  0001 C CNN
+	1    1700 4425
+	1    0    0    -1  
+$EndComp
+Text Label 2750 5475 0    60   ~ 0
+Ain3
+Text Label 2350 1725 0    60   ~ 0
+Ain3
+Text Label 2750 4025 0    60   ~ 0
+Ain2
+Text Label 2350 1625 0    60   ~ 0
+Ain2
+$Comp
+L R R31
+U 1 1 5AF8169E
+P 1525 3100
+F 0 "R31" V 1605 3100 50  0000 C CNN
+F 1 "R" V 1525 3100 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" V 1455 3100 50  0001 C CNN
+F 3 "" H 1525 3100 50  0001 C CNN
+	1    1525 3100
+	0    1    1    0   
+$EndComp
+$Comp
+L C C10
+U 1 1 5AF817D7
+P 1700 3250
+F 0 "C10" H 1725 3350 50  0000 L CNN
+F 1 "0.68u" H 1725 3150 50  0000 L CNN
+F 2 "Capacitors_SMD:C_0805" H 1738 3100 50  0001 C CNN
+F 3 "" H 1700 3250 50  0001 C CNN
+	1    1700 3250
+	-1   0    0    1   
+$EndComp
+$Comp
+L GND #PWR035
+U 1 1 5AF81901
+P 1700 3400
+F 0 "#PWR035" H 1700 3150 50  0001 C CNN
+F 1 "GND" H 1700 3250 50  0000 C CNN
+F 2 "" H 1700 3400 50  0001 C CNN
+F 3 "" H 1700 3400 50  0001 C CNN
+	1    1700 3400
+	1    0    0    -1  
+$EndComp
+$Comp
+L R R29
+U 1 1 5AF81A98
+P 1525 2525
+F 0 "R29" V 1605 2525 50  0000 C CNN
+F 1 "10k" V 1525 2525 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" V 1455 2525 50  0001 C CNN
+F 3 "" H 1525 2525 50  0001 C CNN
+	1    1525 2525
+	0    1    1    0   
+$EndComp
+$Comp
+L C C8
+U 1 1 5AF81A9E
+P 1700 2675
+F 0 "C8" H 1725 2775 50  0000 L CNN
+F 1 "0.68u" H 1725 2575 50  0000 L CNN
+F 2 "Capacitors_SMD:C_0805" H 1738 2525 50  0001 C CNN
+F 3 "" H 1700 2675 50  0001 C CNN
+	1    1700 2675
+	-1   0    0    1   
+$EndComp
+$Comp
+L GND #PWR036
+U 1 1 5AF81AA4
+P 1700 2825
+F 0 "#PWR036" H 1700 2575 50  0001 C CNN
+F 1 "GND" H 1700 2675 50  0000 C CNN
+F 2 "" H 1700 2825 50  0001 C CNN
+F 3 "" H 1700 2825 50  0001 C CNN
+	1    1700 2825
+	1    0    0    -1  
+$EndComp
+$Comp
+L R R30
+U 1 1 5AF81BD0
+P 1850 2525
+F 0 "R30" V 1930 2525 50  0000 C CNN
+F 1 "10k" V 1850 2525 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" V 1780 2525 50  0001 C CNN
+F 3 "" H 1850 2525 50  0001 C CNN
+	1    1850 2525
+	0    1    1    0   
+$EndComp
+$Comp
+L C C9
+U 1 1 5AF81BD6
+P 2025 2675
+F 0 "C9" H 2050 2775 50  0000 L CNN
+F 1 "0.68u" H 2050 2575 50  0000 L CNN
+F 2 "Capacitors_SMD:C_0805" H 2063 2525 50  0001 C CNN
+F 3 "" H 2025 2675 50  0001 C CNN
+	1    2025 2675
+	-1   0    0    1   
+$EndComp
+$Comp
+L GND #PWR037
+U 1 1 5AF81BDC
+P 2025 2825
+F 0 "#PWR037" H 2025 2575 50  0001 C CNN
+F 1 "GND" H 2025 2675 50  0000 C CNN
+F 2 "" H 2025 2825 50  0001 C CNN
+F 3 "" H 2025 2825 50  0001 C CNN
+	1    2025 2825
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1675 2525 1700 2525
+Wire Wire Line
+	2000 2525 2025 2525
+Wire Wire Line
+	1675 3100 1700 3100
+Text Label 1700 3100 0    60   ~ 0
+Ain1
+Text Label 2350 1525 0    60   ~ 0
+Ain1
+Text Label 2025 2525 0    60   ~ 0
+Ain0
+Text Label 2350 1425 0    60   ~ 0
+Ain0
+$Comp
+L Conn_01x04 J12
+U 1 1 5B2C656A
+P 800 2725
+F 0 "J12" H 800 2925 50  0000 C CNN
+F 1 "Conn_01x04" H 800 2425 50  0000 C CNN
+F 2 "Connectors_Molex_custom:Sherlock35363series_4x1_2mmpitch_angled" H 800 2725 50  0001 C CNN
+F 3 "" H 800 2725 50  0001 C CNN
+	1    800  2725
+	-1   0    0    1   
+$EndComp
+$Comp
+L Conn_01x04 J13
+U 1 1 5B2C66A7
+P 800 3300
+F 0 "J13" H 800 3500 50  0000 C CNN
+F 1 "Conn_01x04" H 800 3000 50  0000 C CNN
+F 2 "Connectors_Molex_custom:Sherlock35363series_4x1_2mmpitch_angled" H 800 3300 50  0001 C CNN
+F 3 "" H 800 3300 50  0001 C CNN
+	1    800  3300
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	1375 4125 1000 4125
+Wire Wire Line
+	1375 5575 1375 4225
+Wire Wire Line
+	1375 4225 1000 4225
+$Comp
+L Conn_01x05 J14
+U 1 1 5B2C6D38
+P 800 4325
+F 0 "J14" H 800 4625 50  0000 C CNN
+F 1 "Conn_01x05" H 800 4025 50  0000 C CNN
+F 2 "Connectors_Molex_custom:Sherlock35363series_5x1_2mmpitch_angled" H 800 4325 50  0001 C CNN
+F 3 "" H 800 4325 50  0001 C CNN
+	1    800  4325
+	-1   0    0    1   
+$EndComp
+Text Label 1000 4325 0    60   ~ 0
++5V
+Text Label 1000 4425 0    60   ~ 0
+-5V
+$Comp
+L GND #PWR038
+U 1 1 5B2C720C
+P 1000 4525
+F 0 "#PWR038" H 1000 4275 50  0001 C CNN
+F 1 "GND" H 1000 4375 50  0000 C CNN
+F 2 "" H 1000 4525 50  0001 C CNN
+F 3 "" H 1000 4525 50  0001 C CNN
+	1    1000 4525
+	0    -1   -1   0   
+$EndComp
+Text Label 1000 3200 0    60   ~ 0
++5V
+Text Label 1000 3300 0    60   ~ 0
+-5V
+$Comp
+L GND #PWR039
+U 1 1 5B2C769E
+P 1000 3400
+F 0 "#PWR039" H 1000 3150 50  0001 C CNN
+F 1 "GND" H 1000 3250 50  0000 C CNN
+F 2 "" H 1000 3400 50  0001 C CNN
+F 3 "" H 1000 3400 50  0001 C CNN
+	1    1000 3400
+	0    -1   -1   0   
+$EndComp
+Text Label 1000 2625 0    60   ~ 0
++5V
+Text Label 1000 2725 0    60   ~ 0
+-5V
+$Comp
+L GND #PWR040
+U 1 1 5B2C7962
+P 1000 2825
+F 0 "#PWR040" H 1000 2575 50  0001 C CNN
+F 1 "GND" H 1000 2675 50  0000 C CNN
+F 2 "" H 1000 2825 50  0001 C CNN
+F 3 "" H 1000 2825 50  0001 C CNN
+	1    1000 2825
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	1000 2525 1375 2525
+Wire Wire Line
+	1000 3100 1375 3100
+$Comp
+L Conn_01x05 J15
+U 1 1 5B2E4BC4
+P 7625 5475
+F 0 "J15" H 7625 5775 50  0000 C CNN
+F 1 "Conn_01x05" H 7625 5175 50  0000 C CNN
+F 2 "Connectors_Molex_custom:KK41791_straight1x5" H 7625 5475 50  0001 C CNN
+F 3 "" H 7625 5475 50  0001 C CNN
+	1    7625 5475
+	1    0    0    -1  
+$EndComp
+Text Label 7425 5275 2    60   ~ 0
++12V
+Text Label 7425 5375 2    60   ~ 0
+-12V
+Text Label 7425 5575 2    60   ~ 0
+-5V
+Text Label 7425 5675 2    60   ~ 0
++5V
+$Comp
+L GND #PWR041
+U 1 1 5B2E5275
+P 7425 5475
+F 0 "#PWR041" H 7425 5225 50  0001 C CNN
+F 1 "GND" H 7425 5325 50  0000 C CNN
+F 2 "" H 7425 5475 50  0001 C CNN
+F 3 "" H 7425 5475 50  0001 C CNN
+	1    7425 5475
+	0    1    1    0   
+$EndComp
+$Comp
+L R R38
+U 1 1 5B30D4C1
+P 7175 4925
+F 0 "R38" V 7255 4925 50  0000 C CNN
+F 1 "R" V 7175 4925 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" V 7105 4925 50  0001 C CNN
+F 3 "" H 7175 4925 50  0001 C CNN
+	1    7175 4925
+	0    1    1    0   
+$EndComp
+$Comp
+L Conn_01x02 J16
+U 1 1 5B30D5AB
+P 7625 4825
+F 0 "J16" H 7625 4925 50  0000 C CNN
+F 1 "Conn_01x02" H 7625 4625 50  0000 C CNN
+F 2 "Connectors_Molex_custom:Sherlock35363series_2x1_2mmpitch_angled" H 7625 4825 50  0001 C CNN
+F 3 "" H 7625 4825 50  0001 C CNN
+	1    7625 4825
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR042
+U 1 1 5B30D7F8
+P 7025 4925
+F 0 "#PWR042" H 7025 4675 50  0001 C CNN
+F 1 "GND" H 7025 4775 50  0000 C CNN
+F 2 "" H 7025 4925 50  0001 C CNN
+F 3 "" H 7025 4925 50  0001 C CNN
+	1    7025 4925
+	0    1    1    0   
+$EndComp
+Text Label 7425 4825 2    60   ~ 0
++5V
+Wire Wire Line
+	7325 4925 7425 4925
+Text Label 7375 4925 3    60   ~ 0
+Ain12
+$EndSCHEMATC

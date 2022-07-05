@@ -1,0 +1,13 @@
+"Id";"Designator";"Package";"Quantity";"Designation";"Supplier and ref";
+1;"R1,R2";"R_0805_2012Metric";2;"R";;;
+2;"C1,C4";"C_0805";2;"C";;;
+3;"C2";"C_0805";1;"1.5uF";;;
+4;"C3";"C_0805";1;"0.1uF";;;
+5;"L1";"L_0805_2012Metric";1;"Ferrite_Bead";;;
+6;"J1,J2";"PinHeader_1x04_P2.54mm_Vertical_SMD_Pin1Left";2;"Conn_01x04";;;
+7;"U2";"Wurth-3610213126S-EMIshield-13.26x12.3mm";1;"EMIshield";;;
+8;"REF**";"MountingHole_2.2mm_M2";1;"MountingHole_2.2mm_M2";;;
+9;"J3";"Molex_Pico-Clasp_501331-0607_1x06-1MP_P1.00mm_Vertical";1;"Conn_01x06";;;
+10;"D2";"D_SOD-123";1;"D";;;
+11;"D1";"TO-5-2_Window";1;"BPW21";;;
+12;"U1";"SOT-23-5";1;"OPA140";;;

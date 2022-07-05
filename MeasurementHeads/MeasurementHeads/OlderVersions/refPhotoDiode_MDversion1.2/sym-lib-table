@@ -1,0 +1,4 @@
+(sym_lib_table
+  (lib (name refPhotoDiode_MDversion-rescue)(type Legacy)(uri ${KIPRJMOD}/refPhotoDiode_MDversion-rescue.lib)(options "")(descr ""))
+  (lib (name refPhotoDiode_MDversion1.2-rescue)(type Legacy)(uri ${KIPRJMOD}/refPhotoDiode_MDversion1.2-rescue.lib)(options "")(descr ""))
+)

@@ -1,0 +1,6 @@
+(sym_lib_table
+  (lib (name arduino_shieldsNCL)(type Legacy)(uri ${KIPRJMOD}/arduino_shieldsNCL.lib)(options "")(descr ""))
+  (lib (name jcf-digital)(type Legacy)(uri ${KIPRJMOD}/jcf-digital.lib)(options "")(descr ""))
+  (lib (name 4relaymodule)(type Legacy)(uri ${KIPRJMOD}/4relaymodule.lib)(options "")(descr ""))
+  (lib (name md10cmotordriver)(type Legacy)(uri ${KIPRJMOD}/md10cmotordriver.lib)(options "")(descr ""))
+)

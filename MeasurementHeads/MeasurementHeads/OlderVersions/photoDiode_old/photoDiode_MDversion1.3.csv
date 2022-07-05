@@ -1,0 +1,18 @@
+Reference(s),Value,LibPart,Footprint,Article number
+C1,0.1uF,Device:C,Capacitors_SMD:C_0805,Farnell 2673150
+C2,180p,Device:C,Capacitors_SMD:C_0805,Farnell 1759207
+C3,1.5uF,Device:C,Capacitors_SMD:C_0805,Farnell 1759410
+C4,47uF,Device:C,Capacitors_SMD:C_0805,Farnell 2362109
+C5,1u,Device:C,Capacitors_SMD:C_0805,Farnell 9227792
+D1,BPW21,Sensor_Optical:BPW21,Package_TO_SOT_THT:TO-5-2_Window,BPW21R
+D2,1N4148,Device:D,Diodes_SMD:D_SOD-123,Farnell 1776392
+J1,Conn_01x03,Connector_Generic:Conn_01x03,Connector_Molex:Molex_Pico-Clasp_501331-0307_1x03-1MP_P1.00mm_Vertical,Farnell 1835977
+L1,Ferrite_Bead,Device:Ferrite_Bead,Inductor_SMD:L_0805_2012Metric,Farnell 1515647
+R1,1000k,Device:R,Resistor_SMD:R_0805_2012Metric,Farnell 2502674
+R2,10k,Device:R,Resistor_SMD:R_0805_2012Metric,Farnell 2303654
+R3,33k,Device:R,Resistor_SMD:R_0805_2012Metric,Farnell 2861540
+R4,18k,Device:R,Resistor_SMD:R_0805_2012Metric,Farnell 2303679
+R5,18k,Device:R,Resistor_SMD:R_0805_2012Metric,Farnell 2303679
+R6,5k,Device:R,Resistor_SMD:R_0805_2012Metric,Farnell 2616759
+U1,Opamp_Dual_Generic,Device:Opamp_Dual_Generic,Housings_SOIC:SOIC-8_3.9x4.9mm_Pitch1.27mm,595-OPA2140AID
+U2,EMIshield,photoDiode_MDversion1.3-rescue:EMIshield-EMIshield,EMIshield:Laird-BMI-S-202-F,Farnel 2497717

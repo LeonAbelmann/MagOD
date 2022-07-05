@@ -1,0 +1,9 @@
+Diverse components of the OD setup of Hans, Jordi and Tijmen.
+
+Needed amount of the components:
+1x coil_open
+1x cuvette
+1x frame
+1x ledholder
+1x toplid
+4x coils

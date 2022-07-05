@@ -1,0 +1,11 @@
+Reference, Quantity, Value, Footprint, Datasheet, Article number
+C1 ,1,"C","Capacitors_SMD:C_0805","~"
+C2 ,1,"1.5uF","Capacitors_SMD:C_0805","https://nl.farnell.com/multicomp/mc0805x155k6r3ct/cap-1-5-f-6-3v-10-x5r-0805/dp/1759410","MC0805X155K6R3CT"
+C3 ,1,"0.1uF","Capacitors_SMD:C_0805","https://nl.farnell.com/wurth-elektronik/885012207016/cap-0-1-f-10v-10-x7r-0805/dp/2534051","885012207016"
+D1 ,1,"BPW21","Package_TO_SOT_THT:TO-5-2_Window","http://techwww.in.tu-clausthal.de/site/Dokumentation/Dioden/Fotodioden/BPW21-Fotodiode.pdf"
+J1 J2 ,2,"Conn_01x04","Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical_SMD_Pin1Left","https://nl.farnell.com/samtec/tsm-104-04-t-sv/header-2-54mm-smt-4way/dp/2043897","TSM-104-04-T-SV"
+J3 ,1,"Conn_01x06","Connector_Molex:Molex_Pico-Clasp_501331-0607_1x06-1MP_P1.00mm_Vertical","https://nl.farnell.com/molex/501568-0607/header-1-00mm-6way/dp/2060673?st=molex%20pico","501331-0607"
+L1 ,1,"Ferrite_Bead","Inductor_SMD:L_0805_2012Metric","https://nl.farnell.com/murata/blm21bd272sn1l/ferrite-bead-0-8ohm-200ma-0805/dp/1515647","BLM21BD272SN1L"
+R1 ,1,"R","Resistor_SMD:R_0805_2012Metric","~"
+U1 ,1,"OPAMP","smd-semi:SOT-23-5","https://nl.farnell.com/texas-instruments/opa140aidbvt/op-amp-precision-11mhz-sot-23/dp/2323353?st=opa140","OPA140AIDBVT "
+U2 ,1,"EMIshield","EMIshield:Wurth-3610213126S-EMIshield-13.26x12.3mm","https://nl.farnell.com/wurth-elektronik/3610213126s/emi-shield-cabinet-13-26mm-x-12/dp/2918354?ost=3610213126S&scope=partnumberlookahead&searchref=searchlookahead&krypto=Q3vQa53%2BmVXDAr4BB0tXYOxhZTuJQmghT%2Bp4Vr46u1KynV6oXNdycdmS5skScsyREtp9n%2BXvHu6ptJEaISgDZQ8q0hT2Q9EYBuA6KMF%2BCB5y6Ihjws2Ro2R%2BLVqdTm9NVIuEPpLaGCm6kwScWYLopc5MxE%2BYQJcj3e7tlmdOzfTjbjE6xoP8o1VWhW9tSBjZ4RfSjbu2t9YPvf%2BcIlGs1eyQHjLZUEwsjyei6V3lO%2F8mQozZv5L5Clkb6qFFhiOotdiEUS4YSBEM8%2BHSHSxdKE5FV33HYeyQHmO94UuWj7jnZU0r1MjnO4kmKV%2F0SOEP%2Bh%2FqM0NJGyPU0nADX%2BhrLywdDUl4%2B8%2BHyR69iWj9MyvGoARitxFMulO34GyVOJ4taT5DY8YB8gQ0xUJxhD6faVGgfTe%2FIHW7BB30hiPdl6PpZq5mzRqLoLs0QZ8fjK%2Fzt8CRgBzqTa1GUBr%2FE8n95sXEJ%2BXyQWLpJrpuCVIeuYtu%2FHjB5tdTZTYUK2rwBlzFOiSWCEa4OcdTVTqoEHZwi5pnPKjKRMEImxDKPZnGG%2BpW6qX%2B7UIgm7L0LXYN5woZNzC4OaMz%2BXEOh%2B5oEnueU3ogB3hn%2BwiAgMKqPYZAUXM%3D&ddkey=https%3Anl-NL%2FElement14_Netherlands%2Fw%2Fsearch","3610213126S"

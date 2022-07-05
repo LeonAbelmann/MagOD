@@ -1,0 +1,7 @@
+Components:
+4x coil
+1x cuvette_tube
+1x frame
+1x led_holder
+1x top_coil
+2x top_lid

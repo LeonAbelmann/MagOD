@@ -1,0 +1,19 @@
+ Fixes:
+
+Improvements:
+1. A LED might be more stable than a diode for voltage offset
+2. There are better connectors
+3. The OPA140 is difficult to obtain. Alternative?
+4. J2 on LED board connects to J1 on refDiode board. Confusing..
+5. The connectors on the refDiode board are mirrored
+6. It would be nicer if the connector to the led and refDiode board would be on the LED side.
+7. More space between the resistors and the led on the led board.
+
+8. The refDiode board is too big, remove 0.5 mm from all sides.
+9. The silk screen on the photodiode board has the wrong image for BPW21.		
+
+MagOD2 board
+D32 LED-Green
+D2 LED-Red  (Pull-up/down for boot)
+RX2 LED-Blue
+TX2 INT

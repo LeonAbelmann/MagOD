@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<export version="D">
+  <design>
+    <source>D:\OneDrive\Documents\KiCAD\ODMeter\MeasurementHeads\RGBLed_MDversion\RGBLed_MDversion.sch</source>
+    <date>4/30/2019 9:21:42 AM</date>
+    <tool>Eeschema (5.0.0)</tool>
+    <sheet number="1" name="/" tstamps="/">
+      <title_block>
+        <title/>
+        <company/>
+        <rev/>
+        <date/>
+        <source>RGBLed_MDversion.sch</source>
+        <comment number="1" value=""/>
+        <comment number="2" value=""/>
+        <comment number="3" value=""/>
+        <comment number="4" value=""/>
+      </title_block>
+    </sheet>
+  </design>
+  <components>
+    <comp ref="J2">
+      <value>Conn_01x04</value>
+      <footprint>Socket_Strips:Socket_Strip_Straight_1x04_Pitch2.54mm</footprint>
+      <datasheet>~</datasheet>
+      <libsource lib="Connector_Generic" part="Conn_01x04" description="Generic connector, single row, 01x04, script generated (kicad-library-utils/schlib/autogen/connector/)"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5BDDA98F</tstamp>
+    </comp>
+    <comp ref="J1">
+      <value>Conn_01x04</value>
+      <footprint>Socket_Strips:Socket_Strip_Straight_1x04_Pitch2.54mm</footprint>
+      <datasheet>~</datasheet>
+      <libsource lib="Connector_Generic" part="Conn_01x04" description="Generic connector, single row, 01x04, script generated (kicad-library-utils/schlib/autogen/connector/)"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5BDDA9E0</tstamp>
+    </comp>
+    <comp ref="D1">
+      <value>LED_RABG</value>
+      <footprint>KingbrightRGB:L-154A4SUREQBFZGEW</footprint>
+      <datasheet>~</datasheet>
+      <libsource lib="Device" part="LED_RABG" description="LED RGB, common anode"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5BDDB818</tstamp>
+    </comp>
+    <comp ref="R1">
+      <value>R</value>
+      <footprint>Resistors_SMD:R_0805</footprint>
+      <datasheet>~</datasheet>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5BDDBA4D</tstamp>
+    </comp>
+    <comp ref="R2">
+      <value>R</value>
+      <footprint>Resistors_SMD:R_0805</footprint>
+      <datasheet>~</datasheet>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5BDDBAB0</tstamp>
+    </comp>
+    <comp ref="R3">
+      <value>R</value>
+      <footprint>Resistors_SMD:R_0805</footprint>
+      <datasheet>~</datasheet>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5BDDBADA</tstamp>
+    </comp>
+  </components>
+  <libparts>
+    <libpart lib="Connector_Generic" part="Conn_01x04">
+      <description>Generic connector, single row, 01x04, script generated (kicad-library-utils/schlib/autogen/connector/)</description>
+      <docs>~</docs>
+      <footprints>
+        <fp>Connector*:*_1x??_*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">J</field>
+        <field name="Value">Conn_01x04</field>
+      </fields>
+      <pins>
+        <pin num="1" name="Pin_1" type="passive"/>
+        <pin num="2" name="Pin_2" type="passive"/>
+        <pin num="3" name="Pin_3" type="passive"/>
+        <pin num="4" name="Pin_4" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="Device" part="LED_RABG">
+      <description>LED RGB, common anode</description>
+      <docs>~</docs>
+      <footprints>
+        <fp>LED*</fp>
+        <fp>LED_SMD:*</fp>
+        <fp>LED_THT:*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">D</field>
+        <field name="Value">LED_RABG</field>
+      </fields>
+      <pins>
+        <pin num="1" name="RK" type="passive"/>
+        <pin num="2" name="A" type="passive"/>
+        <pin num="3" name="BK" type="passive"/>
+        <pin num="4" name="GK" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="Device" part="R">
+      <description>Resistor</description>
+      <docs>~</docs>
+      <footprints>
+        <fp>R_*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">R</field>
+        <field name="Value">R</field>
+      </fields>
+      <pins>
+        <pin num="1" name="~" type="passive"/>
+        <pin num="2" name="~" type="passive"/>
+      </pins>
+    </libpart>
+  </libparts>
+  <libraries>
+    <library logical="Connector_Generic">
+      <uri>C:\Program Files\KiCad\share\kicad\library/Connector_Generic.lib</uri>
+    </library>
+    <library logical="Device">
+      <uri>C:\Program Files\KiCad\share\kicad\library/Device.lib</uri>
+    </library>
+  </libraries>
+  <nets>
+    <net code="1" name="+5V">
+      <node ref="J2" pin="4"/>
+      <node ref="D1" pin="2"/>
+    </net>
+    <net code="2" name="Net-(D1-Pad3)">
+      <node ref="R3" pin="1"/>
+      <node ref="D1" pin="3"/>
+    </net>
+    <net code="3" name="Net-(D1-Pad4)">
+      <node ref="R2" pin="1"/>
+      <node ref="D1" pin="4"/>
+    </net>
+    <net code="4" name="Net-(D1-Pad1)">
+      <node ref="R1" pin="1"/>
+      <node ref="D1" pin="1"/>
+    </net>
+    <net code="5" name="/R">
+      <node ref="J2" pin="1"/>
+      <node ref="R1" pin="2"/>
+    </net>
+    <net code="6" name="Net-(J1-Pad4)">
+      <node ref="J1" pin="4"/>
+    </net>
+    <net code="7" name="Net-(J1-Pad3)">
+      <node ref="J1" pin="3"/>
+    </net>
+    <net code="8" name="Net-(J1-Pad2)">
+      <node ref="J1" pin="2"/>
+    </net>
+    <net code="9" name="Net-(J1-Pad1)">
+      <node ref="J1" pin="1"/>
+    </net>
+    <net code="10" name="/B">
+      <node ref="J2" pin="3"/>
+      <node ref="R3" pin="2"/>
+    </net>
+    <net code="11" name="/G">
+      <node ref="R2" pin="2"/>
+      <node ref="J2" pin="2"/>
+    </net>
+  </nets>
+</export>

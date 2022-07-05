@@ -1,0 +1,4 @@
+Reference,,Quantity,,Value,,Footprint,,Datasheet
+D1,,1,LED_RABG,KingbrightRGB:L-154A4SUREQBFZGEW,~,,,
+J1,J2,,2,Conn_01x04,Socket_Strips:Socket_Strip_Straight_1x04_Pitch2.54mm,~,,
+R1,R2,R3,,3,R,Resistors_SMD:R_0805,~,

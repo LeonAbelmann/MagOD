@@ -1,0 +1,3 @@
+(sym_lib_table
+  (lib (name RGBLed_MDversion-rescue)(type Legacy)(uri ${KIPRJMOD}/RGBLed_MDversion-rescue.lib)(options "")(descr ""))
+)

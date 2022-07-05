@@ -1,0 +1,422 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<export version="D">
+  <design>
+    <source>/Users/abn/Dropbox/ProjectODMeter/MeasurementHeads/photoDiode/photoDiode_MDversion1.3.sch</source>
+    <date>2019 July 23, Tuesday 17:14:52</date>
+    <tool>Eeschema (5.1.0-0)</tool>
+    <sheet number="1" name="/" tstamps="/">
+      <title_block>
+        <title/>
+        <company/>
+        <rev/>
+        <date/>
+        <source>photoDiode_MDversion1.3.sch</source>
+        <comment number="1" value=""/>
+        <comment number="2" value=""/>
+        <comment number="3" value=""/>
+        <comment number="4" value=""/>
+      </title_block>
+    </sheet>
+  </design>
+  <components>
+    <comp ref="D1">
+      <value>BPW21</value>
+      <footprint>Package_TO_SOT_THT:TO-5-2_Window</footprint>
+      <datasheet>http://techwww.in.tu-clausthal.de/site/Dokumentation/Dioden/Fotodioden/BPW21-Fotodiode.pdf</datasheet>
+      <fields>
+        <field name="Article number">BPW21R</field>
+      </fields>
+      <libsource lib="Sensor_Optical" part="BPW21" description="Silicon Photodiode for the visible spectral range, TO-5 package"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5BD1DA72</tstamp>
+    </comp>
+    <comp ref="C2">
+      <value>180p</value>
+      <footprint>Capacitors_SMD:C_0805</footprint>
+      <datasheet>https://de.farnell.com/multicomp/mc0805n181j500ct/kondensator-180pf-50v-5-c0g-np0/dp/1759207</datasheet>
+      <fields>
+        <field name="Article number">Farnell 1759207</field>
+      </fields>
+      <libsource lib="Device" part="C" description="Unpolarized capacitor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5BD1DD13</tstamp>
+    </comp>
+    <comp ref="R1">
+      <value>1000k</value>
+      <footprint>Resistor_SMD:R_0805_2012Metric</footprint>
+      <datasheet>https://de.farnell.com/walsin/wr08x1004ftl/dickschichtwiderstand-1m-1-150v/dp/2502674</datasheet>
+      <fields>
+        <field name="Article number">Farnell 2502674</field>
+      </fields>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5BD1DDDA</tstamp>
+    </comp>
+    <comp ref="C1">
+      <value>0.1uF</value>
+      <footprint>Capacitors_SMD:C_0805</footprint>
+      <datasheet>https://de.farnell.com/kemet/c0805j104m5racauto/kondensator-0-1-f-50v-20-x7r-0805/dp/2673150</datasheet>
+      <fields>
+        <field name="Article number">Farnell 2673150</field>
+      </fields>
+      <libsource lib="Device" part="C" description="Unpolarized capacitor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5BD1EB34</tstamp>
+    </comp>
+    <comp ref="U2">
+      <value>EMIshield</value>
+      <footprint>EMIshield:Laird-BMI-S-202-F</footprint>
+      <datasheet>https://nl.farnell.com/laird/bmi-s-202-f/emi-shield-surface-mount/dp/2497717?ost=BMI-S-202-F&amp;scope=partnumberlookahead&amp;searchref=searchlookahead&amp;krypto=j3iFSqeSfTjXXfOpoRIuPKM7UIy%2BvTJigm0QN3yDryZM8QlogRxdn7Dx%2FkTFeJac9aDEMj3hgo6Ckjf0zdpzKwE240w%2BZJbeuFggQWZTM5Tlw7e%2FvhZDy1IBFLLLr3mOigXCFiLX%2BR34zZM0QLutt0bvc5vS0aCbutfz8ghYSwpAlxVxBhOYLvahLZTRj4Kzk%2Fh0GwjeoOG1jspRoPLOa988bXmgja6AwIxVDkR5%2BAyKI7C6ljuhX6uQKMYtWbyJP%2FrB9czLNF2%2FXHtxLsgCJqP7O24wOqTGO8EK2nxIcX%2BCkae4EUYgTpdfeaXysltqpdf6Ok7cVpG4Y6eWQm8YTyrJQhEUlL9dNCrjuaRd7FNG%2FpkGh9CP6Nm2hra08KGtiNZq5EYHtxwVUGyYejInp4QxRvnBjB%2FwIY1nPd%2FRcjZWM9k8XYf18xPIeApT%2BuFyVIMT%2BBtSBxLa3ruUCmXYswozgjw9DtPR3wxmRiH0KI091VNYfPKPTCD3eocnrhVcI2YbFh%2BGp6V0EE80juCqZlepCl4lX44grZSO%2BhtMl3TsO66u%2BMAAfbWt%2FOpqgwZiDJJwObv6CNM6Rg3VSS940IV22GW1NXf5jzwy2oP8rpY%3D&amp;ddkey=https%3Anl-NL%2FElement14_Netherlands%2Fw%2Fsearch</datasheet>
+      <fields>
+        <field name="Article number">Farnel 2497717</field>
+      </fields>
+      <libsource lib="photoDiode_MDversion1.3-rescue" part="EMIshield-EMIshield" description=""/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5BD574D7</tstamp>
+    </comp>
+    <comp ref="J1">
+      <value>Conn_01x03</value>
+      <footprint>Connector_Molex:Molex_Pico-Clasp_501331-0307_1x03-1MP_P1.00mm_Vertical</footprint>
+      <datasheet>https://de.farnell.com/molex/501331-0307/stiftleiste-3pos-1-reihe-1mm/dp/1835977</datasheet>
+      <fields>
+        <field name="Article number">Farnell 1835977</field>
+      </fields>
+      <libsource lib="Connector_Generic" part="Conn_01x03" description="Generic connector, single row, 01x03, script generated (kicad-library-utils/schlib/autogen/connector/)"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5BDDEC06</tstamp>
+    </comp>
+    <comp ref="U1">
+      <value>Opamp_Dual_Generic</value>
+      <footprint>Housings_SOIC:SOIC-8_3.9x4.9mm_Pitch1.27mm</footprint>
+      <datasheet>https://nl.mouser.com/ProductDetail/Texas-Instruments/OPA2140AID?qs=sGAEpiMZZMvtNjJQt4UgLazUAy7nLwWSG%252bHXmvkwFZI%3d</datasheet>
+      <fields>
+        <field name="Article number">595-OPA2140AID</field>
+      </fields>
+      <libsource lib="Device" part="Opamp_Dual_Generic" description="Dual operational amplifier"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5BE9F049</tstamp>
+    </comp>
+    <comp ref="R3">
+      <value>33k</value>
+      <footprint>Resistor_SMD:R_0805_2012Metric</footprint>
+      <datasheet>https://de.farnell.com/te-connectivity/crgcq0805f33k/dickschichtwiderstand-33k-1-0805/dp/2861540</datasheet>
+      <fields>
+        <field name="Article number">Farnell 2861540</field>
+      </fields>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5BE9F44C</tstamp>
+    </comp>
+    <comp ref="R4">
+      <value>18k</value>
+      <footprint>Resistor_SMD:R_0805_2012Metric</footprint>
+      <datasheet>https://de.farnell.com/panasonic/erj6enf1802v/dickschichtwiderstand-18k-1-0/dp/2303679</datasheet>
+      <fields>
+        <field name="Article number">Farnell 2303679</field>
+      </fields>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5BE9F48E</tstamp>
+    </comp>
+    <comp ref="R2">
+      <value>10k</value>
+      <footprint>Resistor_SMD:R_0805_2012Metric</footprint>
+      <datasheet>https://de.farnell.com/panasonic/erj6enf1002v/dickschichtwiderstand-10k-1-0/dp/2303654</datasheet>
+      <fields>
+        <field name="Article number">Farnell 2303654</field>
+      </fields>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5BEB2536</tstamp>
+    </comp>
+    <comp ref="C4">
+      <value>47uF</value>
+      <footprint>Capacitors_SMD:C_0805</footprint>
+      <datasheet>https://nl.farnell.com/murata/grm21br60j476me15l/cap-47-f-6-3v-20-x5r-0805/dp/2362109</datasheet>
+      <fields>
+        <field name="Article number">Farnell 2362109</field>
+      </fields>
+      <libsource lib="Device" part="C" description="Unpolarized capacitor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5BEB2596</tstamp>
+    </comp>
+    <comp ref="L1">
+      <value>Ferrite_Bead</value>
+      <footprint>Inductor_SMD:L_0805_2012Metric</footprint>
+      <datasheet>https://nl.farnell.com/murata/blm21bd272sn1l/ferrite-bead-0-8ohm-200ma-0805/dp/1515647</datasheet>
+      <fields>
+        <field name="Article number">Farnell 1515647</field>
+      </fields>
+      <libsource lib="Device" part="Ferrite_Bead" description="Ferrite bead"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5BEB286B</tstamp>
+    </comp>
+    <comp ref="C3">
+      <value>1.5uF</value>
+      <footprint>Capacitors_SMD:C_0805</footprint>
+      <datasheet>https://nl.farnell.com/multicomp/mc0805x155k6r3ct/cap-1-5-f-6-3v-10-x5r-0805/dp/1759410</datasheet>
+      <fields>
+        <field name="Article number">Farnell 1759410</field>
+      </fields>
+      <libsource lib="Device" part="C" description="Unpolarized capacitor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5BEB2C09</tstamp>
+    </comp>
+    <comp ref="R5">
+      <value>18k</value>
+      <footprint>Resistor_SMD:R_0805_2012Metric</footprint>
+      <datasheet>https://de.farnell.com/panasonic/erj6enf1802v/dickschichtwiderstand-18k-1-0/dp/2303679</datasheet>
+      <fields>
+        <field name="Article number">Farnell 2303679</field>
+      </fields>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5C95F2CA</tstamp>
+    </comp>
+    <comp ref="D2">
+      <value>1N4148</value>
+      <footprint>Diodes_SMD:D_SOD-123</footprint>
+      <datasheet>https://de.farnell.com/diodes-inc/1n4148w-7-f/schaltdiode-300ma-100v-sod123/dp/1776392</datasheet>
+      <fields>
+        <field name="Article number">Farnell 1776392</field>
+      </fields>
+      <libsource lib="Device" part="D" description="Diode"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5C95F3AC</tstamp>
+    </comp>
+    <comp ref="C5">
+      <value>1u</value>
+      <footprint>Capacitors_SMD:C_0805</footprint>
+      <datasheet>https://de.farnell.com/kemet/c0805c105k4ractu/kondensator-1-f-16v-10-x7r-0805/dp/9227792</datasheet>
+      <fields>
+        <field name="Article number">Farnell 9227792</field>
+      </fields>
+      <libsource lib="Device" part="C" description="Unpolarized capacitor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5C95FEC2</tstamp>
+    </comp>
+    <comp ref="R6">
+      <value>5k</value>
+      <footprint>Resistor_SMD:R_0805_2012Metric</footprint>
+      <datasheet>https://de.farnell.com/vishay/crcw08055k00fkta/dickschichtwiderstand-5k-1/dp/2616759</datasheet>
+      <fields>
+        <field name="Article number">Farnell 2616759</field>
+      </fields>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5C963211</tstamp>
+    </comp>
+  </components>
+  <libparts>
+    <libpart lib="Connector_Generic" part="Conn_01x03">
+      <description>Generic connector, single row, 01x03, script generated (kicad-library-utils/schlib/autogen/connector/)</description>
+      <docs>~</docs>
+      <footprints>
+        <fp>Connector*:*_1x??_*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">J</field>
+        <field name="Value">Conn_01x03</field>
+      </fields>
+      <pins>
+        <pin num="1" name="Pin_1" type="passive"/>
+        <pin num="2" name="Pin_2" type="passive"/>
+        <pin num="3" name="Pin_3" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="Device" part="C">
+      <description>Unpolarized capacitor</description>
+      <docs>~</docs>
+      <footprints>
+        <fp>C_*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">C</field>
+        <field name="Value">C</field>
+      </fields>
+      <pins>
+        <pin num="1" name="~" type="passive"/>
+        <pin num="2" name="~" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="Device" part="D">
+      <description>Diode</description>
+      <docs>~</docs>
+      <footprints>
+        <fp>TO-???*</fp>
+        <fp>*_Diode_*</fp>
+        <fp>*SingleDiode*</fp>
+        <fp>D_*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">D</field>
+        <field name="Value">D</field>
+      </fields>
+      <pins>
+        <pin num="1" name="K" type="passive"/>
+        <pin num="2" name="A" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="Device" part="Ferrite_Bead">
+      <description>Ferrite bead</description>
+      <docs>~</docs>
+      <footprints>
+        <fp>Inductor_*</fp>
+        <fp>L_*</fp>
+        <fp>*Ferrite*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">FB</field>
+        <field name="Value">Ferrite_Bead</field>
+      </fields>
+      <pins>
+        <pin num="1" name="~" type="passive"/>
+        <pin num="2" name="~" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="Device" part="Opamp_Dual_Generic">
+      <description>Dual operational amplifier</description>
+      <docs>~</docs>
+      <footprints>
+        <fp>SOIC*3.9x4.9mm*P1.27mm*</fp>
+        <fp>DIP*W7.62mm*</fp>
+        <fp>MSOP*3x3mm*P0.65mm*</fp>
+        <fp>SSOP*2.95x2.8mm*P0.65mm*</fp>
+        <fp>TSSOP*3x3mm*P0.65mm*</fp>
+        <fp>VSSOP*P0.5mm*</fp>
+        <fp>TO?99*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">Opamp_Dual_Generic</field>
+      </fields>
+      <pins>
+        <pin num="1" name="~" type="output"/>
+        <pin num="2" name="-" type="input"/>
+        <pin num="3" name="+" type="input"/>
+        <pin num="4" name="V-" type="power_in"/>
+        <pin num="5" name="+" type="input"/>
+        <pin num="6" name="-" type="input"/>
+        <pin num="7" name="~" type="output"/>
+        <pin num="8" name="V+" type="power_in"/>
+      </pins>
+    </libpart>
+    <libpart lib="Device" part="R">
+      <description>Resistor</description>
+      <docs>~</docs>
+      <footprints>
+        <fp>R_*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">R</field>
+        <field name="Value">R</field>
+      </fields>
+      <pins>
+        <pin num="1" name="~" type="passive"/>
+        <pin num="2" name="~" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="Sensor_Optical" part="BPW21">
+      <aliases>
+        <alias>BPX61</alias>
+      </aliases>
+      <description>Silicon Photodiode for the visible spectral range, TO-5 package</description>
+      <docs>http://techwww.in.tu-clausthal.de/site/Dokumentation/Dioden/Fotodioden/BPW21-Fotodiode.pdf</docs>
+      <footprints>
+        <fp>TO?5*Window*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">D</field>
+        <field name="Value">BPW21</field>
+        <field name="Footprint">Package_TO_SOT_THT:TO-5-2_Window</field>
+      </fields>
+      <pins>
+        <pin num="1" name="K" type="passive"/>
+        <pin num="2" name="A" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="photoDiode_MDversion1.3-rescue" part="EMIshield-EMIshield">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">EMIshield-EMIshield</field>
+      </fields>
+      <pins>
+        <pin num="1" name="Case" type="input"/>
+      </pins>
+    </libpart>
+  </libparts>
+  <libraries>
+    <library logical="Connector_Generic">
+      <uri>/Library/Application Support/kicad/library/Connector_Generic.lib</uri>
+    </library>
+    <library logical="Device">
+      <uri>/Library/Application Support/kicad/library/Device.lib</uri>
+    </library>
+    <library logical="Sensor_Optical">
+      <uri>/Library/Application Support/kicad/library/Sensor_Optical.lib</uri>
+    </library>
+    <library logical="photoDiode_MDversion1.3-rescue">
+      <uri>/Users/abn/Dropbox/ProjectODMeter/MeasurementHeads/photoDiode/photoDiode_MDversion1.3-rescue.lib</uri>
+    </library>
+  </libraries>
+  <nets>
+    <net code="1" name="GND">
+      <node ref="D1" pin="2"/>
+      <node ref="C5" pin="2"/>
+      <node ref="D2" pin="1"/>
+      <node ref="C3" pin="1"/>
+      <node ref="C1" pin="2"/>
+      <node ref="C4" pin="2"/>
+      <node ref="R4" pin="1"/>
+      <node ref="U2" pin="1"/>
+      <node ref="J1" pin="1"/>
+      <node ref="U1" pin="4"/>
+    </net>
+    <net code="2" name="Net-(C2-Pad2)">
+      <node ref="D1" pin="1"/>
+      <node ref="C2" pin="2"/>
+      <node ref="R1" pin="1"/>
+      <node ref="U1" pin="2"/>
+    </net>
+    <net code="3" name="/Vdd">
+      <node ref="U1" pin="8"/>
+      <node ref="R6" pin="2"/>
+      <node ref="R5" pin="2"/>
+      <node ref="C1" pin="1"/>
+      <node ref="L1" pin="2"/>
+    </net>
+    <net code="4" name="/A">
+      <node ref="R3" pin="2"/>
+      <node ref="U1" pin="7"/>
+      <node ref="J1" pin="3"/>
+    </net>
+    <net code="5" name="Net-(C4-Pad1)">
+      <node ref="R3" pin="1"/>
+      <node ref="C4" pin="1"/>
+      <node ref="R2" pin="2"/>
+      <node ref="U1" pin="6"/>
+    </net>
+    <net code="6" name="Net-(C2-Pad1)">
+      <node ref="R1" pin="2"/>
+      <node ref="U1" pin="1"/>
+      <node ref="R2" pin="1"/>
+      <node ref="C2" pin="1"/>
+    </net>
+    <net code="7" name="Net-(R4-Pad2)">
+      <node ref="R6" pin="1"/>
+      <node ref="U1" pin="5"/>
+      <node ref="R4" pin="2"/>
+    </net>
+    <net code="8" name="+5V">
+      <node ref="C3" pin="2"/>
+      <node ref="L1" pin="1"/>
+      <node ref="J1" pin="2"/>
+    </net>
+    <net code="9" name="Net-(C5-Pad1)">
+      <node ref="C5" pin="1"/>
+      <node ref="D2" pin="2"/>
+      <node ref="R5" pin="1"/>
+      <node ref="U1" pin="3"/>
+    </net>
+  </nets>
+</export>

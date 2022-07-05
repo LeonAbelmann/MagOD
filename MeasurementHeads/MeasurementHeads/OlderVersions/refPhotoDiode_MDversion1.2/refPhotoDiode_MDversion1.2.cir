@@ -1,0 +1,17 @@
+.title KiCad schematic
+.INCLUDE DIODE5.LIB
+D1 Net-_C1-Pad2_ GND BPW21
+U1 Net-_C4-Pad1_ Net-_C1-Pad2_ /A /V GND OPAMP
+C1 /A Net-_C1-Pad2_ C
+R1 Net-_C1-Pad2_ /A R
+J1 /R /G /B +5V Conn_01x04
+J2 NC_01 NC_02 NC_03 NC_04 Conn_01x04
+J3 +5V GND /A /R /G /B Conn_01x06
+C2 +5V GND 1.5uF
+U2 GND EMIshield
+L1 +5V /V Ferrite_Bead
+C3 /V GND 0.1uF
+R2 Net-_C4-Pad1_ /V R
+D2 GND Net-_C4-Pad1_ D
+C4 Net-_C4-Pad1_ GND C
+.end
