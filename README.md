@@ -7,7 +7,7 @@ KIST Europe, University of Twente
 
 ## Other sources
 Next to software, also the source codes to create hardware are
-available:
+available here, as well as :
 
 - Measurement head design, 3D print file (OpenSCAD, on [Thingiverse](https://www.thingiverse.com/thing:3122930) )
 - Spice simulations, electronic diagrams, PCB layout (Spice, KiCad on
