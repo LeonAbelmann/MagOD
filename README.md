@@ -30,9 +30,9 @@ available here, as well as :
 - Data collection on SD card, accessible by ftp over Wifi
 
 ## Additional info
-- Marcel Welleweerd *and colleagues* (2022) ["An open-source automated magnetic optical density meter for analysis of suspensions of magnetic cells and particles"](https://doi.org/10.1063/5.0098008) Review of Scientific Instruments Vol 93, Issue 9, 094101. The manuscript can be found on [ArXiv](https://arxiv-org.ezproxy2.utwente.nl/abs/2106.07466)
+- Marcel Welleweerd *and colleagues* (2022) ["An open-source automated magnetic optical density meter for analysis of suspensions of magnetic cells and particles"](https://doi.org/10.1063/5.0098008) Review of Scientific Instruments Vol 93, Issue 9, 094101. The manuscript can be found on [ArXiv](https://arxiv.org/abs/2106.07466)
 - Chapter 8 in [Thesis](https://research.utwente.nl/en/publications/observing-magnetic-objects-in-fluids) Tijmen Hageman.
 - [Presentation](https://youtu.be/TwwIsPg0qnI) by Leon Abelmann at Intermag2021
 
 ## How to join
-Send mail to Leon (l.abelmann@utwente.nl) if you are interested, all skills are welcome.
+Send mail to Leon (l.abelmann@tudelft.nl) if you are interested, all skills are welcome.
